@@ -1,0 +1,45 @@
+{
+  "yaml.schemas": {
+    "Schemas/TVM Schema.json": [
+      "**/Threat*Vectors/*.yaml"
+    ],
+    "Schemas/CDM Schema.json": [
+      "**/Detection*Models/*.yaml"
+    ],
+    "Schemas/MDR Schema.json": [
+      "**/Detection*Rules/*.yaml"
+    ],
+    "Schemas/BDR Schema.json": [
+      "**/Business*Detections/*.yaml"
+    ],
+  },
+
+  "redhat.telemetry.enabled": false,
+  "yaml.schemaStore.enable": false,
+  "yaml.trace.server": "verbose",
+  "evenBetterToml.schema.associations": {
+    ".*defender_for_endpoint.*": "file://./Schemas/Configurations/Defender for Endpoint.json",
+    ".*sentinel_one.*": "file://./Schemas/Configurations/Sentinel One.json"
+  },
+  "evenBetterToml.schema.catalogs": [],
+  "editor.suggest.showSnippets": false,
+  "python.terminal.executeInFileDir" : true,
+
+  "markdown.preview.openMarkdownLinks": "inPreview",
+
+  "workbench.editorAssociations": {
+    "*.csv": "gc-excelviewer-csv-editor",
+    "*.md": "vscode.markdown.preview.editor"
+  },
+  "csv-preview.lineNumbers": "ordinal",
+  "csv-preview.capitalizeHeaders": false,
+
+  "git.autofetch": true,
+  "git.autofetchPeriod": 30,
+  "git.autorefresh": true,
+  "git.autoStash": true,
+  "git.pruneOnFetch": true,
+  "git.showPushSuccessNotification": true,
+  "python.analysis.typeCheckingMode": "basic",
+
+}
