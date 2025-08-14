@@ -31,11 +31,11 @@
                 "red"
             ],
             "markdownEnumDescriptions": [
-                "\n### \u26aa clear\n\n\ud83d\udd11 **Identifier** : `TLP:CLEAR`\n\n \n\n\n\n\n\n\n\n---\n\nRecipients can spread this to the world, there is no limit on disclosure.\n",
-                "\n### \ud83d\udfe2 green\n\n\ud83d\udd11 **Identifier** : `TLP:GREEN`\n\n \n\n\n\n\n\n\n\n---\n\nLimited disclosure, recipients can spread this within their community. Sources may use TLP:GREEN when information is useful to increase awareness within their wider community.\n",
-                "\n### \ud83d\udfe0 amber\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER`\n\n \n\n\n\n\n\n\n\n---\n\nLimited disclosure, recipients can only spread this on a need-to-know basis within their organization and its clients.\n",
-                "\n### \ud83d\udfe0 amber+strict\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER+STRICT`\n\n \n\n\n\n\n\n\n\n---\n\nSimilar to TLP:AMBER, but restricts sharing to the organization only.\n",
-                "\n### \ud83d\udd34 red\n\n\ud83d\udd11 **Identifier** : `TLP:RED`\n\n \n\n\n\n\n\n\n\n---\n\nFor the eyes and ears of individual recipients only, no further disclosure.\n"
+                "\n### \u26aa clear\n\n\ud83d\udd11 **Identifier** : `TLP:CLEAR`\n\n \n\n\n\n\n\n---\n\nRecipients can spread this to the world, there is no limit on disclosure.\n",
+                "\n### \ud83d\udfe2 green\n\n\ud83d\udd11 **Identifier** : `TLP:GREEN`\n\n \n\n\n\n\n\n---\n\nLimited disclosure, recipients can spread this within their community. Sources may use TLP:GREEN when information is useful to increase awareness within their wider community.\n",
+                "\n### \ud83d\udfe0 amber\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER`\n\n \n\n\n\n\n\n---\n\nLimited disclosure, recipients can only spread this on a need-to-know basis within their organization and its clients.\n",
+                "\n### \ud83d\udfe0 amber+strict\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER+STRICT`\n\n \n\n\n\n\n\n---\n\nSimilar to TLP:AMBER, but restricts sharing to the organization only.\n",
+                "\n### \ud83d\udd34 red\n\n\ud83d\udd11 **Identifier** : `TLP:RED`\n\n \n\n\n\n\n\n---\n\nFor the eyes and ears of individual recipients only, no further disclosure.\n"
             ]
         },
         "description": {
