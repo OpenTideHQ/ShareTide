@@ -1,0 +1,68 @@
+name: Adversary in the Middle phishing sites to bypass MFA 
+criticality: Medium
+references:
+  public:
+    1: https://www.microsoft.com/security/blog/2022/07/12/from-cookie-theft-to-bec-attackers-use-aitm-phishing-sites-as-entry-point-to-further-financial-fraud/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 66aafb61-9a46-4287-8b40-4785b42b77a3
+  schema: tvm::2.1
+  tlp: clear
+  version: 5
+  created: 2022-07-13
+  modified: 2024-11-11
+  #author: 
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::3e595289-05b8-43fc-bd88-f8650436447f #Storm-0829, DEV-0829, Nwgen Team
+  killchain: Credential Access
+  att&ck:
+    - T1566.002
+    - T1557
+    - T1539
+    - T1556
+    - T1078.004
+  chaining:
+    - relation: atomicity::implements
+      vector: 4a807ac4-f764-41b1-ae6f-94239041d349 #MFA Bypass Techniques
+      description: |
+        MFA bypass technique
+  domains:
+    - Enterprise
+    - Public Cloud
+    - SaaS
+  terrain: |
+    An adversary needs to target companies and contacts 
+    to distribute the malware, it's used a massive distrigution 
+    technique on a random principle.  
+  targets:
+    - End-user
+  platforms:
+    - Office 365
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Information Disclosure
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+    - Business disruption
+    - Impairement
+    - Monetary Loss
+  viability: Likely
+  description: |
+    Threat actors use malicious attachments to send the users 
+    to redirection site, which hosts a fake MFA login page.
+    The MitM page completes the authentication flow by interfacing
+    with the legitimate IdP, and captures valid accounts
