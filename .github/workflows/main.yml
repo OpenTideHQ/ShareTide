@@ -11,6 +11,8 @@ on:
     branches:
       - main
 
+permissions: write-all
+
 jobs:
   Secrets:
     runs-on: ubuntu-latest
