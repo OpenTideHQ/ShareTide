@@ -1,0 +1,105 @@
+name: Phishing with Azure AD B2B Collaboration
+criticality: High
+references:
+  public:
+    1: https://securepractice.co/blog/phishing-with-azure-ad-b2b-collaboration
+    2: https://learn.microsoft.com/en-us/entra/external-id/authentication-conditional-access
+    3: https://learn.microsoft.com/en-us/entra/external-id/invitation-email-elements
+    4: https://dirkjanm.io/assets/raw/US-22-Mollema-Backdooring-and-hijacking-Azure-AD-accounts_final.pdf
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: f9a6f927-d08c-40c1-85af-01331c471def
+  schema: tvm::2.1
+  version: 1
+  created: 2023-12-12
+  modified: 2024-07-18
+  tlp: amber
+  #author: 
+  #contributors: 
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Social Engineering
+  att&ck: 
+    - T1566
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: 
+  #cve:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+    - Enterprise
+    - SaaS
+  terrain: Adversaries need administrative privileges or access to an
+   existing Azure AD Premium account, or to create a new free trial account.
+   After this, the capability to set up an Enterprise App with single sign-on 
+   through a user-defined URL, which can be their own website to deceive the user.
+
+  targets:
+    - Personal Information
+    - End-user
+    - Cloud Storage Accounts
+    - Identity Services
+    - Cloud Portal
+    - Server Authentication
+    - Remote access
+  platforms:
+     - Windows
+     - Office 365
+     - Azure AD
+     - Azure
+     - PowerShell
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Infrastructure Compromise
+    - Information Disclosure
+    - New Accounts
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Competitive disadvantage
+    - Business disruption
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    Phishing with Azure AD B2B Collaboration involves exploiting the service to send 
+    malicious invitations that appear to come from Microsoft or other third-parties,
+    making it difficult for the user to detect that it is not legitimate.
+    Here are the key points:
+
+    ### Malicious Invitations 
+    Adversaries can create a free trial for Azure AD Premium and set up an Enterprise App 
+    with single sign-on (SSO) through a user-defined URL, which can be the adversary 
+    own website. This app can then be assigned to new users, allowing the adversaries to 
+    insert phishing recipients[1].
+
+    ### Email Elements
+    The invitation email typically includes a warning about phishing, but the email 
+    itself appears legitimate. It is sent from a Microsoft address and includes a link 
+    to a landing page that may redirect users to the adversary site. The email may 
+    also include the inviter name and profile image for added credibility[3].
+
+    ### Authentication Flow 
+    When a user accepts the invitation, they are redirected to the adversary site, 
+    may look like a legitimate Microsoft page. This can be achieved by creating an 
+    outdated OneDrive logo or using a well-known brand name in the Entra ID organization[1].
+
+    ### Technical Details 
+    The phishing campaign can be set up using PowerShell commands to manage Azure AD 
+    and MSOnline modules. The adversaries can also use the Create invitation API to 
+    customize the invitation message and ensure it appears legitimate[2][4].
