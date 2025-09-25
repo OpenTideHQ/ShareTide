@@ -50,19 +50,19 @@ threat:
     - T1087 #Account Discovery
     - T1552.001 #Unsecured Credentials: Credentials In Files
     - T1530 #Data from Cloud Storage
-  chaining:
-    - relation: sequence::succeeds
-      vector: f9a6f927-d08c-40c1-85af-01331c471def #Phishing w/ Azure AD B2B Collaboration
-      description: |
-        An adversary may obtain information and data within a resource.
-    - relation: sequence::succeeds
-      vector: 66aafb61-9a46-4287-8b40-4785b42b77a3 #Adversary in the Middle phishing sites bypass MFA
-      description: |
-        An adversary may obtain information and data within a resource.
-    - relation: sequence::succeeds
-      vector: 9bb31c65-8abd-48fc-afe3-8aca76109737 #Modify Azure federation trust accept externally signed tokens
-      description: |
-        An adversary may obtain information and data within a resource.
+  #chaining:
+  #  - relation: sequence::succeeds
+  #    vector: f9a6f927-d08c-40c1-85af-01331c471def #Phishing w/ Azure AD B2B Collaboration
+  #    description: |
+  #      An adversary may obtain information and data within a resource.
+  #  - relation: sequence::succeeds
+  #    vector: 66aafb61-9a46-4287-8b40-4785b42b77a3 #Adversary in the Middle phishing sites bypass MFA
+  #    description: |
+  #      An adversary may obtain information and data within a resource.
+  #  - relation: sequence::succeeds
+  #    vector: 9bb31c65-8abd-48fc-afe3-8aca76109737 #Modify Azure federation trust accept externally signed tokens
+  #    description: |
+  #      An adversary may obtain information and data within a resource.
   #cve:
     #-
   #misp:

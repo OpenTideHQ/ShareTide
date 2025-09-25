@@ -32,11 +32,11 @@ threat:
     - T1539
     - T1556
     - T1078.004
-  chaining:
-    - relation: atomicity::implements
-      vector: 4a807ac4-f764-41b1-ae6f-94239041d349 #MFA Bypass Techniques
-      description: |
-        MFA bypass technique
+  #chaining:
+  #  - relation: atomicity::implements
+  #    vector: 4a807ac4-f764-41b1-ae6f-94239041d349 #MFA Bypass Techniques
+  #    description: |
+  #      MFA bypass technique
   domains:
     - Enterprise
     - Public Cloud
