@@ -1,0 +1,118 @@
+{
+    "versions": {
+        "layer": "4.5"
+    },
+    "techniques": [
+        {
+            "techniqueID": "T1111",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MFA Bypass Techniques",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1621",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MFA Bypass Techniques",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MFA Bypass Techniques",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MFA Bypass Techniques, [TVM] Adversary in the Middle phishing sites to bypass MFA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MFA Bypass Techniques",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1484.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Modify Azure federation trust to accept externally signed tokens",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1526",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Resource Data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1087",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Resource Data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1552.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Resource Data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1530",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Resource Data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1557",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1539",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1556",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1078.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Phishing with Azure AD B2B Collaboration",
+            "enabled": true
+        }
+    ],
+    "name": "layer",
+    "domain": "enterprise-attack",
+    "hideDisabled": false,
+    "legendItems": [
+        {
+            "label": "TVM Only",
+            "color": "#fc6b6b"
+        },
+        {
+            "label": "TVM + CDM",
+            "color": "#9e9ac8"
+        },
+        {
+            "label": "Full Coverage",
+            "color": "#74c476"
+        },
+        {
+            "label": "CDM Only - Needs to be checked",
+            "color": "#6baed6"
+        }
+    ]
+}

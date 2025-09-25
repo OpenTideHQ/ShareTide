@@ -1,0 +1,67 @@
+{
+    "4a807ac4-f764-41b1-ae6f-94239041d349": {
+        "name": "MFA Bypass Techniques",
+        "object": "Threat Vectors",
+        "description": "MFA is a technique that requires more than one piece of evidence to authorize the user to \naccess a resource. If two pieces of evidence are needed to verify, this approach is called 2FA.\nThe difference between 2FA and MFA is that 2FA requires only two factors; on the other hand,\nMFA can add more layers until the login attempts do not seem suspicious anymore.\n\nA MFA bypass is a broad term referring to an attack method where a cybercriminal \nnavigates around MFA requirements to gain unauthorized access to an account.\n",
+        "revisions": {
+            "1": {
+                "date": "2025-09-25",
+                "message": "fix: exports folder",
+                "author": "Behemoth Security",
+                "commit": "160411d45204aa028022f628ab004d73b9c42555"
+            }
+        }
+    },
+    "9bb31c65-8abd-48fc-afe3-8aca76109737": {
+        "name": "Modify Azure federation trust to accept externally signed tokens",
+        "object": "Threat Vectors",
+        "description": "Once they acquired sufficient priviledges,attackers add their own certificate as \na trusted entity in the domain either by adding a new federation trust to \nan existing tenant or modifying the properties of an existing federation \ntrust. As a result, any SAML token they create and sign will be valid for \nthe identity of their choosing. This attack may be performed as an alternative\nto the Golden SAML attack to gain persistent access without having to sign \nthe SAML response at each access request, while needing the same amount of control \nover the ADFS server.\n",
+        "revisions": {
+            "3": {
+                "date": "2025-09-25",
+                "message": "fix: exports folder",
+                "author": "Behemoth Security",
+                "commit": "160411d45204aa028022f628ab004d73b9c42555"
+            }
+        }
+    },
+    "b1593e0b-1b3b-462d-9ab6-21d1c136469d": {
+        "name": "Azure - Gather Resource Data",
+        "object": "Threat Vectors",
+        "description": "The \u201cGather Resource Data\u201d technique is a key part of the reconnaissance phase in \nattacks against Azure environments. This activity focuses on enumerating information \nabout resources within a target Azure tenant or subscription to support subsequent \nattack phases.\n\n#### Example Attack Scenario\n\nA threat actor gains access to a compromised identity in an Azure environment, such \nas via phishing or a leaked credential. Using this access, the attacker enumerates \naccessible resources (e.g., virtual machines, storage accounts, databases, and identity \nconfigurations) by executing read operations like `{resource}/*/read`. For example, \nif the account has Reader or even limited permissions, the attacker can list resource \ngroups, virtual machines, Key Vaults, storage accounts, and see details such as \nconfigurations, names, and metadata. They might also list the names of secrets or \ncertificates in a Key Vault\u2014while unable to access the contents without elevated \npermissions, this reconnaissance helps prioritize attack targets.\n\n#### Attack Goals and Impact\n\n- **Goals:**\n  - Develop a comprehensive map of the organization\u2019s Azure environment.\n  - Identify high-value resources (e.g., storage accounts with sensitive data, Key \n  Vaults, privileged identities).\n  - Find weakly configured, over-permitted, or exposed resources (public endpoints, \n  misconfigured access policies).\n  - Inform next stages of the attack (privilege escalation, lateral movement, data theft).\n\n- **Potential Impact:**\n  - **Accelerated compromise:** With detailed resource and configuration information, \n  attackers can quickly focus on the most lucrative or vulnerable targets.\n  - **Increased stealth:** Attackers can tailor subsequent steps to avoid detection\u2014targeting \n  overlooked or poorly monitored resources.\n  - **Data exposure:** Identification of exposed storage or secrets can result in \n  immediate or subsequent sensitive data breaches.\n\n#### Attack Flow and Methodology\n\n1. **Automated Enumeration:** Utilizing Azure CLI, PowerShell (e.g., `Get-AzResource`, `az resource list`), \nREST APIs, or scripts, the attacker lists:\n  - Resource groups and their contents\n  - Virtual machines, storage accounts, databases, and Key Vaults\n  - Permissions and access policies associated with resources\n2. **Asset Profiling:** The attacker collects details on configurations, public IPs, \nRBAC permissions, and metadata for each resource.\n3. **Vulnerability Identification:** Analysis focuses on resources where permissions, \nnetwork exposure, or configurations suggest potential for privilege escalation or data access.\n4. **Preparation for Next Stages:** The attacker plans lateral movement, privilege \nescalation, or direct attacks on data, using the knowledge obtained to target weak points.\n",
+        "revisions": {
+            "1": {
+                "date": "2025-09-25",
+                "message": "fix: exports folder",
+                "author": "Behemoth Security",
+                "commit": "160411d45204aa028022f628ab004d73b9c42555"
+            }
+        }
+    },
+    "66aafb61-9a46-4287-8b40-4785b42b77a3": {
+        "name": "Adversary in the Middle phishing sites to bypass MFA",
+        "object": "Threat Vectors",
+        "description": "Threat actors use malicious attachments to send the users \nto redirection site, which hosts a fake MFA login page.\nThe MitM page completes the authentication flow by interfacing\nwith the legitimate IdP, and captures valid accounts\n",
+        "revisions": {
+            "5": {
+                "date": "2025-09-25",
+                "message": "fix: exports folder",
+                "author": "Behemoth Security",
+                "commit": "160411d45204aa028022f628ab004d73b9c42555"
+            }
+        }
+    },
+    "f9a6f927-d08c-40c1-85af-01331c471def": {
+        "name": "Phishing with Azure AD B2B Collaboration",
+        "object": "Threat Vectors",
+        "description": "Phishing with Azure AD B2B Collaboration involves exploiting the service to send \nmalicious invitations that appear to come from Microsoft or other third-parties,\nmaking it difficult for the user to detect that it is not legitimate.\nHere are the key points:\n\n### Malicious Invitations \nAdversaries can create a free trial for Azure AD Premium and set up an Enterprise App \nwith single sign-on (SSO) through a user-defined URL, which can be the adversary \nown website. This app can then be assigned to new users, allowing the adversaries to \ninsert phishing recipients[1].\n\n### Email Elements\nThe invitation email typically includes a warning about phishing, but the email \nitself appears legitimate. It is sent from a Microsoft address and includes a link \nto a landing page that may redirect users to the adversary site. The email may \nalso include the inviter name and profile image for added credibility[3].\n\n### Authentication Flow \nWhen a user accepts the invitation, they are redirected to the adversary site, \nmay look like a legitimate Microsoft page. This can be achieved by creating an \noutdated OneDrive logo or using a well-known brand name in the Entra ID organization[1].\n\n### Technical Details \nThe phishing campaign can be set up using PowerShell commands to manage Azure AD \nand MSOnline modules. The adversaries can also use the Create invitation API to \ncustomize the invitation message and ensure it appears legitimate[2][4].\n",
+        "revisions": {
+            "1": {
+                "date": "2025-09-25",
+                "message": "fix: exports folder",
+                "author": "Behemoth Security",
+                "commit": "160411d45204aa028022f628ab004d73b9c42555"
+            }
+        }
+    }
+}

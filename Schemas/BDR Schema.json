@@ -63,7 +63,7 @@
             "properties": {
                 "public": {
                     "title": "\ud83d\udd4a\ufe0f \ud83d\udd4a\ufe0f \ud83d\udd4a\ufe0f \ud83d\udd4a\ufe0f Publicly available resources",
-                    "description": "Resources freely available on internet",
+                    "description": "Resources freely available on internet with no sharing constraints",
                     "icon": "\ud83d\udd4a\ufe0f",
                     "type": "object",
                     "patternProperties": {
@@ -78,25 +78,11 @@
                 "internal": {
                     "title": "\ud83c\udfe6 \ud83c\udfe6 \ud83c\udfe6 \ud83c\udfe6 Private references",
                     "icon": "\ud83c\udfe6",
-                    "description": "Propriatary, sensible and confidential data belonging to the owner of the CoreTIDE instance\nwhere the object was modelled on, and which cannot be shared.\n",
+                    "description": "Proprietary, sensible and confidential data belonging to the owner of the OpenTide instance\nwhere the object was modelled on, and which cannot be shared.\n",
                     "type": "object",
                     "patternProperties": {
                         "^[a-z]$": {
                             "example": "a",
-                            "type": "string",
-                            "format": "uri"
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "restricted": {
-                    "title": "\ud83d\udd10 \ud83d\udd10 \ud83d\udd10 \ud83d\udd10 Restricted references",
-                    "icon": "\ud83d\udd10",
-                    "description": "Properties propriatary to the owner of the CoreTIDE instance where the object was created,\nbut which may be shared with a defined list of approved counterparts.\n",
-                    "type": "object",
-                    "patternProperties": {
-                        "^[A-Z]$": {
-                            "example": "A",
                             "type": "string",
                             "format": "uri"
                         }

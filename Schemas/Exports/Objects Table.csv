@@ -1,0 +1,99 @@
+UUID,Name,Type,Tlp,Description,Version,Created,Modified,Childs,Parents,Chaining,Threat Actors,ATT&CK
+4a807ac4-f764-41b1-ae6f-94239041d349,MFA Bypass Techniques,Threat Vectors,clear,"MFA is a technique that requires more than one piece of evidence to authorize the user to 
+access a resource. If two pieces of evidence are needed to verify, this approach is called 2FA.
+The difference between 2FA and MFA is that 2FA requires only two factors; on the other hand,
+MFA can add more layers until the login attempts do not seem suspicious anymore.
+
+A MFA bypass is a broad term referring to an attack method where a cybercriminal 
+navigates around MFA requirements to gain unauthorized access to an account.
+",1,2024-11-04,2024-11-05,,,,"[Enterprise] APT29, UNC2452, [Mobile] Sandworm Team, GreyEnergy, [Enterprise] Chimera, [Enterprise] Kimsuky, TA406, [Mobile] LAPSUS$, LAPSUS","T1111, T1621, T1566.001, T1566.002, T1566.004"
+9bb31c65-8abd-48fc-afe3-8aca76109737,Modify Azure federation trust to accept externally signed tokens,Threat Vectors,green,"Once they acquired sufficient priviledges,attackers add their own certificate as 
+a trusted entity in the domain either by adding a new federation trust to 
+an existing tenant or modifying the properties of an existing federation 
+trust. As a result, any SAML token they create and sign will be valid for 
+the identity of their choosing. This attack may be performed as an alternative
+to the Golden SAML attack to gain persistent access without having to sign 
+the SAML response at each access request, while needing the same amount of control 
+over the ADFS server.
+",3,2022-03-06,2022-04-11,,,,"[Enterprise] APT29, UNC2452",T1484.002
+b1593e0b-1b3b-462d-9ab6-21d1c136469d,Azure - Gather Resource Data,Threat Vectors,clear,"The “Gather Resource Data” technique is a key part of the reconnaissance phase in 
+attacks against Azure environments. This activity focuses on enumerating information 
+about resources within a target Azure tenant or subscription to support subsequent 
+attack phases.
+
+#### Example Attack Scenario
+
+A threat actor gains access to a compromised identity in an Azure environment, such 
+as via phishing or a leaked credential. Using this access, the attacker enumerates 
+accessible resources (e.g., virtual machines, storage accounts, databases, and identity 
+configurations) by executing read operations like `{resource}/*/read`. For example, 
+if the account has Reader or even limited permissions, the attacker can list resource 
+groups, virtual machines, Key Vaults, storage accounts, and see details such as 
+configurations, names, and metadata. They might also list the names of secrets or 
+certificates in a Key Vault—while unable to access the contents without elevated 
+permissions, this reconnaissance helps prioritize attack targets.
+
+#### Attack Goals and Impact
+
+- **Goals:**
+  - Develop a comprehensive map of the organization’s Azure environment.
+  - Identify high-value resources (e.g., storage accounts with sensitive data, Key 
+  Vaults, privileged identities).
+  - Find weakly configured, over-permitted, or exposed resources (public endpoints, 
+  misconfigured access policies).
+  - Inform next stages of the attack (privilege escalation, lateral movement, data theft).
+
+- **Potential Impact:**
+  - **Accelerated compromise:** With detailed resource and configuration information, 
+  attackers can quickly focus on the most lucrative or vulnerable targets.
+  - **Increased stealth:** Attackers can tailor subsequent steps to avoid detection—targeting 
+  overlooked or poorly monitored resources.
+  - **Data exposure:** Identification of exposed storage or secrets can result in 
+  immediate or subsequent sensitive data breaches.
+
+#### Attack Flow and Methodology
+
+1. **Automated Enumeration:** Utilizing Azure CLI, PowerShell (e.g., `Get-AzResource`, `az resource list`), 
+REST APIs, or scripts, the attacker lists:
+  - Resource groups and their contents
+  - Virtual machines, storage accounts, databases, and Key Vaults
+  - Permissions and access policies associated with resources
+2. **Asset Profiling:** The attacker collects details on configurations, public IPs, 
+RBAC permissions, and metadata for each resource.
+3. **Vulnerability Identification:** Analysis focuses on resources where permissions, 
+network exposure, or configurations suggest potential for privilege escalation or data access.
+4. **Preparation for Next Stages:** The attacker plans lateral movement, privilege 
+escalation, or direct attacks on data, using the knowledge obtained to target weak points.
+",1,2025-08-07,2025-08-12,,,,"Volt Typhoon, HAFNIUM, FIN13, [Enterprise] Salt Typhoon","T1526, T1087, T1552.001, T1530"
+66aafb61-9a46-4287-8b40-4785b42b77a3,Adversary in the Middle phishing sites to bypass MFA,Threat Vectors,clear,"Threat actors use malicious attachments to send the users 
+to redirection site, which hosts a fake MFA login page.
+The MitM page completes the authentication flow by interfacing
+with the legitimate IdP, and captures valid accounts
+",5,2022-07-13,2024-11-11,,,,Storm-0829,"T1566.002, T1557, T1539, T1556, T1078.004"
+f9a6f927-d08c-40c1-85af-01331c471def,Phishing with Azure AD B2B Collaboration,Threat Vectors,amber,"Phishing with Azure AD B2B Collaboration involves exploiting the service to send 
+malicious invitations that appear to come from Microsoft or other third-parties,
+making it difficult for the user to detect that it is not legitimate.
+Here are the key points:
+
+### Malicious Invitations 
+Adversaries can create a free trial for Azure AD Premium and set up an Enterprise App 
+with single sign-on (SSO) through a user-defined URL, which can be the adversary 
+own website. This app can then be assigned to new users, allowing the adversaries to 
+insert phishing recipients[1].
+
+### Email Elements
+The invitation email typically includes a warning about phishing, but the email 
+itself appears legitimate. It is sent from a Microsoft address and includes a link 
+to a landing page that may redirect users to the adversary site. The email may 
+also include the inviter name and profile image for added credibility[3].
+
+### Authentication Flow 
+When a user accepts the invitation, they are redirected to the adversary site, 
+may look like a legitimate Microsoft page. This can be achieved by creating an 
+outdated OneDrive logo or using a well-known brand name in the Entra ID organization[1].
+
+### Technical Details 
+The phishing campaign can be set up using PowerShell commands to manage Azure AD 
+and MSOnline modules. The adversaries can also use the Create invitation API to 
+customize the invitation message and ensure it appears legitimate[2][4].
+",1,2023-12-12,2024-07-18,,,,"[Enterprise] APT29, UNC2452",T1566
