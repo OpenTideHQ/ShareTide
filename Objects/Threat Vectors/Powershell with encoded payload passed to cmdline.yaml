@@ -62,12 +62,7 @@ threat:
     When working with PowerShell, a threat actor can encode a command or script
     using Base64 or other type of encoding and pass it as a parameter to the
     command line. This technique is useful for obfuscating sensitive
-    information or executing complex commands. (ref [1])  
-
-    This encoding payloads technique with PowerShell comamnds is observed in
-    some Russian military-linked actors activities, for example EARLYBLOOM
-    campaign targeting Ukrainian media entities or the more recent one
-    DARKCRYSTALRAT backdoor. (ref [a])  
+    information or executing complex commands. (ref [1])   
     
 
     The malicious document contains a macro which, upon execution,
