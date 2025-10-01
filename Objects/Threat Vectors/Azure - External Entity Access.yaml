@@ -1,0 +1,171 @@
+name: Azure - External Entity Access
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Persistence/AZT507/AZT507/
+    2: https://docs.azure.cn/en-us/entra/architecture/1-secure-access-posture
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 31e7f292-8370-4255-861d-edd68ed8b7b0
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-22
+  modified: 2025-09-22
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::3b238f3a-c67a-4a9e-b474-dc3897e00129 #Scattered Spider, UNC3944, Muddled Libra, Oktapus, Scattered Swine, Scatter Swine, Octo Tempest, 0ktapus, Storm-0971, DEV-0971, Starfraud
+      sighting: |
+        Scattered Spider adds a federated identity provider to the victim’s SSO tenant and activates automatic account linking.
+      references:
+        - https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-320a
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29, Group 100, COZY BEAR, The Dukes, Minidionis, SeaDuke, YTTRIUM, IRON HEMLOCK, Grizzly Steppe, G0016, ATK7, Cloaked Ursa, TA421, Blue Kitsune, ITG11, BlueBravo, Nobelium, UAC-0029
+      sighting: |
+         APT29 changed domain federation trust settings using Azure AD administrative permissions to configure the domain to accept authorization tokens signed by their own SAML signing certificate.
+      references:
+        - https://www.secureworks.com/research/threat-profiles/iron-ritual
+        - https://www.microsoft.com/security/blog/2020/12/28/using-microsoft-365-defender-to-coordinate-protection-against-solorigate/
+  killchain: Persistence
+  att&ck:
+    - T1133 #External Remote Services
+    - T1484.002 #Domain or Tenant Policy Modification: Trust Modification
+    - T1078.004 #Valid Accounts: Cloud Accounts
+  chaining:
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+    - relation: support::enabled
+      vector: 10a89280-d42e-446d-9f8d-840b1218f532 #Azure - Elevated Access Toggle
+      description: |
+        Adversaries successfully compromise a Global Administrator account in
+         Entra ID (Azure AD), either via phishing, credential theft, or session hijacking.
+    - relation: support::enabled
+      vector: 4e7eae8e-6615-41f2-bfe1-21a04f7a6088 #Azure - Gather Victim Data
+      description: |
+        An adversary successfully compromises a user's Azure Active Directory account credentials 
+        or session token through phishing, credential theft, or token theft.
+    - relation: atomicity::implemented
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online.
+    - relation: support::enabled
+      vector: 2900d389-3098-49d3-8166-5b2612d03576 #Azure - Gather User Information
+      description: |
+        Adversaries use publicly accessible endpoints, misconfigured applications, or phishing 
+        emails to harvest user names, email addresses, job titles, and group memberships.
+    - relation: atomicity::implemented
+      vector: 4e7eae8e-6615-41f2-bfe1-21a04f7a6088 #Azure - Gather Victim Data
+      description: |
+        An adversary may access a user's personal data if their account is compromised.
+        This includes data such as email, OneDrive, Teams, etc.
+    - relation: support::synergize
+      vector: 2fd1cddb-c66d-4a99-9779-31e32b67495e #Lateral movement abusing Azure Cross-Tenant Synchronization
+      description: |
+        Attackers must have compromised a tenant and gained elevated privileges.
+    - relation: support::synergize
+      vector: 9bb31c65-8abd-48fc-afe3-8aca76109737 #Modify Azure federation trust accept externally signed tokens
+      description: |
+        Attackers need to have gained administrative Azure Active Directory
+        (Azure AD) privileges using compromised credentials.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud  
+  terrain: |
+    Adversaries gains administrative access (e.g., via phishing, credential theft,
+    or exploiting vulnerabilities).
+  targets:
+    - Cloud Storage Accounts
+    - Identity Services
+    - Virtual Machines
+    - API Endpoints
+    - Cloud Portal 
+  platforms:
+    - Azure
+    - Azure AD
+    - PowerShell 
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Modify configuration
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+  viability: Likely
+  description: |
+    The following threat vector refers to a set of persistence techniques where an adversary 
+    configures a target Azure tenant to be managed or accessed by external entities, 
+    such as another tenant, external users, or identity providers. This section provides 
+    in-depth coverage of this threat vector according to the Azure Threat Research Matrix, 
+    addressing scenario, goals, impact, and methodology.
+
+    ### Example Attack Scenario
+
+    An attacker gains Global Administrator privileges in a compromised tenant and uses Azure 
+    Lighthouse to register an external, attacker-controlled tenant as a delegated administrator. 
+    This allows the attacker to manage resources and maintain persistence even if their 
+    initial account is detected and removed. Alternatively, the attacker might use Microsoft 
+    Partner Delegated Administrative Privileges, transfer a subscription (“subscription hijack”), 
+    or add a new federated domain or identity provider, creating hidden backdoors for 
+    future access.
+
+    - For example, after compromising credentials, an attacker uses Microsoft Graph 
+    API to modify tenant settings and register their own tenant as a manager via Azure Lighthouse.
+    - The administrator in the compromised tenant is unaware as delegated permissions 
+    silently persist, giving the attacker full control over resources and users.
+    - Even after password resets or removal of individual malicious accounts, the external 
+    entity persists via configuration and cannot be easily detected without deep audit 
+    review of resource assignments and domain trusts.
+
+    ### Attack Goals and Impact
+
+    The main goal is to establish persistence inside the target Azure environment through 
+    external entity control.
+
+    - Maintain long-term, resilient access to cloud resources, regardless of changes 
+    in local credentials or account clean-ups.
+    - Allow management of resources remotely from attacker-controlled tenants.
+    - Facilitate lateral movement, data exfiltration, or further privilege escalation 
+    by leveraging cross-tenant capabilities and hidden delegated privileges.
+
+    The impact may include:
+
+    - Full compromise of cloud assets and data.
+    - Unnoticed attacker presence persisting through routine security hygiene (such as credential revocation).
+    - Increased difficulty for defenders to detect or remove persistent access mechanisms.
+
+    ### Attack Flow and Methodology
+
+    The typical attack flow involves several steps:
+
+    1. Privilege abuse: The attacker uses available tools (including Microsoft Graph 
+    API, PowerShell modules, or Azure Portal) to grant management rights or delegated 
+    access to an external entity (such as Azure Lighthouse, Microsoft Partner delegation, 
+    or domain trust modification).
+    2. Configuration: The attacker registers their external tenant, sets up delegated 
+    access, or modifies domain trust/federation settings to establish a persistent link.
+    3. Stealthy persistence: Even if initial access accounts/credentials are remediated, 
+    the external entity retains management capabilities—allowing the attacker to create 
+    new accounts, manage resources, or harvest sensitive data.
+    4. Maintenance: The attacker periodically refreshes delegated permissions, adds 
+    new external users/entities, or modifies trust relationships as needed to maintain 
+    access and evade detection.

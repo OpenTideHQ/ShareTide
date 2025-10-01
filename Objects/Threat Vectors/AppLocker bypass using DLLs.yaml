@@ -1,0 +1,142 @@
+name: AppLocker bypass using DLLs
+criticality: High
+references:
+  public:
+    1: https://umsundu.co.uk/posts/Breaking-Windows-Bypassing-AppLocker-When-PowerShell-and-CMD-Are-Locked-Down
+    2: https://security.stackexchange.com/questions/183021/how-does-this-applocker-bypass-work-exactly-squibblydoo
+    3: https://insights.sei.cmu.edu/blog/bypassing-application-whitelisting # DLL Hijacking as an Application whitelisting bypass
+    4: https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/applocker/dll-rules-in-applocker
+    5: https://www.cyberis.com/article/cve-2021-20047-dll-search-order-hijacking-vulnerability
+    6: https://medium.com/@Idabian/abusing-applocker-misconfigurations-powershell-without-powershell-part-2-24d61ce3202f
+    7: https://www.csoonline.com/article/1311082/north-koreas-lazarus-deploys-rootkit-via-applocker-zero-day-flaw.html
+    8: https://www.securityweek.com/windows-zero-day-exploited-by-north-korean-hackers-in-rootkit-attack
+  #internal:
+    #a: 
+
+metadata:
+  uuid: a73c2506-8584-4c0b-bfdc-52e33c8bd229
+  schema: tvm::2.1
+  version: 1
+  created: 2025-07-10
+  modified: 2025-07-10
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29, Group 100, COZY BEAR, The Dukes, Minidionis, SeaDuke, YTTRIUM, IRON HEMLOCK, Grizzly Steppe, G0016, ATK7, Cloaked Ursa, TA421, Blue Kitsune, ITG11, BlueBravo, Nobelium, UAC-0029
+      sighting: |
+        This Russian affiliated state-sponsored threat group APT29 has been
+        known to use AppLocker bypass techniques, including DLL side-loading,
+        to install and execute malware on compromised systems.
+      references:
+        - https://medium.com/@Idabian/abusing-applocker-misconfigurations-powershell-without-powershell-part-2-24d61ce3202f # ref [6]
+    
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+      sighting: |
+        The North Korean Lazarus group has been known to use AppLocker bypass
+        techniques, including DLL sideloading, to install and execute malware
+        on compromised systems.
+      references:
+        - https://www.csoonline.com/article/1311082/north-koreas-lazarus-deploys-rootkit-via-applocker-zero-day-flaw.html # ref [7]
+        - https://www.securityweek.com/windows-zero-day-exploited-by-north-korean-hackers-in-rootkit-attack # ref [8]
+  killchain: Defense Evasion
+  att&ck:
+    - T1218 # System Binary Proxy Execution
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    The target must be a Windows environment with AppLocker enabled in
+    whitelisting mode. The attacker requires initial code execution on the
+    system (e.g., via phishing or exploit) and the ability to drop or register
+    a DLL alongside a permitted LOLbin.  
+  targets:
+    - Laptop
+    - Workstations
+    - Customer
+    - End-user
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Tampering
+  impact:
+    - Business disruption
+    - Impairement
+    - Legal and regulatory
+    - Data Breach
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    AppLocker bypass using DLLs involves exploiting the way Windows loads DLLs
+    into processes. An attacker can create a malicious DLL that mimics a
+    legitimate one, which is allowed to run by AppLocker. When a legitimate
+    application loads the malicious DLL, it can execute arbitrary code,
+    effectively bypassing AppLocker restrictions.
+    
+    A threat actor can bypass AppLocker application whitelisting using DLL
+    libraries. The reason is that there is no a mechanism for blocking out some
+    of the default DLLs. 
+
+    Additionally, DLLs are not executed directly by the operating system;
+    instead, they are loaded into the memory space of a process. This makes
+    it challenging for AppLocker to detect and block malicious DLLs activities.
+
+    There are several techniques that can be used to bypass AppLocker
+    using DLLs:
+
+    - DLL Hijacking - a threat actor can create a malicious DLL with the same
+      name as a legitimate DLL that is already allowed by AppLocker. When the
+      legitimate application loads the DLL, it will load the malicious one
+      instead, allowing the attacker to execute arbitrary code.
+    - DLL Preloading - a threat actor can create a malicious DLL that is loaded
+      before the legitimate DLL. This can be done by placing the malicious DLL in
+      a directory that is searched before the directory containing the legitimate
+      DLL.
+    - DLL Side-Loading: An attacker can create a malicious DLL that is loaded by
+      a legitimate application that is allowed by AppLocker. The malicious DLL can
+      then execute arbitrary code.
+
+    ### DLL hijacking mimics a legitimate DLL name in AppLocker
+    
+    An attacker can create a malicious DLL with the same name as a legitimate
+    one, which is allowed to run by AppLocker. The malicious DLL is placed in a
+    directory that is searched before the legitimate DLL's location.
+    
+    ### Loading a malicious DLL
+    
+    When a legitimate application loads the malicious DLL, Windows will load the
+    malicious DLL instead of the legitimate one. This allows the attacker to
+    execute arbitrary code, bypassing AppLocker restrictions.
+
+    ### REGSRV32 binary can bypass AppLocker restrictions by executing malicious DLL
+
+    Regsvr32.exe is a trusted Windows binary which can be used to bypass
+    AppLocker restrictions by executing a malicious DLL (e.g., cmd.dll).
+    Since regsvr32.exe is typically allowed by AppLocker policies and doesn't
+    rely on cmd.exe or powershell.exe, it can be used to load and run arbitrary
+    code through exported functions like `DllRegisterServer`. This allows
+    attackers to execute commands or scripts while avoiding detection and
+    bypassing common application whitelisting controls ref [1].
+
+    ### An example of AppLocker bypass using DLLs
+
+    As an example to bypass Windows AppLocker a threat actor can create a
+    malicious DLL named `search.dll` and place it in the `C:\Windows` directory.
+    When the Windows Search service loads the `search.dll` DLL, it will load the
+    malicious one instead of the legitimate one.
+  

@@ -1,0 +1,127 @@
+name: Enroll a clone of a device for stealth access
+criticality: High
+references:
+  public:
+    1: https://techcommunity.microsoft.com/t5/microsoft-intune/device-that-takes-the-place-of-another-device-on-intune-after/m-p/3660934
+    2: https://www.linkedin.com/pulse/understanding-malicious-mdm-compromise-case-study-minko-legault-zqvmf
+    3: https://thecloudtechnologist.com/2022/01/27/how-to-use-intune-device-enrollment-restrictions-to-block-second-wave-phishing/
+    4: https://thehackernews.com/2022/01/hackers-using-device-registration-trick.html
+    5: https://www.mantra.ms/blog/how-hackers-bypass-microsoft-azure-ad-conditional-access 
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 0be3a7d6-d859-4c0d-8873-4fa307b6c6f4
+  schema: tvm::2.1
+  version: 2
+  created: 2025-06-26
+  modified: 2025-10-01
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0102 #[ICS] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+      sighting: |
+        In 2021, researchers observed phishers registering rogue Windows devices 
+        in victims' Azure AD tenants with stolen Office 365 credentials.  
+        In 2023, Wizard Spider affiliates automated Intune enrollment of TrickBot-
+        infected hosts to bypass MFA in a European bank.
+      references:
+        - https://www.mantra.ms/blog/how-hackers-bypass-microsoft-azure-ad-conditional-access 
+  killchain: Persistence
+  att&ck:
+    - T1098.005 #Account Manipulation: Device Registration
+    - T1078 #Valid Accounts
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    The organisation must permit self-service or help-desk-assisted device
+    enrollment in Azure AD/Intune (or equivalent IdP + MDM), trust device
+    compliance as a Conditional Access factor, and rely on MFA that can be
+    silently satisfied once the new endpoint is registered.
+  targets:
+    - Identity Services
+    - Mobile phone
+    - Workstations
+    - Cloud Portal
+    - VPN Client
+  platforms:
+    - Azure AD
+    - Office 365
+    - Android
+    - iOS
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Information Disclosure
+    - Modify configuration
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Monetary Loss
+    - Reputational Damages
+  viability: Roughly even chance
+  description: |
+    Cloned-device enrollment is a technique where an adversary registers an
+    endpoint they control - often a virtual machine or repurposed handset - with
+    the victim's identity provider (IdP) and mobile-device-management (MDM)
+    service. Once marked *compliant*, the rogue endpoint fulfills
+    multifactor-authentication (MFA) and Conditional Access checks, granting the
+    attacker friction-free access to mail, files, and VPN resources.
+
+    ### Procedure example
+
+    1.1 **Eject Original Device**
+        ```powershell
+        Remove-AzureADDevice -ObjectId <VictimDeviceGUID>
+        ```  
+        Deleting the object prevents naming collisions and forces the user
+        to re-enroll later, hiding the rogue clone.
+
+    1.2 **Force Local Host to Un-join**  
+        ```cmd
+        dsregcmd /leave
+        ```  
+        Clears local registration keys so the endpoint can be joined under a
+        new identity.
+
+    1.3 **Re-Register under Attacker Control**  
+        **GUI:** *Settings → Accounts → Access Work or School → Connect*  
+        **CLI:**  
+        ```cmd
+        dsregcmd /join /debug
+        ```  
+        **Graph:**  
+        ```http
+        POST https://graph.microsoft.com/beta/deviceManagement/managedDevices
+        {
+          "deviceName": "WIN-CLONE01",
+          "hardwareIdentifier": "<spoofed_SMBIOS>",
+          "operatingSystem": "Windows 1X Virtual"
+        }
+        ```  
+        The attacker supplies a stolen refresh-token and the **Intune
+        Company Portal** client_id `27922004-...`. A crafted redirect URI
+        `ms-appx-web://Microsoft.AAD.BrokerPlugin/<GUID>` bypasses
+        interactive MFA.
+
+    1.4 **Mark Compliant**  
+        Using AADInternals, the attacker sets the device's `isCompliant`
+        flag via OMA-DM, instantly satisfying CA rules.
+
+    2.5 **Harvest Long-Lived Tokens**  
+        Silent OAuth flow issues Primary-Refresh-Tokens (PRT) scoped to
+        SharePoint, Teams, and VPN gateways.

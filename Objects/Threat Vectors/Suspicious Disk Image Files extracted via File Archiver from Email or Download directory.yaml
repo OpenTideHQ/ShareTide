@@ -1,0 +1,86 @@
+name: Suspicious Disk Image Files extracted via File Archiver from Email or Download directory
+criticality: Medium
+references:
+  public:
+    1: https://trendmicro.com/vinfo/us/security/news/cybercrime-and-digital-threats/malicious-spam-campaign-uses-iso-image-files-to-deliver-lokibot-and-nanocore
+    2: https://thedfirreport.com/2023/04/03/malicious-iso-file-leads-to-domain-wide-ransomware/
+    3: https://www.esentire.com/blog/suspected-asyncrat-delivered-via-iso-files-using-html-smuggling-technique
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: ebdf49a9-52cb-43a5-8849-8110765f4fe1
+  schema: tvm::2.0
+  version: 1
+  created: 2024-10-22
+  modified: 2024-10-22
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+    - name: att&ck::G0092 #[Enterprise] TA505, CHIMBORAZO, Hive0065, Spandex Tempest
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505, SectorJ04, SectorJ04 Group, GRACEFUL SPIDER, GOLD TAHOE, Dudear, G0092, ATK103, Hive0065, CHIMBORAZO, Spandex Tempest
+  killchain: Execution
+  att&ck:
+    - T0865 #Industrial : Spearphishing Attachment
+    - T1204.002 #User Execution: Malicious File
+    - T1059 #Command and Scripting Interpreter
+  chaining:
+    - relation: support::enabling
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 #Spearphishing Attachment
+      description: |
+        Email Attachment may contains these kind of file such as archive file
+        that user enable by decompresing it.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary requires the user to open the disk image file and execute the malicious content within, 
+    potentially bypassing security warnings.
+  targets:
+    - Desktop
+    - Email Platform
+    - Laptop
+    - Personal Information
+    - Workstations
+  platforms:
+    - macOS
+    - Linux
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Software installation
+    - Spoofing
+    - Tampering
+  impact:
+    - Data Breach
+    - Identity Theft
+  viability: Likely
+  description: |
+    Disk image files, such as ISO or IMG files, are being used more lately in malware 
+    distribution through phishing emails or malicious download links. 
+    This works because, as part of their nature, disk image files bypass some email 
+    security filters and may not be automatically viewed as threats to the users 
+    or security applications. This is traditionally a technique that has been used 
+    by a number of threat actors. One common example in this regard is when 
+    spearphishing emails have attached disk image files masquerading as some sort 
+    of legitimate document or even software updates. Once a user opens the attached 
+    disk image file, it mounts as a virtual drive on his system. The user may 
+    then be tricked into running a malicious payload inside, such as a 
+    shortcut file (.lnk) or an executable with its icon cloaked to appear familiar. 
+    Users are prone to feel secure when they select files with familiar types 
+    and might not see the danger in mounting and opening disk images coming 
+    from unverified sources.

@@ -1,0 +1,119 @@
+name: IP Discovery in Azure
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Reconnaissance/AZT102/AZT102/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 777e22c5-e47d-42a2-a803-42a101dee575
+  schema: tvm::2.1
+  version: 1
+  created: 2025-07-30
+  modified: 2025-08-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Reconnaissance
+  att&ck:
+    - T1078 #Valid Accounts
+    - T1526 #Cloud Service Discovery
+    - T1528 #Steal Application Access Token
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Adversary must have access to an Azure environment, either through compromised
+    credentials, exposed keys, or abused privileges, and be able to use Azure Portal,
+    Azure CLI, PowerShell, or Azure REST APIs.
+  targets:
+    - Virtual Machines
+    - Public-Facing Servers
+    - Cloud Storage Accounts
+    - Cloud Portal 
+  platforms:
+    - Azure
+    - Azure AD
+    - PowerShell 
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Business disruption 
+  viability: Likely
+  description: |
+    IP Discovery in the context of Azure refers to an adversary’s technique for identifying 
+    the public IP addresses associated with Azure resources. This activity is classified 
+    in the Azure Threat Research Matrix (ATRM) under **reconnaissance** tactics, because 
+    it is often one of the first steps attackers perform to understand the accessible 
+    surface of a target Azure environment.
+
+    #### Attack Flow and Methodology
+
+    1. **Initial Reconnaissance**  (see terrain)
+      The attacker needs valid credentials or otherwise access to an Azure environment 
+      
+    2. **Enumerating Resources**  
+      Using the Azure Portal, the Azure CLI, PowerShell, or Azure REST APIs, they enumerate 
+      resources—especially focusing on Virtual Machines (VMs) and Network Interfaces (NICs).
+
+    3. **Querying for IP Information**  
+      The attacker issues read requests (such as `az network nic list`, `Get-AzNetworkInterface`, 
+      or relevant API calls) to retrieve detailed information about NICs. Each NIC 
+      object includes properties for associated public and private IP addresses.
+
+    4. **Mapping IPs to VMs**  
+      From the NIC information, the adversary can link public IPs back to specific 
+      VMs or other endpoints, thereby building a map of accessible resources and potential 
+      entry points.
+
+    #### Attack Goals and Impact
+
+    - **Surface Mapping:** Generate a list of exposed public IP addresses and their 
+    associated Azure resources.
+    - **Prioritizing Targets:** Identify potentially vulnerable endpoints for direct 
+    attack (RDP, SSH, web services) or for scanning later.
+    - **Avoiding Detection:** Reconnaissance is “low and slow”—often blends in with 
+    administrative activity, making detection challenging unless closely monitored.
+
+    #### Example Attack Scenario
+
+    1. **Enumeration:**  
+      ```
+      az network nic list --query "[].{Name:name, IP:ipConfigurations[].publicIpAddress.id}"
+      ```
+      Or use the Azure REST API to enumerate all NICs and their attached public IPs.
+
+    2. **Data Correlation:**  
+      Map discovered IPs to VMs using the relationships expressed in the Azure resource objects.
+
+    3. **Follow-Up:**  
+      The attacker now has a list of direct IPs to probe for vulnerabilities 
+      (e.g., open RDP or SSH ports, misconfigured firewalls).

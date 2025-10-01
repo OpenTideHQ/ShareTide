@@ -1,0 +1,87 @@
+name: SIM-card swapping
+criticality: Medium
+references:
+  public:
+    1: https://www.theguardian.com/money/2016/apr/16/sim-swap-fraud-mobile-banking-fraudsters
+    2: https://www.vice.com/en/article/hackers-sim-swapping-steal-phone-numbers-instagram-bitcoin/
+    3: https://krebsonsecurity.com/2018/05/t-mobile-employee-made-unauthorized-sim-swap-to-steal-instagram-account/
+    4: https://techcrunch.com/2017/08/23/i-was-hacked/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 6a7a493a-511a-4c9d-aa9c-4427c832a322
+  schema: tvm::2.0
+  version: 1
+  created: 2024-10-23
+  modified: 2024-11-13
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G1004 #[Enterprise] LAPSUS$, DEV-0537, Strawberry Tempest
+    - name: misp::d9e5be22-1a04-4956-af6c-37af02330980 #LAPSUS, LAPSUS$, DEV-0537, SLIPPY SPIDER, Strawberry Tempest
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Credential Access
+  att&ck:
+    - T1541 ##SIM Card Swap
+  chaining:
+    - relation: atomicity::implements
+      vector: 4a807ac4-f764-41b1-ae6f-94239041d349 #MFA Bypass Techniques
+      description: |
+        MFA bypass technique
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Mobile
+    - Public Cloud
+  terrain: |
+    Attacker must convince the mobile network operator (e.g. through social networking, forged
+    identification, or insider attacks performed by trusted employees) to issue a new SIM card 
+  targets:
+    - Auth token
+    - Cloud Portal
+    - End-user
+    - Helpdesk
+    - Identity Services
+    - Mobile phone
+  platforms:
+    - EU Login
+    - Android
+    - iOS
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+    - Impairement
+  viability: Roughly even chance
+  description: |
+    SIM swapping is a malicious technique where threat actors target mobile carriers to gain access to
+    users bank accounts, virtual currency accounts, and other sensitive information.
+    They primarily conduct SIM swap schemes using social engineering, insider threat, or phishing techniques.
+
+    Social engineering involves impersonating an user and tricking the mobile carrier into switching the
+    user's mobile number to a SIM card in the attackers' possession.
+
+    Attackers using insider threat to conduct SIM swap schemes pay off a mobile carrier employee to switch an
+    user's mobile number to a SIM card in the attackers' possession. They often use phishing techniques to
+    deceive employees into downloading malware used to hack mobile carrier systems that carry out SIM swaps.
+
+    Once the SIM is swapped, the user's calls, texts, and other data are diverted to the attackers' device.
+    This access allow the attackers to send 'Forgot Password' or 'Account Recovery' requests to the 
+    user's email and other online accounts associated with the user's mobile telephone number. 
+
+    Using SMS-based two-factor authentication, mobile application providers send a link or one-time passcode 
+    via text to the user's number, now owned by the attackers, to access accounts. The attacker uses the codes
+    to login and reset passwords, gaining control of online accounts associated with the user's phone profile.

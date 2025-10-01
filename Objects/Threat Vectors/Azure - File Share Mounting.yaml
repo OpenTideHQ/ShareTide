@@ -1,0 +1,166 @@
+name: Azure - File Share Mounting
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Impact/AZT702/AZT702-1/
+    2: https://techcommunity.microsoft.com/blog/microsoftsecurityexperts/hunting-in-azure-subscriptions/4125875
+    3: https://www.microsoft.com/en-us/security/blog/2021/04/08/threat-matrix-for-storage/
+    4: https://learn.microsoft.com/en-us/azure/defender-for-cloud/alerts-azure-storage
+  #internal:
+    #a: 
+
+metadata:
+  uuid: d24fcc84-0e1e-41e1-8d0e-6ee9f8c6a068
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-09
+  modified: 2025-09-10
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Impact
+  att&ck:
+    - T1039 #Data from Network Shared Drive
+    - T1530 #Data from Cloud Storage
+    - T1021.007 #Remote Services: Cloud Services
+  chaining:
+    - relation: support::enabled
+      vector: 53f4e2f0-7d11-4629-bb26-905993a589db #Azure - Storage account reconnaissance
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+    - relation: support::synergize
+      vector: 942ed69c-700a-469a-9591-07b87815a909 #Azure - Storage Account Replication
+      description: |
+        Adversaries obtains credentials or elevated permissions (via access keys, Service 
+        Principal abuse, RBAC misconfigurations, or privilege escalation) to the victim’s 
+        storage account.
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) granting 
+        at least Reader access to the target Azure tenant.
+    - relation: support::synergize
+      vector: 85c8e0dd-b012-402d-bb09-5d354c16ebb9 #Azure - Local Resource Hijack
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys)
+        granting at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online.
+    - relation: sequence::preceeds
+      vector: 518ff777-f10d-4201-9e54-2779c31c512e #Consent phishing attack
+      description: |
+        User must click on a malicious link sent via email by attackers
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+  terrain: |
+    Adversaries must steal Azure Storage Account keys, Shared Access Signatures (SAS), 
+    or Azure AD credentials that have permissions to access file shares. This could 
+    be through phishing, credential dumping, or leveraging misconfigurations
+  targets:
+    - Cloud Storage Accounts
+    - Virtual Machines
+    - Serverless
+    - API Endpoints
+    - Cloud Portal
+  platforms:
+    - Azure
+    - Azure AD
+    - Windows
+    - Linux
+    - macOS 
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Information Disclosure
+    - Elevation of privilege
+    - Modify configuration
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    In the following threat vector, adversaries leverage Azure Storage Account File 
+    Shares via NFS or SMB mounts to facilitate or escalate attacks.
+
+    ## Example Attack Scenario
+
+    A typical scenario begins with an attacker stealing or hijacking privileged credentials, 
+    for example through a “Pass the Cookie” attack on a global administrator account. 
+    After obtaining administrative access, the adversary extends permissions to external 
+    users and assigns them high-level roles within the Azure tenant. Leveraging this 
+    privileged access, the adversary mounts Azure file shares to their own infrastructure, 
+    laying the groundwork for:
+    - Massive data exfiltration through direct access to sensitive storage.
+    - Encrypting and holding file shares hostage for ransom (ransomware).
+    - Stealthily manipulating or deleting critical business data, including Azure backup sets.
+
+    ## Attack Goals and Impact
+
+    The adversary’s core objectives when mounting file shares are:
+    - **Data Exfiltration:** Copying sensitive or proprietary data undetected from the 
+    cloud environment via NFS or SMB mount.
+    - **Ransomware Operations:** Encrypting contents of file shares directly, disrupting 
+    business continuity and demanding ransom payments for decryption.
+    - **Persistence and Shadow IT:** Creating redundant access paths or mirroring content 
+    to maintain long-term presence within the victim's environment.
+    - **Operational Disruption:** Deleting or corrupting critical files and backups 
+    to elevate operational risks and pressure response teams.
+
+    ## Attack Flow and Methodology
+
+    The typical methodology for File Share Mounting attacks involves these steps:
+    - **Credential or Key Theft:** Adversaries obtain necessary Secrets, Shared Access 
+    Signatures (SAS), or access keys for a Storage Account, or elevate privileges to 
+    write and mount shares.
+    - **Generate/Enumerate Connection Strings:** Using their access, attackers create 
+    connection strings to Azure Storage File Shares, selecting NFS or SMB protocols 
+    as supported.
+    - **Mount File Shares:** The adversary mounts the target file shares to attacker-controlled 
+    machines or servers, treating Azure storage as a local/network drive.
+    - **Execute Objectives:** With direct file system access:
+      - Download or exfiltrate data covertly.
+      - Upload and execute ransomware, encrypt data, or sabotage backups.
+      - Copy, modify, or delete content to facilitate further lateral movement or persistent threats.
+    - **Evasion:** These actions often evade Azure default audit logging, as connections 
+    to the mounted file shares are typically not logged within Azure's native monitoring 
+    tools by default, reducing detection opportunities.
+
+    ## How the Adversary Generates the Connection String
+    The connection string typically contains the Storage Account name, File Share name,
+    and authentication tokens or keys (e.g., SAS tokens or storage account keys).
+
+    The attacker must have access to these authentication credentials, which can be 
+    obtained through compromise or misconfiguration.
+    With these credentials, the attacker constructs a connection string formatted like:
+
+    For SMB:
+    `\\<storage_account_name>.file.core.windows.net\<file_share_name>`
+    along with the storage account key or SAS token used for authentication.
+
+    For NFS:
+    A mount command such as
+    `mount -t nfs <storage_account_name>.file.core.windows.net:/<file_share_name> <local_mount_point>`.
+
+    Once mounted, the adversary can read, write, delete, or exfiltrate files directly from the 
+    file share as though it were a local drive.

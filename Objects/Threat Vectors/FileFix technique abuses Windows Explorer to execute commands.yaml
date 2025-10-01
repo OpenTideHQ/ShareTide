@@ -1,0 +1,103 @@
+name: FileFix technique abuses Windows Explorer to execute commands
+criticality: Medium
+references:
+  public:
+    1: https://blog.checkpoint.com/research/filefix-the-new-social-engineering-attack-building-on-clickfix-tested-in-the-wild
+    2: https://www.acronis.com/en/tru/posts/filefix-in-the-wild-new-filefix-campaign-goes-beyond-poc-and-leverages-steganography
+    3: https://mrd0x.com/filefix-clickfix-alternative
+    4: https://thehackernews.com/2025/06/new-filefix-method-emerges-as-threat.html
+    5: https://blog.checkpoint.com/research/filefix-the-new-social-engineering-attack-building-on-clickfix-tested-in-the-wild
+
+metadata:
+  uuid: 59d2eb7f-63cd-4ac4-9608-e65663fea667
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-24
+  modified: 2025-09-25
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Credential Access
+  att&ck:
+    - T1555.003 # Credentials from Password Stores: Credentials from Web Browsers
+    - T1204.004 # User Execution: Malicious Copy and Paste
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745 # Abuse of Windows Utilities
+      description: |
+        A threat actor uses native Windows utilities as Windows Explorer to
+        execute binaries on the victim's system.
+  #cve:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    The attack requires Windows hosts with interactive users who have the
+    ability to open File Explorer or paste into the Explorer address bar.
+    The browser must allow JavaScript to run (standard), and the victim must
+    be able to interactively paste content from the clipboard into the Explorer
+    address bar or other UI (e.g., Run dialog).  
+  targets:
+    - Workstations
+    - Customer
+    - End-user
+  platforms:
+    - Windows
+    - PowerShell
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Tampering
+  impact:
+    - Business disruption
+    - Impairement
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    The `FileFix` technique is a new social engineering method similar to
+    `ClickFix` attack. `FileFix` is used by the threat actors to abuse Windows
+    Explorer and execute malicious commands on a compromised system. This
+    technique takes advantage of the Windows Explorer feature that allows users
+    to specify a custom executable to open a file with. The goal of this
+    technique is to harvest user's credentials. Threat actor can execute
+    commands through the user's Windows Explorer and deploy further a loader
+    which drops infostealer, harvesting browsers, wallets and cloud credentials
+    ref [1],[2].
+
+    Unlike `ClickFix`, which tricks users into running malicious commands via
+    the Windows Run dialog, `FileFix` takes a subtler approach: A malicious
+    webpage will open a legitimate File Explorer window while covertly copying
+    a disguised PowerShell one-liner into the clipboard. The user is then asked
+    to paste into the Explorer address bar (or otherwise paste into a UI), and
+    the pasted content runs in the user context, often invoking PowerShell to
+    download and execute follow-on payloads ref [1].  
+
+    ### How FileFix Works
+
+    - User Interaction: The attack typically begins when a user is lured to a
+      compromised website that prompts them to perform actions that seem benign, 
+      such as opening File Explorer to access a shared document.
+    - Clipboard Manipulation: The website uses JavaScript to copy a malicious
+      PowerShell command to the clipboard while simultaneously opening a File
+      Explorer window.
+    - Execution: The user is instructed to paste the clipboard content into the
+      File Explorer address bar, which leads to the execution of the malicious
+      command.
+
+    To the victims, this process appears to be a simple task of opening a shared
+    file or folder, making it feel routine and safe. This subtle manipulation
+    makes `FileFix` a more stealthy and potentially more dangerous evolution of
+    the `ClickFix` social engineering attack. 

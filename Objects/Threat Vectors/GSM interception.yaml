@@ -1,0 +1,124 @@
+name: GSM interception
+criticality: High
+references:
+  public:
+    1: https://arstechnica.com/tech-policy/2013/09/meet-the-machines-that-steal-your-phones-data/
+    2: https://blog.telco-sec.com/gsm-vulnerabilities-attack-vectors
+    3: https://bluegoatcyber.com/blog/cybersecurity-vulnerabilities-with-gsm/
+    4: https://www.sciencedirect.com/topics/computer-science/interception-attack
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 5238718b-13c4-46d7-a84c-d29c77e5d801
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-16
+  modified: 2025-04-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Collection
+  att&ck:
+    - T1638 #Mobile : Adversary-in-the-Middle
+    - T1040 #Network Sniffing
+    - T1589 #Gather Victim Identity Information
+    - T1190 #Exploit Public-Facing Application
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Mobile
+  terrain: |
+    Adversaries need specialized hardware such as passive or active GSM interceptors 
+    (e.g., IMSI catchers, fake base stations). These devices can mimic legitimate cell 
+    towers and force nearby mobile phones to connect, enabling interception of communications.
+  targets:
+    - Tablet
+    - Mobile phone
+    - Personal Information
+    - Critical Documents
+  platforms:
+    - Android
+    - iOS
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Hardware tampering
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Spoofing
+  impact:
+    - Data Breach
+    - Identity Theft
+    - IP Loss
+    - Nuisance
+    - Reputational Damages
+  viability: Likely
+  description: |
+    GSM interception refers to the unauthorized capture and monitoring of communications 
+    (calls, SMS, and sometimes data) transmitted over GSM (Global System for Mobile Communications) 
+    networks. This threat vector exploits inherent weaknesses in the GSM protocol, outdated 
+    encryption algorithms, and the ability to impersonate legitimate network infrastructure.
+
+    ## How GSM interception works
+
+    **Key Techniques:**
+
+    - **IMSI Catchers (Fake Base Stations):** Attackers deploy rogue base stations 
+    (often called IMSI catchers or Stingrays) that mimic legitimate cell towers. Mobile 
+    devices in the vicinity connect to these fake towers, allowing attackers to capture 
+    the International Mobile Subscriber Identity (IMSI), track users, and intercept communications.
+
+    - **Weak Encryption Algorithms:** Early GSM encryption standards, such as A5/1 and 
+    A5/2, are now considered weak and can be cracked with modest resources. Attackers 
+    can eavesdrop on calls and SMS by decrypting intercepted radio signals.
+
+    - **Man-in-the-Middle (MitM) Attacks:** By placing themselves between the mobile 
+    device and the legitimate network, attackers can intercept, alter, or inject communications, 
+    often without the user’s knowledge.
+
+    - **Signaling Exploits:** Vulnerabilities in GSM’s signaling protocols (like SS7) 
+    can be abused to redirect calls or SMS messages to an attacker, enabling interception 
+    even if the attacker is not physically near the target.
+
+    ## Threat impact
+
+    - **Eavesdropping:** Attackers can listen to phone calls and read SMS messages, 
+    compromising user privacy and potentially exposing sensitive or confidential information.
+
+    - **Location Tracking:** By capturing IMSI and other identifiers, attackers can 
+    track a user’s movements in real time.
+
+    - **Data Manipulation:** In MitM scenarios, attackers can alter messages or inject 
+    malicious content during transmission.
+
+    - **Fraud and Identity Theft:** Intercepted communications can be used for social 
+    engineering, phishing, or unauthorized access to accounts (e.g., intercepting SMS-based 
+    two-factor authentication).
+
+    ## Real-world examples
+
+    - **Commercial Surveillance Devices:** Commercially available devices can intercept 
+    GSM traffic, extract encryption keys, and monitor communications. These devices 
+    are used by law enforcement, intelligence agencies, and sometimes by criminals to 
+    conduct surveillance or steal information.
+    
+    - **Notorious Attacks:** There have been documented cases where attackers used GSM 
+    interception to gain access to bank accounts by intercepting SMS-based authentication codes.
+  

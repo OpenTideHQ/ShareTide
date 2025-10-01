@@ -1,0 +1,75 @@
+name: Duplicate an access token in a new process to elevate privileges
+criticality: High
+references:
+  public:
+    1: https://attack.mitre.org/techniques/T1134/
+    2: https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createprocesswithtokenw
+    3: https://dmcxblue.gitbook.io/red-team-notes-2-0/red-team-techniques/defense-evasion/untitled-1/create-process-with-token
+
+metadata:
+  uuid: 349348ca-66f5-41d2-8610-6bb61556d773
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
+  created: 2022-11-18
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Privilege Escalation
+  att&ck:
+    - T1134.002
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    Threat actors are using already compromised Windows environment to create 
+    a new process with a duplicated token. Their purpose is often to elevate 
+    their privileges to SYSTEM level access (NT AUTHORITY\SYSTEM), but the same 
+    threat vector can also be used for defense evasion and other purposes by 
+    duplicating other access token types and privilege levels.
+
+  targets:
+    - Auth token
+    - Control Server
+    - Desktop
+    - Laptop
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+  impact:
+    - Identity Theft
+  viability: Likely
+  description: |
+    An adversary can use automated solutions like CobaltStrike framework
+    to create a new process with a duplicated token to escalate privileges 
+    and bypass access controls. An adversary can duplicate a desired access 
+    token with DuplicateToken(Ex) and use it with CreateProcessWithTokenW 
+    to create a new process running under the security context of the 
+    impersonated user. This is useful for creating a new process under 
+    the security context of a different user.
+
+    The new process runs in the security context of the specified token. 
+    It can optionally load the user profile for the specified user.
+    Usually the function CreateProcessWithTokenW is running like 
+    a process winbase.h 
+    
+    The process that calls CreateProcessWithTokenW must have 
+    SE_IMPERSONATE_NAME privilege. 
+    
+    Adversaries commonly use token stealing to elevate their security context 
+    from the administrator level to the SYSTEM level. An adversary can use a 
+    token to authenticate to a remote system as the account for that token if the 
+    account has appropriate permissions on the remote system.
+
+    Example for spawn of a process with token duplication:
+    The process spawn is usually with PID (Process Identifier): 2572
+
+    spawn windows/beacon_https/reverse_https (<ip_address>:443) 
+    in a high integrity process (token duplication)

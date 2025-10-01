@@ -1,0 +1,73 @@
+name: Scheduled tasks to connect to adversarial infrastructure
+criticality: Medium
+references:
+  public:
+    1: https://learn.microsoft.com/en-us/troubleshoot/windows-client/system-management-components/use-at-command-to-schedule-tasks
+    2: https://redcanary.com/threat-detection-report/techniques/scheduled-task/
+    3: https://redcanary.com/threat-detection-report/techniques/windows-command-shell/
+    4: https://medium.com/redteam-blueteam-series/obtain-c-c-channel-b1e357ac0f
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 08b47a3b-fe90-4c9e-97f0-aa7bae361db1
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
+  created: 2022-12-13
+  modified: 2022-12-16
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+  killchain: Execution
+  att&ck:
+    - T1053.005
+  domains:
+    - Enterprise
+  terrain: |
+    An adversary has gained control over a Windows endpoint and has privileges 
+    to create scheduled tasks in order to connect to adversarial 
+    infrastructure.
+
+  targets:
+    - Workstations
+    - Control Server
+    - Input/Output Server
+    - Laptop
+    - Desktop
+    - Remote access
+    - Web Application Servers
+    - Public-Facing Servers
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Elevation of privilege
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    A scheduled task is a task that is set to run automatically at a specific
+    time or interval. 
+
+    In the context of connecting to adversarial infrastructure,
+    a scheduled task would be a task that is set up to automatically establish
+    a connection to C2 infrastructure to check for 'orders' at a specified time
+    or interval. 
+
+    This could involve running a script that usually establishes an outbound 
+    connection. The exact details of how the task is set up would depend on the 
+    specific adversarial infrastructure being used and the tools and protocols 
+    available for connecting to it.
+

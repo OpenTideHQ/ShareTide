@@ -1,0 +1,113 @@
+name: Abuse of special permission via chmod on files
+criticality: High
+references:
+  public:
+    1: https://research.splunk.com/endpoint/8230c407-1b47-4d95-ac2e-718bd6381386/
+    2: https://www.thehacker.recipes/infra/privilege-escalation/unix/suid-sgid-binaries
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 52cd3405-ddd8-40cd-be83-640a21c2b4c4
+  schema: tvm::2.0
+  version: 1
+  created: 2025-01-13
+  modified: 2025-01-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0139 #[Enterprise] TeamTNT
+    - name: misp::27de6a09-844b-4dcb-9ff9-7292aad826ba #TeamTNT, Adept Libra
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+  killchain: Privilege Escalation
+  att&ck:
+    - T1548.001 #Abuse Elevation Control Mechanism: Setuid and Setgid
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    An adversary must have local or SSH access to the target system, with credentials 
+    allowing the use of chmod or sudo. Typically, this involves default or weak 
+    configurations enabling chmod modifications on critical executables or scripts.
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Laptop
+  platforms:
+    - Linux
+    - macOS
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Modify privileges
+    - Dwelling
+    - Log tampering
+    - Information Disclosure
+  impact:
+    - Reputational Damages
+    - Data Breach
+    - Operating costs
+  viability: Likely
+  description: |
+    Attackers leverage the `chmod` utility to set the SUID (Set Owner User ID), 
+    the SGID (Set Owner Group ID), or the Sticky bit on executables or scripts. 
+    By abusing these bits, an adversary can temporarily inherit root- 
+    or group-level privileges when the affected file is executed.  
+    
+    This effectively grants them elevated rights that can be used to move laterally 
+    within the environment, access or exfiltrate sensitive data, or escalate 
+    privileges to maintain a stronger foothold on the system.  
+
+    Examples of SUID, SGID, and Sticky bit abuse:
+
+    SUID shell: Attackers can create a file with the setuid bit set and owned
+    by the root user, and then use that file to gain root privileges and 
+    execute a shell with root privileges.
+    
+    SGID exploit: Attackers can find a file with the setgid bit set and owned
+    by a group that has elevated privileges, and then use that file to gain the
+    privileges of that group.
+    
+    Sticky bit exploit: Attackers can set the sticky bit on a file to prevent
+    it from being deleted or renamed, and then use that file to store malicious
+    code or data.
+
+    In many Linux-based distributions (and similarly on macOS systems), 
+    `chmod` is widely available and not restricted in typical configurations. 
+    Attackers can take advantage of this by running commands such as:
+    
+    ```bash
+    chmod u+s /path/to/executable
+    ```
+
+    or
+
+    ```bash
+    chmod g+s /path/to/executable
+    ```
+    Depending on permissions misconfigurations, these commands may succeed if the 
+    account in use has the necessary rights or if the system’s sudo settings 
+    are overly permissive.  
+
+    Once the SUID or SGID bit is set on a critical binary, any user running that 
+    binary subsequently executes it with elevated privileges. Threat actors have 
+    been observed employing this technique to gain root-level access, tamper with 
+    system logs, exfiltrate proprietary data, or introduce backdoors for persistence.  
+    

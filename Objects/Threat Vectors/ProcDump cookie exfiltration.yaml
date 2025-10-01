@@ -1,0 +1,86 @@
+name: ProcDump cookie exfiltration
+criticality: High
+references:
+  public:
+    1: https://book.hacktricks.xyz/pentesting-web/hacking-with-cookies
+    2: https://www.secureworks.com/blog/targeted-credential-theft
+    3: https://learn.microsoft.com/en-us/sysinternals/downloads/procdump 
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: e8761933-3137-41f7-bf7a-2687cac68524
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-05
+  modified: 2024-11-05
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+  killchain: Credential Access
+  att&ck:
+    - T1111 #Multi-Factor Authentication Interception
+  chaining:
+    - relation: sequence::succeeds
+      vector: ec8201d4-c135-406b-a3b5-4a070e80a2ee #Credential manipulation on local Windows endpoint
+      description: |
+        Attacker must have a foot on the Windows enpoint to execute ProcDump.
+    - relation: atomicity::implements
+      vector: b0d6bf74-b204-4a48-9509-4499ed795771 #Pass-the-cookie attack
+      description: |
+        Technique used to steal browser cookies 
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+    - SaaS
+  terrain: |
+     Attacker must compromise a user endpoint and exfiltrate the browser cookies.
+     Cookies can be found on disk, in the process memory of the browser, and in
+     network traffic to remote systems.
+  targets:
+    - Auth token
+    - Cloud Portal
+    - End-user
+    - Identity Services
+  platforms:
+    - EU Login
+    - Office 365
+    - Azure AD
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+    - Impairement
+  viability: Environment dependent
+  description: |
+    Cookies can be found on disk and also in process memory. Additionally other 
+    applications on the targets machine might store sensitive authentication
+    tokens in memory (e.g. apps which authenticate to cloud services). 
+
+    ProcDump is a Sysinternal tool to dump strings from any process.
+
+    Using the example of the Firefox browser, an attacker can steal the browser 
+    cookies via ProcDump following the steps below:
+
+      - Acquire the cookie from the user browser via process dump.
+      - Exfiltrate the necessary authentication cookies.
+      - Open Firefox on the attackers machine.
+      - Navigate to the resource to access (the domain the cookie is valid for).
+      - Use the Developer Console and set the cookie via document.cookie=“key=value”.

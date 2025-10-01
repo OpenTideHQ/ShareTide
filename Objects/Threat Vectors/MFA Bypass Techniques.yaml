@@ -14,14 +14,11 @@ references:
 
 metadata:
   uuid: 4a807ac4-f764-41b1-ae6f-94239041d349
-  schema: tvm::2.1
+  schema: tvm::2.0
   version: 1
   created: 2024-11-04
   modified: 2024-11-05
   tlp: clear
-  #author: 
-  #contributors:
-    #-
   organisation:
     uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
     name: EC DIGIT CSOC
@@ -51,8 +48,6 @@ threat:
         #Type Here
    #cve:
     #-
-  misp:
-    - 0c197c92-c4a7-5707-89c0-b422ab964397
   domains:
     - Enterprise
     - Public Cloud

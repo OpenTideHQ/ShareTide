@@ -1,0 +1,131 @@
+name: User information gathering in Linux systems
+criticality: Medium
+references:
+  public:
+    1: https://www.tecmint.com/check-user-in-linux # article how to find user's accounts info and login details in Linux
+    2: https://docs.rtlcopymemory.com/privilege-escalation/linux-privilege-escalation/information-gathering
+    3: https://medium.com/@velmuruganofficial/top-15-advanced-and-best-information-gathering-tools-67f07550e502 # Information gathering tools
+    4: https://linuxsimply.com/getent-command-in-linux/ # getent group commands as a possible option to list all groups on the Linux system
+    5: https://www.geeksforgeeks.org/linux-unix/getent-command-in-linux-with-examples # `getent` command in Linux for gathering of user's data
+    6: https://www.man7.org/linux/man-pages/man8/lastlog.8.html # Information for the last user's logon on Linux, Linux manual page for the command `lastlog` which can list the contents of the last login log and shows the last user logon
+    7: https://www.cyberciti.biz/faq/faillog-in-linux-command # Linux command `faillog` displays the records of user's login failure
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 8bc82ff8-e106-4377-98f1-2cb912631ffa
+  schema: tvm::2.1
+  version: 1
+  created: 2025-08-07
+  modified: 2025-08-12
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Reconnaissance
+  att&ck:
+    - T1589 # Gather Victim Identity Information
+  chaining:
+    - relation: sequence::succeeds
+      vector: 3b1026c6-7d04-4b91-ba6f-abc68e993616 # Abusing Lolbins to Enumerate Local and Domain Accounts and Groups
+      description: |
+        The threat actors may attempt to enumerate the environment using some
+        Lolbins on a local system, domain accounts or groups to gather
+        information for the users in the enviornoment.  
+    
+    - relation: sequence::succeeds
+      vector: e2d8ce6b-f21e-4444-a828-0c6b722a9c93 # Local user account added
+      description: |
+       An adversary can use post-exploittaion techniques. For example, when a
+       set of usernames is collected initally, after that the threat actor can
+       use these names and data for further steps like add a local account to
+       the system for persistence.   
+  #cve:
+    #-
+  #misp:
+    #
+  domains:
+    - Enterprise
+  terrain: |
+    Requires an initial access to a Linux system with sufficient
+    rights to execute commands. 
+  targets:
+    - End-user
+    - Customer
+  platforms:
+    - Linux
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+  impact:
+    - Data Breach
+  viability: Likely
+  description: |
+    Threat actors use various methods and tools to collect user data on Linux
+    systems. Some of them are given below.
+
+    ### Common methods used for gathering of user's information on Linux
+    
+    Examples:
+
+    - Current user: for reconnaissance purposes on a Linux system threat actors
+      are using commands like `whoami` to retrieve the current username running
+      on the system. Threat actors can use and `lslogins` to list an information
+      about known users in the system, which typically includes details such as
+      the username, UID (User ID), GID (Group ID), home directory, shell, last
+      login time, and more, depending on the options used and the system
+      configuration ref [1].  
+    - User list: a threat actor group can use a `getent` command with an option
+      `passwd` or `cat /etc/passwd` command to retrieve a list of all users on
+      the system ref [1].
+    - User ID and group ID: the `id` command can be used to retrieve the user ID
+      and a group ID of the current user ref [2].
+    - Group list: a command `groups` <group_name> can be used in Linux to view
+      user's group membership. Or with other command `getent group` or cat
+      `/etc/group` thereat actors can retrieve a list of all groups on the
+      system ref [1],[4].  
+    - Other user's information: commands like `who` can show an information for
+      the current logged-in user. A threat actor may use and `users` command
+      to display the list of currently logged-in users on the Linux system
+      ref [1].
+    - Linux user's activity: `w` coomand executed on Linux shows the current
+      logged users activity on the system ref [1]. 
+    - User shell: a threat actor may run the command `getent passwd <username>`
+      to retrieve the user's shell. The command output lists the user details
+      from the 'passwd' database, including the username, user ID, group ID,
+      home directory, and default shell ref [5].  
+    - Last login: an adversary can use the `lastlog` command to retrieve
+      information about the last user's login ref [6]. 
+    - Failed login attempts: with the `faillog` command a threat actor may
+      retrieve information about failed login attempts ref [7].
+
+    ### Some of the known tools used for Linux user's information collection
+
+    - `Metasploit`: A penetration testing framework that includes tools for
+      collecting user data and exploiting vulnerabilities.
+    - `Linux.Ekoms`: This is a custom tool that can collect user data, including
+      login credentials and credit card numbers.
+    - `Linux.Mumblehard`: it's a malware that collects user data and uses it for
+      spamming and phishing campaigns.
+    - `TsarSapphire`: This utility can collect user data, including login
+      credentials and sensitive information.
+    - `Remaiten`: A payload for Linux which collects user data and uses it for
+      malicious activities.
+    - `Kaiten`: A Linux malware that collects user data and potentially can use
+      it further for distributed denial-of-service (DDoS) attacks.
+    - `Linux.Keylogger`: A keylogger that collects user keystrokes, including
+      login credentials and sensitive information.
+    - `Mayhem`: This is a malware that can collect user data on Linux, including
+      login credentials and sensitive information, and uses it for malicious
+      activities.

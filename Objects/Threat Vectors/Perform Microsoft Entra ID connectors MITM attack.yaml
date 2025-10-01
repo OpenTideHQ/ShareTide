@@ -1,0 +1,86 @@
+name: Perform Microsoft Entra ID connectors MITM attack
+criticality: High
+references:
+  public:
+    1: https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-pta-security-deep-dive
+    2: https://learn.microsoft.com/en-us/entra/global-secure-access/concept-connectors
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: f18be76e-f2b3-410a-80c5-d67e7b8e7b03
+  schema: tvm::2.0
+  version: 1
+  created: 2024-04-30
+  modified: 2024-04-30
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #-
+  killchain: Collection
+  att&ck:
+    - T1557 #Adversary-in-the-Middle
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  domains:
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    The threat actors would need to access the credentials of the users or administrators 
+    interacting with the connectors. This could be achieved through phishing techniques, 
+    social engineering, or other forms of credential theft. 
+  targets:
+    - Critical Documents
+    - Cloud Portal
+    - End-user
+    - System admin
+    - Manager
+    - Partner
+    - Documents
+    - IaaS
+    - Web Application Servers
+  platforms:
+    - Office 365
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+  impact:
+    - Data Breach
+    - Identity Theft
+    - IP Loss
+    - Reputational Damages
+  viability: Likely
+  description: |
+    These connectors facilitate outbound connections to the Microsoft Entra Private 
+    Access and application proxy services. They must be installed on a Windows Server 
+    with access to backend resources. Connectors can be organized into groups to handle 
+    traffic to specific resources, enhancing management and optimization.  
+
+    The risks of man-in-the-middle attacks on Microsoft Entra ID connectors include the 
+    interception of sensitive information such as authentication tokens, usernames, passwords, 
+    and authentication artifacts like session cookies. Adversaries can capture this data, 
+    mimic legitimate users, and potentially bypass multifactor authentication requirements. 
+    This poses a significant threat to data confidentiality, integrity, and privacy within 
+    the Microsoft Entra ecosystem. 
+
+    Likewise, common techniques used in man-in-the-middle attacks on Microsoft Entra ID connectors include:
+
+    - Phishing Attacks
+    - Session Hijacking
+    - DNS Spoofing
+    - OAuth Application Manipulation
+    - DNS-over-HTTPS
+    - Cookie Theft
+    - Business Email Compromise (BEC) Attacks

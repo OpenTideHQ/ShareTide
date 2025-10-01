@@ -1,0 +1,75 @@
+name: Non-Approved container image deployed to run cryptominer
+criticality: High
+references:
+  public:
+    1: https://www.securityweek.com/threat-actors-target-kubernetes-clusters-argo-workflows
+    2: https://kubernetes.io/blog/2016/08/security-best-practices-kubernetes-deployment/
+    3: https://www.stackrox.io/blog/kubernetes-security-101/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: eca91e9a-616f-4439-ac03-5d0ecc2266df
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-06-29
+  modified: 2022-06-29
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors: 
+    - name: att&ck::G0139 #[Enterprise] TeamTNT
+    - name: misp::27de6a09-844b-4dcb-9ff9-7292aad826ba #TeamTNT, Adept Libra
+  killchain: Impact
+  att&ck:
+    - T1610
+    - T1525
+    - T1496
+  domains:
+    - Public Cloud
+    - Private Cloud
+    - Enterprise
+  terrain: 
+    Running container clusters running in cloud, private cloud or in Enterprise
+    Data Centre environments, potentially connected via a Continuous deployment tool 
+  targets:
+    - CI/CD Pipelines
+    - Compute Cluster
+    - Control Server
+    - Development Pipelines
+  platforms:
+    - AWS EC2
+    - AWS EKS
+    - AWS ECS 
+    - AWS Fargate
+    - Azure AKS
+    - VMware Tanzu
+    - OVHcloud
+    - IBM Cloud Kubernetes
+    - Oracle Container Engine 
+  severity: Substantial incident
+  # Substantial because if cryptominers are deployed this way, it's an extremely
+  # noisy Compromise and could be a distraction from a more stealthy Lateral 
+  # movement in the nearby terrain. Any deployed crytominer should cause
+  # a more thorough search for other indicators of compromise
+  leverage:
+    - Infrastructure Compromise
+    - Dwelling
+    - Software installation
+  impact:
+    - Asset and fraud
+    - Operating costs
+    - Impairement
+  viability: Environment dependent
+  description: 
+    A threat actor can gain access to deployment workflows and pipelines and can then
+    abuse acquired access to deploy images of their own choosing to deploy a cryptominer 
+    either directly via a malicious image, or by deploying a clean image first and then 
+    a cryptominer and C2 Infrastructure

@@ -1,0 +1,126 @@
+name: Legitimate software dependency injected with malicious code
+criticality: High
+references:
+  public:
+    1: https://learn.snyk.io/lesson/compromise-of-legitimate-package/?ecosystem=python
+    2: https://madhureshgupta.home.blog/2020/03/27/what-are-libraries-frameworks-and-packages/ # What are Libraries, Frameworks and Packages?
+    3: https://www.tripwire.com/state-of-security/understanding-malicious-package-attacks-and-defense-strategies-robust
+    4: https://www.microsoft.com/en-us/security/blog/2025/04/15/threat-actors-misuse-node-js-to-deliver-malware-and-other-malicious-payloads
+  #internal:
+    #a: 
+
+metadata:
+  uuid: b6887f4b-eeae-462c-a2ac-7454efb5eabc
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-23
+  modified: 2025-04-23
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1195.002 # Supply Chain Compromise: Compromise Software Supply Chain
+    - T1195.001 # Supply Chain Compromise: Compromise Software Dependencies and Development Tools
+    - T1204     # User Execution
+    - T1218     # System Binary Proxy Execution
+    - T1499     # Endpoint Denial of Service
+    - T1559.002 # Inter-Process Communication: Dynamic Data Exchange, this technique can use a dynamic data exchange (e.g., API calls) to inject malicious code into a legitimate software dependency
+    - T1036     # Masquerading
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor uses an already existing vulnerable open-source library
+    component to inject malicious code.
+    
+    They can use also a build-in or some type of an inherited vulnerability
+    in the vendor's process which allows malicious code injection.     
+  targets:
+    - CI/CD Pipelines
+    - Developer
+    - Other # software open-source libraries
+  platforms:
+    - Windows
+    - macOS
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Tampering
+  impact:
+    - Impairement
+    - Business disruption
+    - Lose Capabilities
+    - Competitive disadvantage
+  viability: Likely
+  description: |
+    Legitimate software dependency injected with malicious code refers
+    to a type of attack where an adversary compromises a legitimate software
+    dependency, such as a library or framework, by injecting malicious code
+    into it.  
+    
+    The compromise of a legitimate package may occur when an attacker
+    manipulates trusted open-source components by injecting malicious payload.
+    This is achieved through variety of methods, for example, hijacking the
+    credentials of project maintainers or exploiting weaknesses in distribution
+    platforms. Since organizations and developers rely heavily on open-source
+    software, a compromised package can lead to malicious code being executed
+    on end-user systems or within the software development pipeline itself
+    ref [1].    
+
+    ### Examples for use cases
+
+    - An adversary compromises a popular open-source library by injecting
+    malicious code into it. Examples for open-source libraries could be: NPM
+    packages, JavaScript frameworks - React, Angular, Vue.js, PyPI packages, 
+    Python frameworks, Java libraries, Git repositories and others ref [2].
+    When a developer uses this library in their software, the malicious code
+    is executed, allowing the adversary to gain unauthorized access.  
+    - A software vendor's build-in process is compromised, allowing an
+    adversary to inject malicious code into the software's dependencies.
+    When the software is installed and run, the malicious code is executed,
+    compromising the user's system.    
+    ### Possible malicious software infection methods
+    For more information review ref [3]
+    - Typosquatting - The threat actor uses subtle typographical errors in
+    the malicious package name to resemble a popular package, often going
+    unnoticed by the victim. These packages are usually registered in
+    repositories such as NPM and PyPI. As prevention of this attack method,
+    some developers register names that resemble the legitimate site,
+    precluding the typosquatter's opportunities.
+    - Masquerading - This attack method completely duplicates the code and
+    the metadata of a known package, and a snippet of malicious code is added,
+    thereby creating a Trojan package. Unlike the typosquatting method, this
+    method uses the exact name of a legitimate package to deceive developers
+    through similarity.
+    - Dependency confusion - Dependency is a piece of software required for
+    a particular program to function. Software dependencies can be either
+    internal or external. In this technique, the threat actor employs a
+    valid name of an internal package for the malicious package and publishes
+    the malicious package on a public repository with a higher version number.
+    Since default package managers tend to prioritize higher version numbers,
+    this practice increases the vulnerability to malicious package attacks.
+    - Dependency hijacking - In this method, the threat actor compromises
+    a legitimate package and pushes malicious code into it. This is done by
+    taking over maintainers' or developers' accounts or injecting obfuscated
+    malicious code into a legitimate open-source project.  

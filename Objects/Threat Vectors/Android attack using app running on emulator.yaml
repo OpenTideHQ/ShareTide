@@ -1,0 +1,116 @@
+name: Android attack using app running on emulator
+criticality: High
+references:
+  public:
+    1: https://fingerprint.com/blog/android-emulator-tamper-fraud-detection/
+    2: https://www.infosecinstitute.com/resources/general-security/mobile-emulator-farms-what-are-they-and-how-they-work/
+    3: https://doverunner.com/blogs/tips-for-protecting-apps-from-attacks-with-android-emulator-detection/
+    4: https://www.claranet.com/uk/blog/bypassing-hardened-android-applications/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 4a4a7c81-ca98-4761-8f23-7ef6354e9d1c
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-10
+  modified: 2025-04-14
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Defense Evasion
+  att&ck:
+    - T1626 #Mobile : Abuse Elevation Control Mechanism
+    - T1633 #Mobile : Virtualization/Sandbox Evasion
+    - T1417 #Mobile : Input Capture
+    - T1635 #Mobile : Steal Application Access Token
+    - T1426 #Mobile : System Information Discovery
+    - T0869 #Industrial : Standard Application Layer Protocol
+    - T1641 #Mobile : Data Manipulation
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Mobile
+  terrain: |
+    Adversaries require users to download emulators that have been
+    compromised or misconfigured and through these, they can carry
+    out malicious activities.
+  targets:
+    - Mobile phone
+    - Personal Information
+    - Tablet
+  platforms:    
+    - Android
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Modify configuration
+    - Modify data
+    - Software installation
+    - Tampering
+    - Dwelling
+  impact:
+    - Data Breach
+    - Identity Theft
+    - IP Loss
+    - Nuisance
+    - Reputational Damages
+  viability: Likely
+  description: |
+    The threat vector involves exploiting emulated environments to bypass security measures, 
+    automate malicious activities, and manipulate app behavior. Below are key aspects 
+    of this threat:
+
+    ## How the Attack Works
+    1. **Exploitation of Emulators**:
+      - Android emulators like NoxPlayer, BlueStacks, or custom emulator farms are 
+      used by attackers to mimic legitimate devices and bypass app security mechanisms.
+      - Emulators provide attackers with a controlled environment to test and refine 
+      their techniques before deploying them at scale.
+
+    2. **Fraudulent Activities**:
+      - **Spoofing Device Identifiers**: Attackers use emulators to replicate legitimate 
+      device identifiers (e.g., IMEI, OS version) obtained through malware or phishing 
+      attacks, making fraudulent transactions appear genuine.
+      - **Automation**: Scripts and automation frameworks enable large-scale fraud, 
+      such as creating fake accounts, performing unauthorized transactions, or bypassing 
+      authentication systems.
+      - **Data Manipulation**: Emulators allow attackers to intercept and modify app 
+      data or API calls for malicious purposes.
+
+    3. **Advanced Techniques**:
+      - **Runtime Hooks**: Tools like Frida are used to hook into app functions dynamically, 
+      altering system properties (e.g., `ro.kernel.qemu`) to make the emulator appear 
+      as a physical device.
+      - **Customized Emulator Farms**: Organized groups deploy emulator farms with 
+      dozens of emulators to cycle through spoofed devices rapidly, avoiding detection 
+      and maximizing fraud efficiency.
+
+    ## Common Attack Scenarios
+    - **Financial Fraud**: Emulator farms have been used to steal millions from banks 
+    by automating fraudulent transactions while evading detection systems.
+    - **API Abuse**: Attackers reverse-engineer apps running on emulators to exploit 
+    APIs for unauthorized access or data theft.
+    - **App Tampering**: Emulators facilitate code injection or reverse engineering 
+    to modify app functionality and compromise security features.
+
+    ## Key Components Used in These Attacks
+    - Access to compromised credentials (usernames/passwords) and device identifiers.
+    - Custom scripts for network interception and API manipulation.
+    - Cycling of spoofed devices to evade detection and maintain operational stealth.

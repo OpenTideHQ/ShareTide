@@ -1,0 +1,86 @@
+name: Named pipe creation using a predictable naming convention
+criticality: Medium
+references:
+  public:
+    1: https://labs.withsecure.com/publications/detecting-cobalt-strike-default-modules-via-named-pipe-analysis
+    2: https://svch0st.medium.com/guide-to-named-pipes-and-hunting-for-cobalt-strike-pipes-dc46b2c5f575
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: db749144-8044-4479-ab34-bff22251a1d7
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2023-01-06
+  modified: 2023-01-17
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0129 #[Enterprise] Mustang Panda, BRONZE PRESIDENT, RedDelta, TA416
+    - name: misp::fceed509-938e-4f9e-acd4-76e6c28dc6f1 #RedDelta
+    - name: att&ck::G0088 #[Enterprise] TEMP.Veles, XENOTIME
+    - name: misp::90abfc42-91c6-11e9-89b1-af58de8f7ec2 #TEMP.Veles, Xenotime, G0088, ATK91
+    - name: att&ck::G0067 #[Enterprise] APT37, Group123, InkySquid, Reaper, Ricochet Chollima, ScarCruft, TEMP.Reaper
+    - name: misp::50cd027f-df14-40b2-aa22-bf5de5061163 #APT37, APT 37, Group 123, Group123, InkySquid, Operation Daybreak, Operation Erebus, Reaper Group, Reaper, Red Eyes, Ricochet Chollima, ScarCruft, Venus 121, ATK4, G0067, Moldy Pisces, APT-C-28
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0045 #[Enterprise] menuPass, APT10, BRONZE RIVERSIDE, CVNX, Cicada, HOGFISH, POTASSIUM, Red Apollo, Stone Panda
+    - name: misp::56b37b05-72e7-4a89-ba8a-61ce45269a8c #APT10, STONE PANDA, Menupass Team, happyyongzi, POTASSIUM, Red Apollo, CVNX, HOGFISH, Cloud Hopper, BRONZE RIVERSIDE, ATK41, G0045, Granite Taurus, TA429, Cicada
+    - name: att&ck::G0096 #[Enterprise] APT41, BARIUM, Brass Typhoon, Wicked Panda
+    - name: misp::9c124874-042d-48cd-b72b-ccdc51ecbbd6 #APT41, G0096, TA415, Blackfly, Grayfly, LEAD, BARIUM, WICKED SPIDER, WICKED PANDA, BRONZE ATLAS, BRONZE EXPORT, Red Kelpie, G0044, Earth Baku, Amoeba, HOODOO, Brass Typhoon, Winnti, Double Dragon, TG-2633
+    - name: att&ck::G0037 #[Enterprise] FIN6, Camouflage Tempest, ITG08, Magecart Group 6, Skeleton Spider, TAAL
+    - name: misp::647894f6-1723-4cba-aba4-0ef0966d5302 #FIN6, SKELETON SPIDER, ITG08, MageCart Group 6, White Giant, GOLD FRANKLIN, ATK88, G0037, Camouflage Tempest, TA4557
+    - name: att&ck::G0092 #[Enterprise] TA505, CHIMBORAZO, Hive0065, Spandex Tempest
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505, SectorJ04, SectorJ04 Group, GRACEFUL SPIDER, GOLD TAHOE, Dudear, G0092, ATK103, Hive0065, CHIMBORAZO, Spandex Tempest
+    - name: att&ck::G0050 #[Enterprise] APT32, APT-C-00, BISMUTH, Canvas Cyclone, OceanLotus, SeaLotus
+    - name: misp::aa29ae56-e54b-47a2-ad16-d3ab0242d5d7 #APT32, OceanLotus Group, Ocean Lotus, OceanLotus, Cobalt Kitty, APT-C-00, SeaLotus, Sea Lotus, APT-32, APT 32, Ocean Buffalo, POND LOACH, TIN WOODLAWN, BISMUTH, ATK17, G0050, Canvas Cyclone
+    - name: att&ck::G0143 #[Enterprise] Aquatic Panda
+    - name: misp::0ab7c8de-fc23-4793-99aa-7ee336199e26 #Tonto Team, CactusPete, KARMA PANDA, BRONZE HUNTLEY, COPPER, Red Beifang, G0131, PLA Unit 65017, Earth Akhlut, TAG-74
+    - name: att&ck::G0065 #[Enterprise] Leviathan, APT40, BRONZE MOHAWK, Gadolinium, Gingham Typhoon, Kryptonite Panda, MUDCARP, TEMP.Jumper, TEMP.Periscope
+    - name: misp::5b4b6980-3bc7-11e8-84d6-879aaac37dd9 #APT40, TEMP.Periscope, TEMP.Jumper, Leviathan, BRONZE MOHAWK, GADOLINIUM, KRYPTONITE PANDA, G0065, ATK29, TA423, Red Ladon, ITG09, MUDCARP, ISLANDDREAMS, Gingham Typhoon
+    - name: att&ck::G0009 #[Enterprise] Deep Panda, Black Vine, KungFu Kittens, PinkPanther, Shell Crew, WebMasters
+    - name: misp::066d25c1-71bd-4bd4-8ca7-edbba00063f4 #APT19, DEEP PANDA, Codoso, WebMasters, KungFu Kittens, Black Vine, TEMP.Avengers, Group 13, PinkPanther, Shell Crew, BRONZE FIRESTONE, G0009, G0073, Pupa, Sunshop Group
+  killchain: Credential Access
+  att&ck:
+    -   T1056.001
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    A threat actor needs to control a Windows endpoint and sufficient credentials to execute software.
+  targets:
+    - Control Server
+    - Input/Output Server
+    - Public-Facing Servers
+    - Web Application Servers
+    - Laptop
+    - Workstations
+    - Desktop
+  platforms:
+    - Windows
+  severity: Localised incident
+  leverage:
+    - Modify configuration
+  impact:
+    - Nuisance
+  viability: Likely
+  description: |
+    A threat actor may deploy named pipes are part of an automation process to achieve a goal.
+    As example, this could be the Cobalt Strike keylogger deployment, where the cobalt Strike
+    operator merely clicks a button in the UI to deploy the keylogger, and behind the scenes 
+    this runs an automation on the compromised endpoint, which includes the creation of a named 
+    pipe, which in this case will have a predictable name, unless the CS operator changes this 
+    during the deployment (manual config in CS possible to deploy with custom named pipe name)

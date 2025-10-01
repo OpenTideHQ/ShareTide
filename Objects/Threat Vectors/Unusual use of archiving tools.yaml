@@ -1,0 +1,87 @@
+name: Unusual use of archiving tools
+criticality: Low
+references:
+  public:
+    1: https://www.crowdstrike.com/blog/techniques-behind-masquerading-attacks/
+    2: https://social.cyware.com/news/new-file-archiver-in-the-browser-phishing-kit-masquerades-as-winrar-3b78111d
+    3: https://cloudmersive.com/article/Understanding-File-Masquerading-in-Phishing-Attacks:-Detection-and-Protection
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: a1e8f8b3-48ef-4559-a3a0-ecaed496d5f3
+  schema: tvm::2.0
+  version: 1
+  created: 2024-10-23
+  modified: 2024-10-24
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0092 #[Enterprise] TA505, CHIMBORAZO, Hive0065, Spandex Tempest
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505, SectorJ04, SectorJ04 Group, GRACEFUL SPIDER, GOLD TAHOE, Dudear, G0092, ATK103, Hive0065, CHIMBORAZO, Spandex Tempest
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0114 #[Enterprise] Chimera
+  killchain: Defense Evasion
+  att&ck:
+    - T1036 #Masquerading
+    - T1027 #Obfuscated Files or Information
+    - T1070 #Indicator Removal
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary must have access to systems with archiving tools installed and permissions 
+    to execute renamed or custom archiving utilities.
+  targets:
+    - Workstations
+    - Laptop
+  platforms:
+    - Windows
+    - macOS
+    - Linux
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+    - Modify data
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+  viability: Likely
+  description: |
+    Threat actors often use legitimate archiving tools, like 7-Zip, WinRAR or tar, 
+    to compress and exfiltrate data from compromised systems. Attackers rename 
+    these executables or use the executables in ways that are atypical to evade 
+    security measures that would normally rely on standard file names 
+    or typical usage patterns.
+
+    Example : an attacker renaming 7z.exe to system32.exe and saving it in a
+    directory that is abnormal. They can then run the following command:
+    C:\Users\Public\system32.exe a -tzip C:\Users\Public\archive.zip C:\SensitiveData\*
+
+    This technique enables the attacker to archive sensitive data in a manner 
+    that would make the activity seem benign. The unusual locations of archive file 
+    creation and the usage of archiving tools with non-standard naming are 
+    the indicators of potentially malicious activity.
+
+    Also, a significant number of data compression and unusual outbound network traffic 
+    may indicate attempts to exfiltrate data.

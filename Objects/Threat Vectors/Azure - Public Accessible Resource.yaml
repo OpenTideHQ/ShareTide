@@ -1,0 +1,115 @@
+name: Azure - Public Accessible Resource
+criticality: High
+references:
+  public:
+    1: https://misp-galaxy.org/atrm/
+    2: https://www.bdosecurity.de/en-gb/insights/security-column/cloud-hacking-the-azure-cyber-kill-chain-part-1
+    3: https://learn.microsoft.com/en-us/azure/data-explorer/security-network-restrict-public-access
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 9b41d6cf-de4d-44d1-97cc-f3671f4ee5ab
+  schema: tvm::2.1
+  version: 2
+  created: 2025-07-31
+  modified: 2025-09-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Reconnaissance
+  att&ck:
+    - T1580 #Cloud Infrastructure Discovery
+    - T1046 #Network Service Discovery
+    - T1133 #External Remote Services 
+  chaining:
+    - relation: support::synergize
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) granting 
+        at least Reader access to the target Azure tenant.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Adversary must have access to internet-facing IP space to scan for live Azure VMs 
+    and network interfaces.
+  targets:
+    - Virtual Machines
+    - Network Equipment
+    - Public-Facing Servers
+    - Cloud Storage Accounts
+  platforms:
+    - Azure
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Information Disclosure
+    - Denial of Service
+    - Elevation of privilege 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Monetary Loss
+    - Business disruption 
+  viability: Likely
+  description: |
+    In Azure, this technique highlights the risk where certain resources—commonly **Network Interfaces** 
+    and **Virtual Machines**—have public IP addresses or open ports, making them directly 
+    reachable from the internet. Unlike other reconnaissance techniques, this isn’t 
+    just about discovering resource metadata but about identifying resources configured 
+    (intentionally or not) for public access.
+
+    #### How Attackers Use This Vector
+
+    - **Discovery Phase:** Attackers or researchers employ automated tools and scan 
+    internet-facing IP space, hunting for live Azure VMs, network interfaces, and endpoints 
+    whose public exposure can be confirmed.
+    - **Enumeration Approaches:** 
+      - **Subdomain/Service Pattern Scanning:** Many Azure services use predictable 
+      domain structures (e.g., `*.azurewebsites.net`, `*.blob.core.windows.net`). 
+      Attackers enumerate these to find exposed resources.
+      - **Open Ports Scans:** Tools scan IPs for open RDP, SSH, web, or management ports.
+    - **Public APIs and Metadata:** Some Azure resource information is available through 
+    public APIs or unauthenticated metadata services, providing further opportunities 
+    for adversaries to discover exposed resources.
+    - **Real-World Tools:** Well-known tools include MicroBurst, AADInternals, and custom 
+    scripts for mass scanning.
+      
+    #### Specific Azure Resources at Risk
+
+    - **Network Interfaces:** Networking components that, if tied to public IPs, may 
+    expose internal workloads.
+    - **Virtual Machines:** Especially those configured with public IPs and ports like 
+    RDP (3389) or SSH (22) open.
+    - **App Services and Blob Storage:** Though not explicitly listed in AZT103, these 
+    are also frequent targets for enumeration due to default public endpoints.
+    - **Databases/Clusters:** Services like Azure Data Explorer or managed databases 
+    may be misconfigured to allow public ingress.
+
+    #### Security Implications
+
+    - **Increased Attack Surface:** Exposing resources multiplies the number of direct 
+    entry points for adversaries.
+    - **Brute-Force and Vulnerability Exploitation:** Resources with public connectivity 
+    are subject to constant automated attacks and vulnerability scans.
+    - **Potential Lateral Movement:** Compromising one public resource can serve as 
+    a foothold to move deeper into the Azure environment.

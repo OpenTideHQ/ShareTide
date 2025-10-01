@@ -1,0 +1,96 @@
+name: Pass-the-cookie Attack
+criticality: High
+references:
+  public:
+    1: https://www.theverge.com/2023/3/24/23654996/linus-tech-tips-channel-hack-session-token-elon-musk-crypto-scam
+    2: https://blog.netwrix.com/2022/11/29/bypassing-mfa-with-pass-the-cookie-attack/
+    3: https://news.sophos.com/en-us/2022/08/18/cookie-stealing-the-new-perimeter-bypass/ 
+    4: https://embracethered.com/blog/posts/passthecookie/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: b0d6bf74-b204-4a48-9509-4499ed795771
+  schema: tvm::2.0
+  version: 1
+  created: 2024-10-22
+  modified: 2024-11-11
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+  killchain: Credential Access
+  att&ck:
+    - T1111 #Multi-Factor Authentication Interception
+  chaining:
+    - relation: sequence::succeeds  
+      vector: 66aafb61-9a46-4287-8b40-4785b42b77a3 ##Adversary in the Middle phishing sites to bypass MFA
+      description: |
+        The fake MFA login page captures credentials of valid accounts, later the session cookies can be stolen
+    - relation: atomicity::implements
+      vector: 4a807ac4-f764-41b1-ae6f-94239041d349 #MFA Bypass Techniques
+      description: |
+        MFA bypass technique
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    Attacker must compromise a user endpoint and exfiltrate the browser cookies.
+    Cookies can be found on disk, in the process memory of the browser, and in network
+    traffic to remote systems.
+    
+    Additionally, other applications on the user endpoint machine might store sensitive
+    authentication cookies in memory (e.g. apps which authenticate to cloud services).
+  targets:
+    - Auth token
+    - Cloud Portal
+    - End-user
+    - Identity Services
+    - Mobile phone
+  platforms:
+    - EU Login
+    - Office 365
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+  viability: Likely
+  description: |
+    Pass-The-Cookie (PTC), also known as token compromise, is a common attack technique
+    employed by threat actors in SaaS environments. 
+
+    A PTC is a type of attack where an attacker can bypass authentication controls by 
+    compromising browser cookies. At a high level, browser cookies allow web applications
+    to store user authentication information. 
+
+    Specifically, an authentication cookie allows a website to keep the user signed in
+    and not constantly prompt for credentials every time user clicks a new page.
+    The server uses the token to recognize the user and confirm they are authenticated 
+    without requiring the user to re-enter their credentials. Session tokens maintain the
+    state of the user, allowing them to interact with web services in a stateful manner 
+    despite the stateless nature of the web.
+
+    After authentication to Azure AD via a browser, a cookie is created and stored for
+    that session. If attackers can compromise a device and extract the browser cookies,
+    they could pass that cookie into a separate web browser on another system, to be
+    injected into a new web session to trick the browser into thinking the authenticated
+    user is present and does not need to prove their identity, bypassing security 
+    checkpoints along the way.
+
+    Because such cookie is also created and stored on a web browser when MFA is in play,
+    the same technique can handily be used to bypass it.

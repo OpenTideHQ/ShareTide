@@ -1,0 +1,130 @@
+name: Pass the Primary Refresh Token (PRT)
+criticality: High
+references:
+  public:
+    1: https://blog.netwrix.com/2023/05/13/pass-the-prt-overview/
+    2: https://informationsecuritybuzz.com/azure-lateral-movement-pass-the-prt/
+    3: https://www.netwrix.com/pass-the-primary-refresh-token-attack.html
+  #internal:
+    #a: 
+
+metadata:
+  uuid: b1b6d2d7-0832-46fc-a3e5-6e6411179c45
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-30
+  modified: 2025-06-30
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1134 #Access Token Manipulation
+    - T1539 #Steal Web Session Cookie
+    - T1550.004 #Use Alternate Authentication Material: Web Session Cookie
+  chaining:
+    - relation: sequence::preceeds
+      vector: 66aafb61-9a46-4287-8b40-4785b42b77a3 #Adversary in the Middle phishing sites bypass MFA
+      description: |
+         Gain access to user's device via phishing link.
+    - relation: sequence::preceeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 #Spearphishing Attachment
+      description: |
+         Gain access to user's device via malware distributed on email attachment.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Enterprise
+    - SaaS
+  terrain: |
+    Adversaries need initial access to a device that has a Primary Refresh Token (PRT) 
+    issued to a legitimate user. Specifically, this means compromising a Windows 10 
+    or newer device that is Azure AD-joined or hybrid Azure AD-joined and on which the 
+    user has logged in, thus generating a PRT.
+  targets:
+    - Cloud Storage Accounts
+    - Identity Services
+    - API Endpoints
+    - Cloud Portal
+    - Serverless
+    - Virtual Machines
+    - Server Authentication
+  platforms:
+    - Azure
+    - Windows
+    - Azure AD
+    - Office 365
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Elevation of privilege
+    - Information Disclosure
+    - Modify configuration
+    - Modify privileges
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Lose Capabilities
+    - Business disruption
+  viability: Likely
+  description: |
+    Pass-the-PRT (Primary Refresh Token) is an advanced cyberattack technique targeting 
+    cloud environments, particularly Microsoft Entra ID (formerly Azure AD). It enables 
+    attackers to bypass MFA and move laterally within cloud infrastructures by stealing
+    and exploiting valid authentication tokens.
+
+    ### What is a Primary Refresh Token (PRT)?
+    A PRT is a persistent authentication token issued when a user logs into an Azure-joined 
+    or hybrid Azure-joined Windows 10+ device. It enables single sign-on (SSO) to Azure 
+    AD resources without reauthentication. Key characteristics:
+    - **Validity**: 14–90 days, depending on usage.
+    - **Storage**: Securely stored in the device’s LSASS memory and protected by the 
+    Trusted Platform Module (TPM).
+    - **Function**: Contains user identity, session keys, and MFA claims, allowing seamless 
+    access to cloud resources like Microsoft 365.
+
+    ### How Pass-the-PRT Works
+    Attackers execute this attack in three stages:
+
+    1. **Initial Compromise**:  
+      Gain access to a victim’s device via phishing, malware, or exploits. Local admin 
+      privileges are typically required.
+
+    2. **PRT Extraction**:  
+      Extract the PRT and associated session key using tools like:
+      - **Mimikatz** (`sekurlsa::cloudap` module).
+      - **AADInternals PowerShell** (e.g., `Get-AADIntUserPRTToken`).
+      - **BrowserCore.exe** (to steal the `x-ms-RefreshTokenCredential` cookie).
+
+    3. **Lateral Movement**:  
+      Use the stolen PRT to:
+      - Generate valid PRT cookies for browsers (Chrome/Edge).
+      - Request access tokens for Azure AD resources without triggering MFA.
+      - Move laterally across cloud applications and data as the compromised user.
+
+    ### Key Risks and Challenges
+    - **MFA Bypass**: PRTs embed MFA claims, allowing attackers to bypass conditional 
+    access policies.
+    - **Stealth**: Attacks mimic legitimate user activity, evading traditional security 
+    tools.
+    - **Persistence**: PRTs remain valid for weeks, enabling prolonged access even if 
+    passwords change.

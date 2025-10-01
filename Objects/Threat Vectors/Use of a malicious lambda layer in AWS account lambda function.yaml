@@ -1,0 +1,77 @@
+name: Use of a malicious lambda layer in AWS account lambda function
+criticality: Low 
+references:
+  public:
+    1: https://levelup.gitconnected.com/cloud-security-table-top-exercises-629d353c268e
+    2: https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html
+    3: https://docs.aws.amazon.com/lambda/latest/dg/invocation-layers.html
+    4: https://docs.aws.amazon.com/lambda/latest/dg/lambda-monitoring.html
+    5: https://github.com/aws-amplify/amplify-cli/issues/6100
+    6: https://lukemiller.dev/blog/jest-test-with-lambda-layers-mocking-a-ote-layer/
+    7: https://medium.com/devops-techable/how-to-work-with-lambda-layers-352ddb32f345
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 2d3b113e-c6ad-492f-a6cb-1590a8d1191d
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-11-22
+  modified: 2022-11-23
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Execution
+  att&ck:
+    - T1648
+    - T1195.001
+  domains:
+    - Public Cloud
+  terrain: |
+    Requires that a threat actor can deploy code changes to a third party
+    or an EC controlled/deployed lambda layer in use by EC account(s), or 
+    that a threat actor can add a malicious lambda layer to a new or existing
+    lambda function.
+  targets:
+    - Serverless
+  platforms:
+    - AWS Lambda
+  severity: Localised incident
+  leverage:
+    - Alter behavior
+    - Dwelling
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Modify configuration
+    - Modify data
+    - Tampering
+  impact:
+    - Data Breach
+    - IP Loss
+    - Legal and regulatory
+    - Nuisance
+    - Operating costs
+  viability: Likely
+  description: |
+    A Lambda layer is an archive containing additional code, such as libraries,
+    dependencies, or even custom runtimes that is are extract to the /opt directory in the execution environment of the function they are added to. While AWS provides a few layers, developers
+    may also create custom ones to share in their organization, or use an external one
+    by pointing to a particular ARN. Layers are immutable, meaning once they are
+    created, a version is made and further changes would bump the version.
+    A threat actor can compromise one or more lambda functions by centrally 
+    compromising a lambda layer used by one or more other AWS accounts. This 
+    can also be a third party lambda layer in use by EC accounts. 
+
+    Once a new version of a lambda layer exists, it can  get deployed 
+    via some trigger+action needed on the side of the lambda administrator, 
+    unless the threat actor controls credentials to deploy or update lambda 
+    functions.

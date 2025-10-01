@@ -1,0 +1,131 @@
+name: WhisperGate wiper
+criticality: High
+references:
+  public:
+    1: https://arstechnica.com/security/2024/09/us-charges-russian-military-officers-for-unleashing-wiper-malware-on-ukraine/
+    2: https://www.zdnet.com/article/researchers-break-down-whispergate-wiper-malware-used-in-ukraine-website-defacement/
+    3: https://www.crowdstrike.com/blog/technical-analysis-of-whispergate-malware/
+    4: https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-057a
+    5: https://blogs.blackberry.com/en/2022/02/threat-spotlight-whispergate-wiper-wreaks-havoc-in-ukraine
+  #reports:
+    #-
+
+metadata:
+  uuid: 68ab86f6-378d-4371-ad01-6209fb95d57d
+  schema: tvm::2.0
+  version: 1
+  created: 2024-09-11
+  modified: 2024-09-11
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G1003 #[Enterprise] Ember Bear, Bleeding Bear, Cadet Blizzard, DEV-0586, Frozenvista, UAC-0056, UNC2589
+    - name: misp::a5f64c1a-c829-4855-903d-e0ff2098b2d7 #DEV-0586, Ruinous Ursa, Cadet Blizzard
+  #killchain: 
+  att&ck:
+    - T1485 # Data Destruction
+    - T1561.001 # Disk Wipe: Disk Content Wipe
+    - T1561.002 # Disk Wipe: Disk Structure Wipe
+    - T1562.001 # Impair Defenses: Disable or Modify Tools
+    - T1036 # Masquerading (IT disguised as a JPG extension to avoid detection as a malicious PE file.)
+    - T1134.002 #Access Token Manipulation: Create Process with Token (can modify a Windows TrustedInstaller group to grant access)
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Industrial
+  terrain: |
+    A threat actor needs an initial entry point to the system,
+    for example can use stolen credentials to gain access. 
+  targets:
+    - Disk drive
+    - Workstations
+    - Critical Documents
+    - Customer
+    - End-user
+    - Data Historian
+    - Desktop
+    - Control Server
+    - Laptop
+    - Personal Information
+  platforms:
+    - Windows
+    - PowerShell # a PS script with several execution commands used to disable Windows Defender and after to delete all Windows Defender and other system files further
+  severity: Significant incident
+  leverage:
+    - Denial of Service
+    - Infrastructure Compromise
+  impact:
+    - Business disruption
+    - Catastrophic Loss
+    - National Security
+    - Operating costs
+    - Reputational Damages
+  viability: Likely
+  description: |
+    WisperGate is a multi-stage malicious wiper disguised as ransomware,
+    firstly considered as ransomware but later investigations and analysis
+    show that it's not only disabling the work of the impacted device
+    but deletes/corrupts the whole hard drive and destroys the data stored
+    on it by wiping the master boot record. ref [1]
+
+    This is very impactful and severe type of a malware because the system
+    needs the MBR (the Master Boot Record) to start the operation system
+    during the boot.   
+
+    For the first time this type of a wiper was observed in the beginning
+    of the conflict between Russia and Ukraine in Feb 2022. Later the
+    reports published new activities of WisperGate as part of a more
+    broader campaign that aimed to coordinate destructive cyberattacks
+    against critical infrastructure and other targets in a combination
+    with kinetic military operations (active physical operations on
+    place).
+
+    The GRU's WhisperGate campaign targets government and military
+    institutions and the goal is to achieve as much as possible
+    disruption of the systems and a total lost of any stored
+    information on them.   
+
+    Different research investigations showed that initally it was
+    likely that stolen credentials provided the access point for
+    the deployment of the wiper. Other known for this wiper at this
+    moment is that it contains two types of wipers.   
+    
+    1. The first wiper attempts to destroy the master boot record (MBR) and
+    to eradicate any recovery options. Similar to the notorious NotPetya wiper
+    that masqueraded as ransomware, WhisperGate is not intended to be an actual
+    ransom attempt, since the MBR is completely overwritten. ref [2]      
+
+    2. In the second stage, a downloader pulls the code required for
+    the third step. After a base64-encoded PowerShell command is executed
+    twice and an endpoint is requested to enter sleep mode for 20 seconds.
+    A Discord server URL, hardcoded into the downloader, is then pinged
+    to grab a .DLL file. ref [2]  
+
+    In the further stage of the attack process DLL loader is trying
+    to gain administrative privileges. For example, it will attempt
+    to escalate itself by trigger User Account Control (UAC) dialog box.
+    Once granted Administrator privileges it drops VBScript from a Temp
+    directory. The script adds the targeted logical drive to the Windows
+    Defenders list of exclusions, using PowerShell commands ref [5].    
+
+    The script contains encoded assembly parts. For decoding of this function,
+    a threat actor uses obfuscation Eazfuscator tool. It can use a combination
+    of RC4 and XOR loop to decode the content off the base64 string.  
+
+    The script uses another PowerShell commands further to stop the function
+    of Windows Defender and uses a second command with "rmdir" to recursively
+    delete all Windows Defender files.
+
+    The threat actors developed WhisperGate implemented their own cryptographic
+    functions that are built on top of standard and proven libraries. They
+    attempted to wipe files in a strange and seemingly slap-dash manner,
+    which may or may not have been intentional. ref [5]  
+
+    In Ukraine, a pro-Russian group was detected to conduct destructive attacks
+    such as the WhisperGate wiper attacks against ICS targets.  
+  

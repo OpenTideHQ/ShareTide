@@ -1,0 +1,110 @@
+name: Change file owner to a privileged account
+criticality: High
+references:
+  public:
+    1: https://research.splunk.com/endpoint/7b87c556-0ca4-47e0-b84c-6cd62a0a3e90/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 682bf600-ec3e-4780-9f8f-8305ac602bef
+  schema: tvm::2.0
+  version: 1
+  created: 2024-12-13
+  modified: 2024-12-13
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+  killchain: Privilege Escalation
+  att&ck:
+    - T1222 #File and Directory Permissions Modification
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Networking
+  terrain: |
+    The adversary must have sufficient privileges (e.g., local administrator 
+    or root permissions) on the target host or domain controller to modify 
+    file ownership attributes.
+  targets:
+    - Workstations
+    - Directory
+    - Windows API
+    - Critical Documents
+    - Laptop
+    - Public-Facing Servers
+    - Production Database
+    - Virtual Machines
+    - Engineering Workstation
+  platforms:
+    - Windows
+    - Linux
+    - macOS
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Modify privileges
+    - Tampering
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Reputational Damages
+    - Business disruption
+  viability: Likely
+  description: |
+    Adversaries seeking to gain or maintain elevated privileges often target the 
+    ownership and permissions of critical files or directories. By changing a 
+    file’s owner to a privileged account (e.g., SYSTEM on Windows, `root` on Linux, 
+    or `root:wheel` on macOS), threat actors ensure that their malicious tools, 
+    binaries, or configuration files inherit elevated trust levels. 
+    This manipulation can facilitate various malicious objectives, including 
+    executing code with higher privileges, bypassing security controls, 
+    and evading detection.  
+
+    ### Windows
+    
+    Attackers may use built-in utilities such as `takeown.exe` or `icacls.exe` 
+    to change ownership and grant Full Control permissions to a high-privilege 
+    user or group.  
+    
+    For instance:  
+    ```powershell
+    takeown.exe /f C:\sensitive_data.txt
+    icacls.exe C:\sensitive_data.txt /setowner Administrator
+    icacls.exe C:\sensitive_data.txt /grant Administrator:F
+    ```
+
+    By doing so, they can ensure that subsequent manipulations of these files, 
+    including the addition of backdoors, data exfiltration tools, 
+    or credential-stealing binaries, are executed under a privileged context.  
+
+    ### Linux and macOS
+    
+    Threat actors mainly rely on the `chown` command to modify file ownership. 
+    But other commands may achieve the same objective like chgrp or setfacl 
+    
+    For example:
+    ```bash
+    sudo chown root:root /usr/local/bin/malicious_script
+    ```
+
+    Once a file is owned by `root`, it can be paired with setuid bits 
+    or extended attributes, enabling the file to run with elevated privileges. 

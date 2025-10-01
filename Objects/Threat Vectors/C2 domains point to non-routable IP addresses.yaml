@@ -1,0 +1,93 @@
+name: C2 domains point to non-routable IP addresses
+criticality: High
+references:
+  public:
+    1: https://www.ctfiot.com/259781.html # APT "Nighthawk" attack activities in a North American country
+    2: https://cyberpress.org/nighteagle-apt-breaches-industrial-networks # NightEagle is using domains which resolve to non-routable addresses like 127.0.0.1 to mask a location of the C2 server.
+    3: https://otx.alienvault.com/pulse/68684083b180ae933649d3ee
+    4: https://www.geeksforgeeks.org/computer-networks/non-routable-address-space # Non-Routable Address Space examples
+    5: https://www.the-next-tech.com/security/non-routable-ip-addresses
+    6: https://www.corgi-corp.com/post/malicious-c2-domains-how-to-stomp-a-moving-target
+    7: https://github.com/RedDrip7/NightEagle_Disclose/blob/main/Exclusive%20disclosure%20of%20the%20attack%20activities%20of%20the%20APT%20group%20NightEagle.pdf
+
+metadata:
+  uuid: ddab407e-d09d-4804-a4af-c11213553146
+  schema: tvm::2.1
+  version: 1
+  created: 2025-08-27
+  modified: 2025-08-28
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors: 
+    - name: misp::1b54a3c1-023b-4a3c-8f11-50d811cced88 #NightEagle, APT-Q-95
+      sighting: |
+        Advanced Persistent Threat (APT) group known as NightEagle (APT-Q-95)
+        is suspected of utilising an unknown vulnerability in Microsoft
+        Exchange. Their activities originates and come from North America and
+        are related to multiple registered domains and IP addresses which are
+        changing rapidly to avoid detection. Some of these domains are
+        configured to point to private IP addresses. The goal is to make them
+        difficult to trace back.
+      references:
+        - https://cyberpress.org/nighteagle-apt-breaches-industrial-networks # NightEagle are using domain resolution to non-routable IP addresses to mask the location of their C2 server
+  killchain: Command & Control
+  att&ck:
+    - T1568 #Dynamic Resolution
+  chaining:
+    - relation: atomicity::implements
+      vector: 7b122bb4-fc13-438b-a052-4388c501ec59 # C2 beaconing on specific time intervals
+      description: |
+        C2 beaconing on specific intervals can be a related threat vector to
+        additional threat actor's technique like point the C2 domain to private
+        IP address for obfuscation purposes. 
+  #cve:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    The threat actor needs to have control over the DNS infrastructure that
+    resolves the C2 domain.  
+  targets:
+    - Server Logs
+  platforms:
+    - Windows
+    - Linux
+    - macOS
+  severity: Significant incident
+  leverage:
+    - Spoofing
+  impact:
+    - Business disruption
+    - Impairement
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    The attackers may configure their own C2 domain to point to a non-internet
+    routable address, localhost (127.0.0.1) or RFC1918 (private) IP addresses [1]. 
+    By doing so, the underlying IP C2 infrastructure remains hidden, allowing
+    the threat actor to remain undetected for longer period of time until they
+    decide to engage infected hosts by changing the DNS A record to point the
+    actual C2 server.
+
+    One of the top threat actor groups is observed to use multiple malicious
+    domains which are resolving to non-routable addresses (like `127.0.0.1`).
+    During inactive periods of time, the goal of this technique is to mask the
+    location of the Command and Control server. Analysis indicates attacks
+    predominantly occur during night hours in China, originating likely from
+    North America, and are precisely timed to avoid detection ref [2], [3].     
+
+    Evasion of detection - when a threat actor uses this technique, they could 
+    evade detection by traditional network security monitoring tools and rules, 
+    which typically focus on outgoing (victim network -> internet) traffic.
+
+    Avoiding C2 Indicator of Compromise (IoC) detections - when the threat actor 
+    has a suspicion of being detected or the C2 IP has been exposed, they may 
+    change the C2 domain DNS record to a non-routable one while setting up new 
+    infrastructure.

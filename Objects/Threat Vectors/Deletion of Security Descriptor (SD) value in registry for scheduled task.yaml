@@ -1,0 +1,83 @@
+name: Deletion of Security Descriptor (SD) value in registry for scheduled task
+criticality: Medium
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2022/04/12/tarrask-malware-uses-scheduled-tasks-for-defense-evasion/
+    2: https://attack.mitre.org/techniques/T1053/005/
+    3: https://learn.microsoft.com/en-us/windows/win32/secauthz/security-descriptors
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: e2b93649-44d7-4007-9592-3baf79cd2b33
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-12-16
+  modified: 2022-12-19
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+  killchain: Execution
+  att&ck:
+    - T1053.005
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    Threat actor deletes an entry in the registry value, called SD value
+    (Security Descriptor) to hide presence of running task in Task Scheduler.
+  targets:
+    - Workstations
+    - Laptop
+    - Desktop
+    - Control Server
+    - Web Application Servers
+    - Public-Facing Servers
+    - System admin
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Elevation of privilege
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    A Security Descriptor (SD) is a data structure that specifies the security
+    attributes of an object in Windows operating system. These attributes
+    include the permissions and access rights granted to users and groups, as
+    well as any security measures that have been applied to the object.
+
+    Security Descriptor determines the users allowed to run specific task. If
+    the SD value is deleted within the registry tree path, this deletion
+    results in “disappearing” of the task from “schtasks /query” and Task
+    Scheduler.
+
+    Some malware families, for example Tarrask malware can use security
+    descriptors to create scheduled tasks that are hidden from the user and are
+    not visible in the Windows Task Scheduler. These tasks are used to execute
+    the malware's malicious payload, which can include installing additional
+    malware, stealing sensitive information, or disrupting the normal operation
+    of the infected system.
+
+    To evade detection, a malware modifies the security descriptor of the
+    scheduled task to grant only the SYSTEM account access to the task. This
+    means that other users and security tools will not be able to see or
+    interact with the task, making it more difficult to detect and remove.
+
+    Security professionals can use tools such as Sysinternals Autoruns and
+    Process Explorer to identify and remove these hidden scheduled tasks, as
+    well as other forms of malware that use security descriptors for defense
+    evasion.

@@ -1,0 +1,197 @@
+name: Data collection using SharpHound, SoapHound, Bloodhound and Azurehound
+criticality: High
+references:
+  public:
+    1: https://www.evolvesecurity.com/blog-posts/tools-of-the-trade-tracking-security-misconfigurations-with-bloodhound
+    2: https://bloodhound.readthedocs.io/en/latest/data-analysis/bloodhound-gui.html
+    3: https://www.sans.org/blog/bloodhound-sniffing-out-path-through-windows-domains/
+    4: https://support.bloodhoundenterprise.io/hc/en-us/articles/9263138135963-SharpHound-Enterprise-Data-Collection-and-Permissions
+    5: https://posts.specterops.io/introducing-bloodhound-4-0-the-azure-update-9b2b26c5e350
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 53063205-4404-4e6d-a2f5-d566c6085d96
+  schema: tvm::2.1
+  version: 2
+  created: 2025-03-20
+  modified: 2025-05-12
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::bdf4fe4f-af8a-495f-a719-cf175cecda1f #WIZARD SPIDER
+      sighting: |
+        Ransomware Activity Targeting the Healthcare and Public Health Sector
+      references:
+        - https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-302a
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29
+      sighting: |
+        THREAT REPORT T3 2021
+      references:
+        - https://web-assets.esetstatic.com/wls/2022/02/eset_threat_report_t32021.pdf
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505
+      sighting: |
+        TA505: A Brief History Of Their Time
+      references:
+        - https://www.nccgroup.com/us/research-blog/ta505-a-brief-history-of-their-time/
+  killchain: Reconnaissance
+  att&ck:
+    - T1087 #Account Discovery
+    - T1069 #Permission Groups Discovery
+    - T1482 #Domain Trust Discovery
+    - T1018 #Remote System Discovery
+    - T1201 #Password Policy Discovery
+  chaining:
+    - relation: sequence::succeeds
+      vector: 1a68b5eb-0112-424d-a21f-88dda0b6b8df #Spearphishing Link
+      description: |
+        Adversaries may send spearphishing emails with a malicious link in an
+        attempt to gain access to victim systems.
+    - relation: sequence::succeeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 #Spearphishing Attachment
+      description: |
+        In Spearphishing Attachment attacks, recipients receive emails that
+        contain malicious attachments. The email message entices users to open
+        the attachment(s) using the knowlege gained.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Embedded
+    - Enterprise
+    - Networking
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Attackers need to establish an initial presence within the target environment, in 
+    order to gather sufficient permissions to execute the data collection tools.
+  targets:
+    - Identity Services
+    - Public-Facing Servers
+    - Virtual Machines
+    - Serverless
+    - Email Platform
+    - Web Application Servers
+    - API Endpoints
+    - Cloud Portal
+    - Software Containers
+    - IaaS
+    - SAML-Joined Applications
+    - Server Authentication
+  platforms:
+    - Azure
+    - Azure AD
+    - Windows
+    - Active Directory
+    - Azure AKS
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Repudiation
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Elevation of privilege
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Lose Capabilities
+    - Catastrophic Loss
+  viability: Likely
+  description: |
+    The threat vector of data collection using SharpHound, BloodHound, and AzureHound 
+    represents a sophisticated method for gathering and analyzing information about 
+    an organization's Active Directory (AD) and Azure environments. This vector is 
+    particularly concerning because it can be used by both security professionals and 
+    malicious actors to map out potential attack paths and vulnerabilities.    
+
+    ## Tools Overview    
+
+    **SharpHound**: A data collection tool designed for Active Directory environments. 
+    It gathers information about users, groups, computers, and their relationships within 
+    the AD structure.    
+
+    **BloodHound**: A visualization tool that ingests data collected by SharpHound and 
+    AzureHound. It presents the information in a graph format, allowing for the identification 
+    of complex attack paths and security misconfigurations.    
+
+    **AzureHound**: The cloud counterpart to SharpHound, specifically designed to collect 
+    data from Azure Active Directory and Azure Resource Manager.    
+
+    **SoapHound**: It is an enumeration tool in Active Directory Web Services (ADWS) debug logs. 
+    ADWS enumeration creates multiple GetXmlValue events for each attribute, it leverages the ADWS 
+    protocol (SOAP over port 9389) instead of traditional LDAP queries.
+    LDAP queries are wrapped within a series of SOAP messages, which are sent to the ADWS server 
+    using NET TCP Binding communication channel. Following, ADWS server unwraps the LDAP queries
+    and forwards them to the LDAP server running on the same Domain Controller. As a result, LDAP
+    traffic is not sent via the wire and therefore is not easily detected by common monitoring tools.
+
+
+    ## Threat Vector Mechanics    
+
+    The mechanics of this threat vector involve the systematic collection, processing, 
+    and analysis of data from Active Directory (AD) and Azure environments to identify 
+    potential attack paths. Here's how it works:    
+
+    1. **Data Collection**:
+      - **SharpHound** gathers data from Active Directory using LDAP/LDAPS queries 
+      and RPC over named pipes. It collects information on domain trusts, object properties 
+      (users, groups, computers, etc.), ACLs, group memberships, and more.
+      - **AzureHound** collects data from Azure AD and Azure Resource Manager (AzureRM) 
+      using Microsoft Graph and Azure REST APIs. It retrieves information about admin 
+      roles, users, groups, apps, devices, service principals, and other Azure objects 
+      accessible to the authenticated user.
+      - These tools generate JSON files containing detailed information about the target 
+      environment.    
+
+    2. **Data Packaging**:
+      - The collected data is compressed into ZIP files for efficient transfer and 
+      storage. These files are ready for ingestion into the BloodHound database.    
+
+    3. **Data Ingestion**:
+      - The ZIP files are imported into a Neo4j graph database via the BloodHound interface. 
+      This database serves as the backbone for analyzing relationships and permissions 
+      within the collected data.    
+
+    4. **Graph Analysis**:
+      - BloodHound visualizes the data as a graph where nodes represent objects 
+      (e.g., users, groups, computers) and edges represent relationships or permissions 
+      (e.g., group memberships or access rights).
+      - Users can perform Cypher queries to identify attack paths such as privilege 
+      escalation opportunities or lateral movement routes.    
+
+    5. **Attack Path Discovery**:
+      - The visualized graph highlights misconfigurations or exploitable relationships 
+      that attackers can leverage (e.g., accounts with excessive privileges or vulnerable trust relationships).    
+
+    This process enables attackers to systematically uncover weaknesses in AD or Azure 
+    environments for exploitation.
+
+    ### How the Threat Works
+
+    - **Stealthy Protocol**: SOAPHound uses ADWS, which is less commonly monitored than 
+    LDAP, allowing attackers to collect data with minimal detection.
+    - **Bulk Collection**: It gathers large amounts of directory data-such as users, 
+    groups, computers, group memberships, and access control lists (ACLs)-in a few bulk 
+    queries rather than thousands of individual LDAP requests.
+    - **Sensitive Information**: The data collected includes everything needed to map 
+    attack paths, identify privilege escalation opportunities, and plan lateral movement 
+    within the AD environment.
+    - **BloodHound Compatibility**: The output is formatted for BloodHound, a tool used 
+    to visualize and analyze attack paths in AD.
+
+    ### Key Data Collected
+
+    - **User and Group Listings**: Names, SIDs, group memberships.
+    - **Computer Accounts**: Details about machines in the domain.
+    - **ACLs/Permissions**: Who has rights over what objects.
+    - **Certificate Authority Info**: For potential abuse in AD CS attacks.

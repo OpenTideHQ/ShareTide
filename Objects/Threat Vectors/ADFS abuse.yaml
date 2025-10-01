@@ -1,0 +1,116 @@
+name: ADFS abuse
+criticality: High
+references:
+  public:
+    1: https://www.hunters.security/en/blog/adfs-threat-hunting
+    2: https://www.beyondidentity.com/resource/active-microsoft-adfs-phishing-campaign-bypasses-mfa
+    3: https://www.itpro.com/operating-systems/microsoft-windows/359365/hackers-could-abuse-legitimate-windows-ad-fs-to-steal
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 19a7a12e-1c7a-4885-9359-56abd63c85c9
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-24
+  modified: 2025-06-24
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1556 #Modify Authentication Process
+    - T1133 #External Remote Services
+    - T1606.002 #Forge Web Credentials: SAML Tokens
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - SaaS
+  terrain: |
+    Threat actors can obtain the token signing certificate and private key by abusing 
+    the Policy Store Transfer Service to extract the encrypted certificate, then decrypting 
+    it using the DKM key from Active Directory. This can be done remotely if the attacker 
+    has the right privileges, and once they have the private key, they can forge SAML 
+    tokens for any user, bypassing authentication controls.
+  targets:
+    - Identity Services
+    - SAML-Joined Applications
+    - Cloud Storage Accounts
+    - Server Authentication
+  platforms:
+    - AD FS
+    - Active Directory
+    - Azure AD
+    - Office 365
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Repudiation
+    - Elevation of privilege
+    - Information Disclosure 
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Reputational Damages
+    - Monetary Loss
+    - Business disruption 
+  viability: Likely
+  description: |
+    AD FS (Active Directory Federation Services) is a critical identity provider solution 
+    for secure SSO authentication, but it presents a significant attack surface for 
+    threat actors. Below is a comprehensive overview of ADFS abuse threat vectors, attack 
+    techniques, and real-world exploitation patterns based on current research and incident data.
+
+    ### Memory Adapter Manipulation
+
+    Attackers with local administrative privileges on an AD FS server can modify AD 
+    FS-related .NET assemblies or configuration files (such as those in the Global Assembly Cache). 
+    By injecting malicious code or altering authentication logic in memory or on disk, 
+    they can compromise the authentication process, potentially allowing unauthorised access.
+
+    ### Golden SAML Attacks
+    
+    Attackers can steal or forge SAML tokens by accessing the AD FS token signing certificates. 
+    With these certificates, they can create valid SAML tokens impersonating any user, 
+    granting themselves unauthorised access to federated applications (such as Microsoft 365).
+
+    ### Phishing & MFA Bypass
+    
+    Phishing campaigns specifically target AD FS users, tricking them into entering 
+    credentials on fake login pages. Once credentials are harvested, attackers may intercept 
+    Multi-Factor Authentication (MFA) codes or session cookies in real time, bypassing 
+    MFA protections.
+
+    ### Information Disclosure via Vulnerabilities
+      
+    Historical vulnerabilities (like CVE-2017-0043) have allowed authenticated attackers 
+    to read sensitive information from AD FS servers via crafted XML requests. While 
+    many such vulnerabilities are patched, they highlight the risk of information leakage.
+
+    ### Credential Reuse and Lateral Movement
+    
+    Attackers who obtain AD FS credentials often find that these credentials are reused 
+    across other systems or SSO platforms. This allows them to move laterally within 
+    the victim’s environment, accessing multiple services.

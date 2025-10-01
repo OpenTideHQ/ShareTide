@@ -1,0 +1,65 @@
+name: Azure - Lateral movement abusing Cross-Tenant Synchronization
+criticality: High
+references:
+  public:
+    1: https://www.vectra.ai/blogpost/microsoft-cross-tenant-synchronization
+    2: https://invictus-ir.medium.com/incident-response-in-azure-c3830e7783af
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 2fd1cddb-c66d-4a99-9779-31e32b67495e
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2023-08-07
+  modified: 2025-01-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Command & Control
+  att&ck:
+    - T1021.007
+  domains:
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+     Attackers must have compromised a tenant and gained elevated privileges 
+  targets:
+    - Cloud Portal
+    - Cloud Storage Accounts
+    - IaaS
+  platforms:
+    - Azure
+    - Azure AD
+    - Azure AKS
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Modify configuration
+  impact:
+    - Business disruption
+    - Lose Capabilities
+    - Data Breach
+    - Reputational Damages
+  viability: Environment dependent
+  description: |
+    When configuring CTS, an Azure source tenant will be synchronized with a target tenant, 
+    where users from the source can automatically be synchronized to the target tenant. 
+    When synchronizing users, the user is only pushed from the source and not pulled 
+    from the target, making this a one-sided synchronization.
+
+    However, if improperly configured, attackers who have already compromised a tenant and gained
+    elevated privileges may exploit this feature, to move laterally to other connected tenants.
+
+    Attackers must look for tenants with 'Outbound Sync' enabled, which allows syncing
+    to other tenants. Next step is to locate the app used for CTS syncing and modify
+    its configuration to add the compromised user into its sync scope,
+    gaining access to the other tenant's network.
+
+    This allows the threat actor to achieve lateral movement without requiring new user credentials.

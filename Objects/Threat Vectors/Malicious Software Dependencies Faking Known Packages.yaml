@@ -1,0 +1,61 @@
+name: Malicious Software Dependencies Faking Known Packages
+criticality: Medium
+references:
+  public:
+    1: https://jfrog.com/blog/large-scale-npm-attack-targets-azure-developers-with-malicious-packages/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 78683822-44dc-41ac-8fef-b5f0968743c9
+  schema: tvm::2.0
+  tlp: clear
+  version: 3
+  created: 2022-04-05
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Exploitation
+  att&ck:
+    - T1195
+  terrain: |
+    Software development performed internally need to rely on
+    external dependencies, and sources are not rigorously checked.
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  targets:
+    - Software Containers
+    - Production Software
+    - CI/CD Pipelines
+    - Code Repositories
+    - Software Development Tools
+  platforms:
+    - Azure
+    - AWS
+  severity: Substantial incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Impairement
+  viability: Likely
+  description: |
+    Adversaries maymimick known and trusted software packages and
+    distributors, with the intent to be mistaken for the original developer,
+    and thus deliver malicious code that will be embedded in the
+    victim's applications. They may use sophisticated automation
+    to appear convincing and fool the target. Once delivered, the package may
+    contain any payload, from crypto mining, to credential theft, command and control etc.

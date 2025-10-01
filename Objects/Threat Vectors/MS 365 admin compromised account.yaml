@@ -1,0 +1,97 @@
+name: MS 365 admin compromised account
+criticality: High
+references:
+  public:
+    1: https://blog.talosintelligence.com/how-are-user-credentials-stolen-and-used-by-threat-actors
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 20bd3620-b13b-4895-b291-b1a26bd9aef3
+  schema: tvm::2.1
+  version: 2
+  created: 2025-01-28
+  modified: 2025-10-01
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0026 #[Enterprise] APT18, Dynamite Panda, TG-0416, Threat Group-0416  
+    - name: misp::9a683d9c-8f7d-43df-bba2-ad0ca71e277c #APT18
+    - name: att&ck::G1024 #[Enterprise] Akira, GOLD SAHARA, PUNK SPIDER
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, StellarParticle, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::c2c64bd3-a325-446f-91a8-b4c0f173a30b #APT39
+    - name: att&ck::G0087 #[Enterprise] APT39, Chafer, ITG07, Remix Kitten
+    - name: misp::e400b6c5-77cf-453d-ba0f-44575583ac6c #GALLIUM
+    - name: att&ck::G0001 #[Enterprise] Axiom, Group 72
+    - name: att&ck::G0008 #[Enterprise] Carbanak, Anunak
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: att&ck::G1021 #[Enterprise] Cinnamon Tempest, BRONZE STARLIGHT, DEV-0401, Emperor Dragonfly
+    - name: att&ck::G0051 #[Enterprise] FIN10
+    - name: att&ck::G0085 #[Enterprise] FIN4
+    - name: att&ck::G0061 #[Enterprise] FIN8, Syssphinx
+    - name: att&ck::G0117 #[Enterprise] Fox Kitten, Lemon Sandstorm, Parisite, Pioneer Kitten, RUBIDIUM, UNC757
+    - name: att&ck::G0093 #[Enterprise] GALLIUM, Granite Typhoon
+    - name: att&ck::G0119 #[Enterprise] Indrik Spider, DEV-0243, Evil Corp, Manatee Tempest
+    - name: misp::3501fbf2-098f-47e7-be6a-6b0ff5742ce8 #APT15
+    - name: att&ck::G0004 #[Enterprise] Ke3chang, APT15, GREF, Mirage, NICKEL, Nylon Typhoon, Playful Dragon, RoyalAPT, Vixen Panda
+    - name: misp::d9e5be22-1a04-4956-af6c-37af02330980 #LAPSUS
+    - name: att&ck::G1004 #[Enterprise] LAPSUS$, DEV-0537, Strawberry Tempest
+    - name: misp::5b4b6980-3bc7-11e8-84d6-879aaac37dd9 #APT40
+    - name: att&ck::G0065 #[Enterprise] Leviathan, APT40, BRONZE MOHAWK, Gadolinium, Gingham Typhoon, Kryptonite Panda, MUDCARP, TEMP.Jumper, TEMP.Periscope  
+      #sighting: |
+        #Type Here
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1078 #Valid Accounts
+    - T1566 #Phishing
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+  terrain: |
+    Attackers got valid credentials from MS 365 admin, and they manage to bypass 2FA mechanism.
+  targets:
+    - System admin
+  platforms:
+    - EU Login
+    - Office 365
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Modify privileges
+    - New Accounts
+    - Software installation
+  impact:
+    - Identity Theft
+    - Lose Capabilities
+  viability: Roughly even chance
+  description: |
+    Compromised credentials may be used to bypass access controls placed on various resources on systems
+    within the network and may even be used for persistent access to remote systems and externally
+    available services, such as VPNs, Outlook Web Access, network devices, and remote desktop.
+    
+    Compromised credentials may also grant an adversary increased privilege to specific systems or access
+    to restricted areas of the network. Adversaries may choose not to use malware or tools in conjunction
+    with the legitimate access those credentials provide to make it harder to detect their presence.
+
+    There are several methods used by adversaries to compromise valid accounts, such as:  
+
+    - Phishing attacks (Spear Phishing, Whaling, BEC).  
+    - Password guessing and cracking (Credential stuffing, Bruteforce, Password spraying, exploiting weak passwords).
+    - OAuth and API Abuse.
+    - Exploiting vulnerabilities in third-party software.   

@@ -1,0 +1,103 @@
+name: Abusing Lolbins to Enumerate Network Configuration
+criticality: High
+references:
+  public:
+    1: https://research.splunk.com/endpoint/5db16825-81bd-4923-a8d6-d6a13a59832a/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: fc858766-0618-4a4f-973c-526402a83582
+  schema: tvm::2.0
+  version: 1
+  created: 2025-01-14
+  modified: 2025-01-14
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0139 #[Enterprise] TeamTNT
+    - name: misp::27de6a09-844b-4dcb-9ff9-7292aad826ba #TeamTNT, Adept Libra
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+  killchain: Discovery
+  att&ck:
+    - T1016 #System Network Configuration Discovery
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary must have the capability to run network configuration commands on 
+    endpoints or servers, potentially with elevated privileges
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Network Equipment
+  platforms:
+    - Windows
+    - macOS
+    - Linux
+  severity: Substantial incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Dwelling
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+  viability: Likely
+  description: |
+    System Network Configuration Discovery refers to an adversary’s effort to gather
+    and enumerate network-related information from compromised systems. This activity 
+    is often a precursor to more aggressive tactics, including lateral movement 
+    or data exfiltration. By executing commands or employing specific utilities to 
+    determine active network interfaces, routing tables, firewall states, and open ports, 
+    threat actors can map out an organization’s network architecture. 
+    This information allows them to identify potential choke points, pivot opportunities, 
+    and security gaps that could be exploited in subsequent stages of an attack.
+
+    ## Common Tools & Commands
+    ### Windows  
+
+    1) cmd.exe:
+      - `ipconfig` to display IP addresses and network interfaces. 
+      - `netstat` to list active TCP/UDP connections and listening ports.
+      - `route print` to display routing tables.  
+
+    2) powershell.exe: 
+      - `Get-NetIPConfiguration` to display IP addresses and network interfaces. 
+      - `Get-NetTCPConnection` to display active network connections.
+      - `Get-NetRoute` to display routing tables.  
+ 
+    3) netsh.exe: 
+      - `netsh interface ip show config` for advanced interface information. 
+      - `netsh interface ip show dns` to display DNS settings.
+
+    4) nslookup.exe: 
+      - `nslookup <domain_name>` to display DNS records for a domain name. 
+
+    5) wmic.exe: 
+      - `wmic nic get` to display network interface settings.
+      - `wmic route get` to display routing tables.
+
+    ### Linux and macOS 
+      - `ifconfig` or `ip` to show IP address configuration and network interfaces.  
+      - `arp` to examine the ARP table for link-layer address mapping.  
+      - `netstat` or `ss` to display active connections and listening services.  
+      - `route` to view or modify the IP routing table.  
+      - `iptables`, `firewall-cmd`, `ufw` to query or adjust firewall settings.  
+      - `dig` to query DNS servers and display DNS records.

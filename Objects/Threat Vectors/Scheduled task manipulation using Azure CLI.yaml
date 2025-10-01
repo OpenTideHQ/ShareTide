@@ -1,0 +1,121 @@
+name: Scheduled task manipulation using Azure CLI
+criticality: High
+references:
+  public:
+    1: https://redcanary.com/threat-detection-report/techniques/scheduled-task/
+    2: https://www.logpoint.com/en/blog/emerging-threats/shenanigans-of-scheduled-tasks/
+    3: https://www.securityblue.team/blog/posts/persistence-mechanisms-windows-scheduled-tasks
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: edfe43fd-4a92-4f2d-a733-40e235be1b25
+  schema: tvm::2.0
+  version: 1
+  created: 2024-12-18
+  modified: 2024-12-19
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #-
+  killchain: Execution
+  att&ck:
+    - T1053 #Scheduled Task/Job
+    - T1053.005 #Scheduled Task/Job: Scheduled Task
+    - T1053.003 #Scheduled Task/Job: Cron
+    - T1059 #Command and Scripting Interpreter
+    - T1078 #Valid Accounts
+    - T1136 #Create Account
+  chaining:
+    - relation: support::enabled
+      vector: 670504aa-cfb8-4d1f-a5ad-16193822085f #Scheduled task creation using Azure CloudShell
+      description: |
+        Threat actors can use Azure CloudShell, which is accessible via the Azure
+        portal or the browser, to create scheduled tasks. The path to the Action pa...
+    - relation: support::synergize
+      vector: 5e66f826-4c4b-4357-b9c5-2f40da207f34 #Scheduled tasks maintain persistence in registry
+      description: |
+        A threat actor can successfully maintain persistence on a compromised system 
+        by using scheduled tasks to create or edit registry entries. Windows Sc...
+    - relation: sequence::preceeds
+      vector: 60c5b065-7d06-4697-850f-c2f80765f10b #Changes to Azure infrastructure deployed through Azure CLI
+      description: |
+        A threat actor in control of the prerequisites may attempt to use the Azure
+        CLI to perform changes either to the endpoint from which the CLI is acces...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Enterprise
+    - Networking
+  terrain: |
+    Adversary must have administrative privileges over the Azure CLI environment.
+  targets:
+    - Cloud Storage Accounts
+    - Identity Services
+    - Virtual Machines
+    - API Endpoints
+    - Cloud Portal
+  platforms:
+    - Azure
+    - Azure AD
+    - Office 365
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Repudiation
+    - Infrastructure Compromise
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+  viability: Likely
+  description: |
+    Scheduled task manipulation using Azure CLI is a sophisticated threat vector that 
+    allows adversaries to establish persistence and execute malicious code in cloud environments. 
+    While the search results do not specifically mention Azure CLI, we can extrapolate 
+    the threat based on the general concept of scheduled task abuse.    
+
+    ## Key aspects of the threat:    
+
+    1. **Persistence mechanism**: Adversaries can create or modify scheduled tasks to 
+    run malicious code at specified times or system startup, ensuring long-term access 
+    to compromised systems.    
+
+    2. **Privilege escalation**: Tasks can be configured to run with elevated privileges, 
+    often as SYSTEM, granting attackers the highest level of access on Windows systems.    
+
+    3. **Stealth**: Attackers may create "hidden" scheduled tasks by manipulating registry 
+    values, making them invisible to standard enumeration tools.    
+
+    4. **Versatility**: Scheduled tasks can be used for various malicious purposes, 
+    including initial access, lateral movement, and executing additional payloads.    
+
+    ## Specific techniques:    
+
+    1. **Command execution**: Adversaries often use scheduled tasks to open command 
+    shells or execute arbitrary binaries from user-writable directories.    
+
+    2. **Network connections**: Tasks may be configured to reach out to external domains 
+    and download malicious payloads on a recurring schedule.    
+
+    3. **Abuse of legitimate tools**: Attackers can leverage native Windows utilities 
+    like schtasks.exe or PowerShell cmdlets to create and manage malicious tasks.    
+
+    4. **Registry manipulation**: Advanced adversaries may directly modify registry 
+    keys related to scheduled tasks to evade detection.    
+
+    5. **Masquerading**: Malicious tasks can be disguised as legitimate system processes 
+    or software updates to avoid suspicion.

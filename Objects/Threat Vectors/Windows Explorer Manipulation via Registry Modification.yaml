@@ -1,0 +1,134 @@
+name: Windows Explorer Manipulation via Registry Modification
+criticality: High
+references:
+  public:
+    1: https://book.hacktricks.wiki/en/windows-hardening/windows-local-privilege-escalation/privilege-escalation-with-autorun-binaries.html
+    2: https://vms.drweb.com/virus/?i=27670435
+    3: https://www.crowdstrike.com/en-us/blog/big-game-hunting-with-ryuk-another-lucrative-targeted-ransomware/
+    
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 8e5c12f1-cd48-417c-a9c9-883212bf98b6
+  schema: tvm::2.1
+  version: 1
+  created: 2025-07-11
+  modified: 2025-07-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0102 #[ICS] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+      sighting: |
+        Ryuk ransomware has targetted the associated registry keys
+      references:
+        - https://www.crowdstrike.com/en-us/blog/big-game-hunting-with-ryuk-another-lucrative-targeted-ransomware/
+  killchain: Defense Evasion
+  att&ck:
+    - T1112 #Modify Registry
+    - T1547.001 #Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary must obtain write access to the user-hive (HKCU) or,
+    for broader impact, administrative rights to HKLM and the
+    ability to execute **reg.exe**, PowerShell, or equivalent APIs on
+    Windows 7 - 11 workstations joined to Active Directory.
+  targets:
+    - Workstations
+    - Desktop
+    - Laptop
+    - Virtual Machines
+    - Windows API
+  platforms:
+    - Windows
+    - Active Directory
+    - PowerShell
+  severity: Significant incident
+  leverage:
+    - Tampering
+    - Modify configuration
+    - Modify data
+    - Elevation of privilege
+  impact:
+    - Impairement
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+  viability: Likely
+  description: |
+    Explorer behaviour can be twisted by editing the registry keys
+    listed below. Changes act instantly, leave few artefacts, and
+    are often missed by file-centric defenses.
+
+    ### Policy Edits Disable User Defenses
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer  
+    Setting `DisableTaskMgr`, `DisableRegistryTools`, `NoViewOnDrive` or
+    NoFind stops Task Manager, Regedit, search and drive browsing,
+    blinding users.
+    Setting `NavPaneShowAllFolders` or `NavPaneExpandToCurrentFolder` can 
+    modify the navigation pane.
+    When set to 0, this value hides certain folders in the navigation pane, 
+    such as system folders or folders that are not typically displayed,
+    making it difficult for users to detect malicious activity.
+    When set to 1, this value shows all folders in the navigation pane, 
+    including hidden and system folders, making it harder for users to 
+    distinguish between legitimate and malicious files or folders.
+
+    ### Advanced Flags Hide Artefacts
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced  
+    Flipping Hidden, ShowSuperHidden or SuperHidden hides system
+    files and payloads, thwarting GUI-based hunting.
+
+    ### User Shell Redirection
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders  
+    Replacing Desktop, Startup or Personal paths diverts files or
+    autoruns to attacker-controlled folders for theft or persistence.
+
+    ### System-Wide Folder Hijack
+    - HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders  
+    System-level redirection funnels all users' documents and
+    shortcuts to rogue directories, enabling broad data capture.
+
+    ### Global Advanced Flags Override
+    - HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced  
+    Modifying the machine hive mirrors the HKCU tweaks but forces
+    hidden-file suppression and other changes on every profile.
+
+    ### Environment Variable Hijack
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders  
+    Altering %APPDATA%, %TEMP% or %DESKTOP% variables tricks apps
+    into saving data or loading DLLs from malicious locations.
+
+    ### Namespace Injection
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace  
+    Creating fake CLSID subkeys inserts rogue folders in Explorer,
+    luring users to launch payloads masked as system objects.
+
+    ### Drive AutoRun Seeds
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\MountPoints2    
+    Inserting AutoRun and command entries forces code execution
+    whenever a specific USB or network share is browsed.
+
+    ### Default Shell Replacement
+    - HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Shell  
+    Repointing the Shell value swaps explorer.exe for a malicious
+    binary, gaining control each time a user signs in.
+
+    ### Enabling AutoPlay for Malicious Devices
+    - HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers  
+    Changing the `DeviceType` or `Handler` settings can enable AutoPlay for specific 
+    devices, such as network shares, potentially executing malicious code.

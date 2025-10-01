@@ -1,0 +1,89 @@
+name: Passing SeDebugPrivilege to AdjustTokenPrivilege API elevating privileges of a running process
+criticality: Medium
+references:
+  public:
+    1: https://blog.malwarebytes.com/threat-analysis/2021/06/kimsuky-apt-continues-to-target-south-korean-government-using-appleseed-backdoor/
+    2: https://attack.mitre.org/techniques/T1134/
+    3: https://pentestlab.blog/2017/04/03/token-manipulation/
+    4: https://adsecurity.org/?page_id=1821#TOKENElevate
+    5: https://juggernaut-sec.com/dumping-credentials-mimikatz-lsa-dump/
+    6: https://attack.mitre.org/techniques/T1134/001/
+    7: https://docs.rapid7.com/metasploit/meterpreter-getsystem/
+    8: https://www.mcafee.com/enterprise/en-us/assets/reports/rp-cuba-ransomware.pdf
+    9: https://blog.palantir.com/windows-privilege-abuse-auditing-detection-and-defense-3078a403d74e
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 5d373113-18f9-41bb-bdde-3abbfa53cb86
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-11-16
+  modified: 2022-11-17
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Privilege Escalation
+    # This TVM sets precedent for killchain being a multi-selector in the spec
+    # However, this implementation is a breaking change of the data type, so to expedite taking
+    # the stronger stage for the context, once implemented and all TVM migrated the stages below
+    # will be the new ones in.
+    #- Privilege Escalation
+    #- Defense Evasion
+    #- Credential Access
+  att&ck:
+    - T1134.001
+
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+     On an already compromised Windows endpoint in a user or administrator 
+     context that has SeDebugPrivilege assigned (rarely on user context). 
+     Windows servers and windows workstations/laptops - anything 
+     Windows.
+  targets:
+    - Auth token
+    - Workstations
+    - Windows API
+    - Control Server
+    - Web Application Servers
+    - Public-Facing Servers
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Modify privileges
+    - Spoofing
+  impact:
+    - Impairement
+    - Data Breach
+  viability: Likely
+  description: |
+    A threat actor can attempt to escalate privileges from a user or 
+    administrator context to NT SYSTEM by using the SeDebugPrivilege to adjust 
+    the memory of running process with a call to the AdjustTokenPrivilege API. 
+    This method uses built-in Windows APIs and commands to escalate privileges 
+    by changing the privileges of the running process in-memory. See Palantir 
+    reference. 
+    
+    The intention of access token impersonation/theft is to grant a process the 
+    same permissions as another running process with a specific context, often 
+    NT SYSTEM. This may increase the capabilities of the now-elevated process 
+    or reduce its probability of detection.
+
+    For access token impersonation an adversary can use standard command-line 
+    shell to initiate 'runas' commands or to use payloads that call Windows 
+    token APIs directly. The changes in Windows API calls can manipulate 
+    access tokens for further account access and malicious purposes. 

@@ -1,0 +1,76 @@
+name: Changes to Azure infrastructure deployed through Azure CLI
+criticality: Baseline - Negligible
+references:
+  public:
+    1: https://learn.microsoft.com/en-us/cli/azure/vm/extension?view=azure-cli-latest
+    2: https://learn.microsoft.com/en-us/cli/azure/sentinel?view=azure-cli-latest
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 60c5b065-7d06-4697-850f-c2f80765f10b
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-12-22
+  modified: 2022-12-22
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Execution
+  att&ck:
+    - T1059
+  domains:
+    - Public Cloud
+  terrain: |
+    A threat actor controls either privileged credentials or a service 
+    principal (SPN) and an endpoint from which Azure CLI can be run. 
+  targets:
+    - Control Server
+    - Cloud Storage Accounts
+    - Compute Cluster
+    - DNS
+    - Firewall
+    - Function-as-a-Service
+    - Identity Services
+    - Input/Output Server
+    - Key Store
+    - Network Equipment
+    - Public-Facing Servers
+    - NoSQL Database
+    - Relational Database
+    - Router or switch
+    - Virtual Machines
+    - Web Application Servers
+    - Engineering Workstation
+  platforms:
+    - Azure 
+  severity: Localised incident
+  leverage:
+    - Modify configuration
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Impairement
+    - Lose Capabilities
+    - Nuisance
+    - Operating costs
+  viability: Almost certain
+  description: |
+    A threat actor in control of the prerequisites may attempt to use the Azure
+    CLI to perform changes either to the endpoint from which the CLI is 
+    accessed or on remote infrastructure, user accounts, service principals, 
+    or configurations. 
+
+    A threat actor can only perform changes that are allowed in the scopes of
+    credentials, temporary credentials, or service principals that the threat 
+    actor has control of, barring usage of a vulnerability in Azure to allow
+    more than that.

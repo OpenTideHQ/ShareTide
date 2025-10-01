@@ -1,0 +1,82 @@
+name: DLL Execution over Rundll32
+criticality: Severe
+references:
+  public:
+    1: https://research.splunk.com/stories/suspicious_rundll32_activity/
+    2: https://www.attackify.com/blog/rundll32_execution_order
+    3: https://renenyffenegger.ch/notes/Windows/dirs/Windows/System32/rundll32_exe/example-dll
+    4: https://www.elastic.co/security-labs/Hunting-for-Suspicious-Windows-Libraries-for-Execution-and-Evasion
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: f3a392f7-3268-4c54-8bfa-8117b784f520
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2023-07-25
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+    - name: att&ck::G0059 #[Enterprise] Magic Hound, APT35, COBALT ILLUSION, Charming Kitten, ITG18, Mint Sandstorm, Newscaster, Phosphorus, TA453
+    - name: misp::c1d44f44-425e-48fd-b78b-84b988da8bc3 #TA453
+    - name: att&ck::G0108 #[Enterprise] Blue Mockingbird
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+    - name: att&ck::G0092 #[Enterprise] TA505, CHIMBORAZO, Hive0065, Spandex Tempest
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505, SectorJ04, SectorJ04 Group, GRACEFUL SPIDER, GOLD TAHOE, Dudear, G0092, ATK103, Hive0065, CHIMBORAZO, Spandex Tempest
+  killchain: Exploitation
+  att&ck:
+    - T1218.011
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Adversary must have enough privileges on the Windows host to bypass application
+    control solutions via the rundll32.exe process. Natively, rundll32.exe will load
+    DLLs and is a great example of a Living off the Land Binary.    
+  targets:
+    - Web Application Servers
+    - Virtual Machines
+    - Laptop
+    - Workstations
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Modify privileges
+    - Elevation of privilege
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    Rundll32.exe is a powerful asset for adversaries to proxy execution of arbitrary
+    and malicious code. It is flexible and efficient for loading code into memory,
+    as may load malicious DLLs by ordinals, function names or directly.
+    Rundll32.exe has a certain degree of trust; which can result in a possible
+    AppLocker and Software Restriction Policies (SRP) bypass.
+
+    Adversaries rely on distinct vectors to infect their targets, who might get
+    infected. Upon successful exploitation, malicious actors have been seen executing
+    DLL files using Rundll32.exe for multiple purposes; such as download and execute a
+    payload from a remote server (DLL path could be both local and remote when the DLL
+    is hosted on a SMB share using UNC paths), contact C&C server to upload stolen data
+    or dump LSASS process memory to obtain credentials.
+    

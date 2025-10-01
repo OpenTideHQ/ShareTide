@@ -1,0 +1,123 @@
+name: Windows system links used for file redirection attack
+criticality: High
+references:
+  public:
+    1: https://unit42.paloaltonetworks.com/junctions-windows-redirection-trust-mitigation/
+    2: https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/windows/local/cve_2020_0787_bits_arbitrary_file_move.rb
+    3: https://www.rapid7.com/db/vulnerabilities/msft-cve-2020-0787/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 9fc6fdcd-c06e-4f7b-8562-a6753d8be683
+  schema: tvm::2.0
+  version: 1
+  created: 2024-04-24
+  modified: 2024-06-25
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #-
+  killchain: Defense Evasion
+  att&ck:
+    - T1562 #Impair Defenses
+    - T1027.012 #Obfuscated Files or Information: LNK Icon Smuggling
+  cve:
+    - CVE-2020-0787 # Windows Background Intelligent Transfer Service (BITS) improperly handles symbolic links
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor needs an initial access to the system with 
+    standard user rights.
+  targets:
+    - Workstations
+    - Control Server
+    - End-user
+    - Desktop
+    - Directory
+    - Remote access
+    - System admin
+  platforms:
+    - Windows
+    - Azure AD
+    - Active Directory
+  severity: Localised incident
+  leverage:
+    - Infrastructure Compromise
+    - Dwelling
+    - Elevation of privilege
+    - Tampering
+  impact:
+    - Impairement
+    - Nuisance
+    - Data Breach
+    - Reputational Damages
+  viability: Environment dependent
+  description: |
+    By using different types of file system links, such as hard links or junctions, 
+    attackers can trick the privileged component into operating on files which is 
+    not supposed to access. The end goal for such attacks is usually to write an 
+    attacker-supplied executable (such as a DLL or a script) to the disk, 
+    and to get it executed with system permissions (ref \[1\]).  
+
+    For example, to achieve code execution as the SYSTEM user, threat actors start 
+    an orchestrator update service, which will result in a malicious DLL being run 
+    with SYSTEM privileges due to a DLL hijacking issue within the Update Session 
+    Orchestrator Service. (ref \[2\])  
+
+    The most common file redirection links are:
+
+    ##### LNK files (shortcut files)
+
+    These are files with the .LNK extension, which are used to create shortcuts to 
+    other files or folders. Attackers can exploit LNK files to execute malicious 
+    code by creating a shortcut that points to a malicious file instead of the original 
+    intended target.  
+
+    ##### Junction points
+
+    Junction points are special folders in Windows that link to another folder, allowing 
+    the operating system to treat the content of the target folder as if they were 
+    located in the junction point's folder. Attackers can use junction points to redirect 
+    file access to a different location, potentially allowing them to access or modify 
+    files that should not be accessible.  
+
+    Junctions are a feature of the NT file system (NTFS) that make it possible to link one 
+    directory into another. They are used by default, linking some directories such as 
+    "C:\\Documents and Settings".  
+
+    A common vulnerable pattern may exist in the hard (junction) links as follows 
+    (for example CVE-2020-0787):
+
+    * A privileged service exposes functionality that can be triggered through some 
+    interprocess communication (IPC) mechanism, such as remote procedure call (RPC). 
+    That functionality can be triggered by users running at lower privilege levels.  
+    * That functionality operates on a file (writing data into that file) that is 
+    located under a globally writable directory. The operation is done without 
+    impersonation, meaning it occurs with the permissions of that system service.  
+
+    To exploit this vulnerability in the system links a threat actor first creates a junction 
+    between that directory and their target, which is usually C:\\Windows or one of its 
+    subdirectories. Next, the attacker triggers the RPC call, which follows the junction to 
+    overwrite a system DLL file. Finally, that malicious DLL is loaded by some service, 
+    and the attacker's supplied code gets executed with system permissions (ref \[1\]).  
+
+    ##### Symbolic links:
+
+    Symbolic links (also known as symlinks or soft links) are similar to junction points, 
+    but they can link to individual files as well as folders. Symbolic links can be used to 
+    redirect file access to a different file or folder, which may allow an attacker to 
+    execute malicious code or access sensitive information.  
+
+    ##### NTFS Alternate Data Streams (ADS):
+
+    Alternate Data Streams are a feature of the NTFS file system that allows storing 
+    metadata within a file. Attackers can abuse ADS to hide malicious code or sensitive 
+    information within an innocent-looking file. When the file is accessed, the malicious 
+    content in the ADS is executed without the user's knowledge.  

@@ -1,0 +1,125 @@
+name: AppLocker bypass
+criticality: High
+references:
+  public:
+    1: https://techyrick.com/applocker-bypass-windows-privilege-escalation/
+    2: https://github.com/api0cradle/UltimateAppLockerByPassList/blob/master/Generic-AppLockerbypasses.md
+    3: https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/applocker/applocker-technical-reference
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 197c06c8-7959-4e28-9ede-b3e7b6f13442
+  schema: tvm::2.1
+  version: 2
+  created: 2025-02-04
+  modified: 2025-07-23
+  tlp: clear
+  #author:
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group
+    - name: misp::f02679fa-5e85-4050-8eb5-c2677d93306f #Volt Typhoon
+      #sighting: |
+        #Type Here
+      #references:
+        #-
+  killchain: Privilege Escalation
+  att&ck:
+    - T1218 #System Binary Proxy Execution
+  chaining:
+    - relation: atomicity::implemented
+      vector: 9a1aeae5-912e-492c-b5d4-8bce91a95dae # AppLocker enumerating policy bypass
+      description: |
+        One of the methods to bypass an Applocker is to enumerate AppLocker
+        policies. A vulnerability in these policies can lead to compromise
+        AppLocker defence mechanisms and unauthorised applications access. 
+
+    - relation: atomicity::implemented
+      vector: ff8c52ac-77d0-4bee-9f6d-e40fc6e0da63 # AppLocker bypass using writable folders
+      description: | 
+        A threat actor can place a malicious executable in a writable folder
+        that is not restricted by AppLocker. This technique is used to bypass
+        AppLocker controls.   
+
+    - relation: atomicity::implemented
+      vector: a73c2506-8584-4c0b-bfdc-52e33c8bd229 # AppLocker bypass using DLLs
+      description: | 
+        A malicious DLL can mimic a legitimate process, which is allowed to run
+        by AppLocker. A threat actor can use this technique to bypass AppLocker
+        protection mechanism and functionality. 
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary must have administrative privileges on Windows systems within 
+    the enterprise network.
+  targets:
+    - Workstations
+    - Laptop
+  platforms:
+    - Active Directory
+    - PowerShell
+    - Windows
+  severity: Localised incident
+  leverage:
+    - Modify configuration
+    - Modify privileges
+    - Software installation
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+    - Operating costs
+  viability: Environment dependent
+  description: |
+    ### AppLocker rules types 
+
+    AppLocker can be found from within the Group Policy Management at _Local Computer Policy ->
+    Computer Configuration -> Windows Settings -> Security Settings -> Application Control Policies_.
+    Four rule types are available:  
+    - Executable rules: enforces the rules for executable files (`.exe`).
+    - Windows Installer rules: enforces the rules for windows installer files (`.msi`).
+    - Script rules: enforces the rules for PowerShell, JScript, VB and older file formats (`.cmd`, `.bat`).
+    - Package app rules: enforces the rules for packages that can be installed through Microsoft Store.
+
+    ### Enumerating AppLocker policies
+
+    AppLocker policies can be enumerated using the registry query functionality, as show below:
+    `reg query HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\SrpV2\`
+
+    ## Several strategies are available:
+    
+
+    ### Bypassing leveraging trusted folders
+
+    There are several writable folders within `C:\WINDOWS` where standard users have write permissions by default.
+    `accesschk.exe` from Sysinternals Suite can be used to find folders that are writable and can be leveraged.
+    Furthermore, `icacls.exe` can be used to determine if we also have execute rights within the targeted folder.
+    By moving a binaryfile (for example) to the folder with execute rights, it is possible to execute the binary.
+
+    ### Bypassing using DLLs
+
+    From the initial setup there was no option of blocking out DLLs by default, resulting in another way of bypassing
+    the application whitelisting. Note that AppLocker configuration can be further tweaked to restrict the usage of
+    DLLs by enabling DLL rule collection from within the AppLocker properties.
+
+    ### Bypassing using Alternate Data Stream
+
+    Another method to bypass AppLocker involves embedding an executable into another file, known as an 
+    alternate data stream (ADS), and then executing the EXE from the ADS. AppLocker rules do not prevent executables
+    from running within an ADS.
+
+    ### Bypassing using third parties
+
+    Third party tools or software can be used to bypass the AppLocker policy. However, this is conditional, as it
+    requires the system to have installed these tools on it. An example would be using Python or Perl.

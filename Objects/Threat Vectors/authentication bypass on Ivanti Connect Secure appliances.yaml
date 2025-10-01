@@ -1,0 +1,115 @@
+name: authentication bypass on Ivanti Connect Secure appliances
+criticality: Severe
+references:
+  public:
+    1: https://www.volexity.com/blog/2024/01/10/active-exploitation-of-two-zero-day-vulnerabilities-in-ivanti-connect-secure-vpn/
+    2: https://attackerkb.com/topics/AdUh6by52K/cve-2023-46805/rapid7-analysis?referrer=etrblog
+    3: https://www.mandiant.com/resources/blog/investigating-ivanti-zero-day-exploitation
+    4: https://www.mandiant.com/resources/blog/investigating-ivanti-exploitation-persistence
+
+metadata:
+  uuid: 810057c6-cb84-41e4-add4-ae56b52c8ab7
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2024-01-15
+  modified: 2024-01-29
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::2dd31182-bae1-48ed-8bb3-805a3df89783 #Gelsemium, 狼毒草
+  killchain: Exploitation
+  att&ck:
+    - T1011 #Exfiltration Over Other Network Medium
+    - T1041 #Exfiltration Over C2 Channel
+    - T1070 #Indicator Removal
+    - T1190 #Exploit Public-Facing Application
+  #chaining:
+    #- relation: support::enabled
+      #vector: 4b1c47ee-f45a-4b89-98e7-e943bcd5dd19 #Command injection on web components Ivanti Conne...
+      #description: |
+        #Following successful command injection, adversaries try to 
+        #bypass authentication.
+  cve:
+    - CVE-2023-46805
+    - CVE-2024-21888
+    - CVE-2024-21893
+    - CVE-2024-22024
+  domains:
+    - Embedded
+    - Enterprise
+    - Networking
+  terrain: |
+    Ivanti Connect Secure appliance vulnerable to authentication bypass (CVE-2023-46805)
+  targets:
+    - Remote access
+    - VPN Client
+  platforms:
+    - Placeholder
+  severity: Highly significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Elevation of privilege
+    - Log tampering
+    - Modify configuration
+    - Tampering
+    - New Accounts
+  impact:
+    - Business disruption
+    - Operating costs
+    - Reputational Damages
+    - Data Breach
+  viability: Almost certain
+  description: |
+    ### chained exploitation of CVE-2023-46805 or CVE-2024-21893 together with CVE-2024-21887.
+
+    Attackers may chain exploits on vulnerabilities CVE-2023-46805 and 
+    CVE-2024-21893 on Ivanti Connect Secure (ICS) appliances (that provide 
+    remote VPN access to corporate infrastructures) to fully compromise the 
+    vulnerale appliance.  
+
+    The code on the appliance checks whether access to the requested uri_path 
+    requires authentication or not. For endpoint `/api/v1/totp/user-backup-code` 
+    the check is done only on the start of the string.  
+    
+    So an attacker can append additional characters that are passed to the 
+    webserver without additional checks. Using path traversal technique, it is 
+    then possible to access API endpoints that would require authentication 
+    when accessed directly. For example, successful request to 
+    `/api/v1/totp/user-backup-code/../../system/system-information` will return
+    the system information.  
+
+    CVE-2023-46805 allows then to access any other uri_path without 
+    authentication and enables exploitation of CVE-2024-21887.
+
+    Later it was reported that initial mitigations for CVE-2023-46805 could be 
+    by passed by exploiting CVE-2024-21893 to bypass authentication and 
+    enabling CVE-2024-21887 without using vulnerable uri paths or to drop 
+    custom webshells ([BUSHWALK](https://advantage.mandiant.com/malware/malware--96732cf0-d99a-501b-9646-c49f2b30dd5a) 
+    [LIGHTWIRE](https://advantage.mandiant.com/malware/malware--089bf6cc-9b67-5bd5-8fd3-3330e7cedf7e) 
+    [CHAINLINE](https://advantage.mandiant.com/malware/malware--4a3560fd-5ec5-5581-a8f7-1c888d28186b) 
+    and others have been observed.  
+
+    Exploitation of the SSRF generates up to 2 log events:
+    - AUT31556 on `/dana-ws/saml.ws`
+    - ERR31093: Program saml-server recently failed. 
+
+    Likewise, exploition of CVE-2024-21893 or CVE-2024-22024 enables 
+    exploitation of CVE-2024-21887.
+
+    ### Other TTPs
+
+    - *Configuration and data theft* Exfiltration of configuration or cache 
+    data either in the response to the request (so on apparently legit activity)
+    or by replacing or creating a new file under unauthenticated uri path.
+    - CAV Web Server Log Exfiltration 
+    - Internal Check tool tampering
+    - System log clearing: In some instances, logs have been cleared using the legitimate system 
+    utility therefore generating event ID ADM20599.
+ 
+
+    
+

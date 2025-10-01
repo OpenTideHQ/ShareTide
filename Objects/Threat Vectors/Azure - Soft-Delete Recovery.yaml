@@ -1,0 +1,163 @@
+name: Azure - Soft-Delete Recovery
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Impact/AZT704/AZT704/
+    2: https://www.microsoft.com/en-us/security/blog/2025/08/27/storm-0501s-evolving-techniques-lead-to-cloud-based-ransomware/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 4805a7a1-807c-4869-aefe-3047823f64b5
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-18
+  modified: 2025-09-19
+  tlp: clear
+  #author: 
+  contributors:
+    - jaime.montane-lorenzo@ext.ec.europa.eu
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Impact
+  att&ck:
+    - T1530 #Data from Cloud Storage
+    - T1490 #Inhibit System Recovery
+    - T1485 #Data Destruction
+  chaining:
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) granting 
+        at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 4e7eae8e-6615-41f2-bfe1-21a04f7a6088 #Azure - Gather Victim Data
+      description: |
+        An adversary successfully compromises a user's Azure Active Directory account credentials 
+        or session token through phishing, credential theft, or token theft.
+    - relation: support::enabled
+      vector: 81338b90-f80c-40cc-8a57-ba97cdf86948 #Azure - Key Vault reconnaissance
+      description: |
+        Adversaries must first compromise user accounts, service principals, or managed 
+        identities that already possess some level of Azure access.
+    - relation: support::enabled
+      vector: 41f57a57-1ed6-407e-bb70-a0f6ab52af10 #Azure - Storage Blobs Reconnaissance
+      description: |
+        Adversaries must have knowledge about the strucuture of Azure Blob Storage and naming
+        conventions, and basic enumeration tools or scripts to carry out reconnaissance-especially
+        when misconfigurations or public access are present.
+    - relation: support::enabled
+      vector: 2d7ed070-e5c5-4796-b150-ea1d02ed1785 #Azure - Storage container reconnaissance
+      description: |
+        Adversaries need to enumerate and discover publicly accessible or misconfigured 
+        Azure storage containers by scanning for storage account names and container names, 
+        often using automated tools or scripts, to identify open containers that may expose 
+        sensitive data.
+    - relation: atomicity::implemented
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online.  
+    - relation: support::synergize
+      vector: 2c6058fb-21db-47fe-99bc-a07cb70c53e4 #Azure - Backup Delete
+      description: |
+        Adversaries gain privileged access to an Azure environment, often through phishing, 
+        credential theft, or exploitation of misconfigurations, to compromise a global administrator 
+        or backup operator account.
+    - relation: support::enabling
+      vector: 37381f28-ad9f-40c3-80f8-d8a82d6ce9a3 #Resource Secret Reveal in Azure
+      description: |
+        Adversaries obtains sufficient privileges (via phishing, misconfigurations, lateral movement,
+        or exploitation of weak access controls).
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+  terrain: |
+    The adversaries must obtain sufficient privileges
+    on the Azure tenant to interact with resources 
+    in a soft-deleted state.
+  targets:
+    - Key Store
+    - Cloud Storage Accounts
+    - Virtual Machines
+    - Serverless
+    - Identity Services 
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Elevation of privilege
+    - Modify configuration
+    - Modify data 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+  viability: Likely
+  description: |
+    The following threat vector deals with adversaries exploiting the soft-delete state 
+    of resources to restore sensitive or critical data that was intended for deletion. 
+    Below is a detailed analysis including an example scenario, attack goals and impact, 
+    and attack flow.
+
+    ### Example Attack Scenario
+
+    An attacker obtains administrative access to an Azure subscription, targets a critical 
+    asset—for example, a Key Vault, Storage Account, or a backed-up Virtual Machine—and 
+    deletes it from the environment. Because Azure’s soft delete is enabled (default 
+    for many services), the deleted resource enters a "soft-deleted" state rather than 
+    being permanently erased. The adversary, maintaining access, then restores the asset 
+    from its soft-deleted state at a later time, thus retrieving encryption keys, sensitive 
+    secrets, storage blobs, or entire VM backup images. This could be leveraged for 
+    further compromise, data exfiltration, or extortion, such as during a ransomware 
+    attack where the goal is to restore and leak or manipulate sensitive data.
+
+    ### Attack Goals and Impact
+
+    - The primary goal is to **retrieve or reinstate sensitive data or backup artifacts** 
+    which were meant to be irretrievably deleted, thus bypassing standard data sanitization 
+    or incident response clean-up.
+    - Attackers may also restore resources to maintain persistence, retrieve secrets, 
+    or conduct business disruption by manipulating the retention window of these soft-deleted resources.
+    - The impact includes:
+      - **Regaining access to critical secrets or data thought to be purged** (e.g., 
+      access keys in a Key Vault, confidential files in a Storage Account, or disk images 
+      from VM backups).
+      - **Circumventing incident remediation efforts** (e.g., after a ransomware event 
+      when defenders try to remove access, attackers reverse the cleanup).
+      - **Using restored data for secondary attacks**, such as extortion by leaking 
+      previously "deleted" data, or using recovered credentials to move laterally within 
+      or outside the environment.
+
+    ### Attack Flow and Methodology
+
+    - **Resource Deletion**: The attacker deletes valuable resources (such as Key Vaults, 
+    Storage Accounts, or VM Backups).
+    - **Soft Delete Retention**: Azure's soft-delete feature retains these resources 
+    for a specified period (typically 14 days by default, extendable up to 180 days).
+    - **Resource Recovery**: Using recovered or maintained admin access, the attacker 
+    issues recovery actions, restoring the soft-deleted objects back to an active state, 
+    and proceeds to exfiltrate or abuse the recovered data.
+    - **Post-Exploitation**: Data is accessed, secrets are used for persistence or lateral 
+    movement, or assets are further manipulated or exposed depending on the attacker’s 
+    objectives.

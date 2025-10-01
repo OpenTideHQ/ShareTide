@@ -1,0 +1,69 @@
+name: Linux kernel module injection from container
+criticality: High
+references:
+  public:
+    1: https://www.giac.org/paper/gsec/935/kernel-rootkits/101864
+    2: https://www.zdnet.com/article/this-new-linux-malware-has-a-sneaky-way-of-staying-hidden/
+    3: https://github.com/milabs/awesome-linux-rootkits
+    4: https://www.debian.org/doc/manuals/securing-debian-manual/ch10s04.en.html
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: dcccd7e5-9d3f-4b36-853a-5cd18a7ef752
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2023-01-09
+  modified: 2023-01-10
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Defense Evasion
+  att&ck:
+    - T1547.006
+  domains:
+    - Embedded
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Threat actor has already escalated privileges to root via an exploit on a 
+    unprivileged container host, or the threat actor exploited an application 
+    running in a highly privileged container, which means a host running 
+    highly privileged containers with CAP_NET_ADMIN or CAP_SYS_MODULE 
+    capabilities or Kubernetes pods running in privileged mode. 
+  targets:
+    - Compute Cluster
+    - Microservices
+    - Virtual Machines Host
+  platforms:
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Repudiation
+    - Software installation
+  impact:
+    - Data Breach
+    - Impairement
+    - Lose Capabilities
+  viability: Environment dependent
+  description: |
+    Loadable Kernel Modules (LKM) can be used by adversaries to deliver 
+    sophisticated and hard to detect rootkits. Each event where kernel modules 
+    are loaded from a container should be investigated with the exeption of 
+    Security tools deployed in containers.
+
+    An injected kernel module is just code execution, and can in theory do 
+    more or less anything, but threat actors mostly use this for dwelling and 
+    for hiding their presence on a system.

@@ -1,0 +1,154 @@
+name: Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access
+criticality: Medium
+references:
+  public:
+    1: https://news.sophos.com/en-us/2025/05/20/a-familiar-playbook-with-a-twist-3am-ransomware-actors-dropped-virtual-machine-with-vishing-and-quick-assist
+    2: https://www.bleepingcomputer.com/news/security/3am-ransomware-uses-spoofed-it-calls-email-bombing-to-breach-networks/
+    3: https://www.intrinsec.com/wp-content/uploads/2024/01/TLP-CLEAR-2024-01-09-ThreeAM-EN-Information-report.pdf
+    4: https://www.security.com/threat-intelligence/3am-ransomware-lockbit
+    5: https://www.ransomlook.io/group/3am
+
+metadata:
+  uuid: c4456134-df7b-4969-b5ff-a24794996890
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-02
+  modified: 2025-06-02
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 3AM Ransomware Group threat actor group. 
+      #sighting: |
+        # 3AM ransomware group used IT support impersonation via spoofed
+        # phone calls to gain initial access to an organization. 
+      #references:
+        #- https://git.s.cec.eu.int/catch/ec-tide/-/issues/incident/4623 # Retro-search page, CERT-EU report
+    
+    #- name: Storm-1811
+      #sighting: |
+        # Storm-1811 using Microsoft Teams as another vector to contact target users.
+        # Microsoft assesses that the threat actor uses Teams to send messages and initiate calls in an attempt to impersonate IT or help desk personnel.
+      #references:
+        #- https://www.microsoft.com/en-us/security/blog/2024/05/15/threat-actors-misusing-quick-assist-in-social-engineering-attacks-leading-to-ransomware
+  killchain: Social Engineering
+  att&ck:
+    - T1624      # Mobile : Event Triggered Execution, spear-phishing technique via phone, the attacker uses a spoofed phone call to trick the victim into granting remote access.
+    - T1566      # Phishing
+    - T1566.004  # Phishing: Spearphishing Voice
+    - T1210      # Exploitation of Remote Services
+    - T1033      # System Owner/User Discovery
+    - T1016      # System Network Configuration Discovery
+    - T1219      # Remote Access Software
+    - T1078      #Valid Accounts
+    - T1105      #Ingress Tool Transfer
+  chaining:
+    - relation: atomicity::implements
+      vector: 06c60af1-5fa8-493c-bf9b-6b2e215819f1 # Social engineering attack using Microsoft Teams
+      description: | 
+       In one of the ransomware campaigns is observed that the threat actors
+       are purchasing intentionally Teams accounts which are used further for
+       impersonation purposes. Example: 3AM Ransomware activities. 
+
+       Further the threat actor groups use these accounts for Teams-vishing,
+       which means using “email bombing” to overload a targeted organisation's
+       employees with unwanted emails, and then making a voice or video call
+       over Microsoft Teams posing as a tech support team member to deceive
+       that employee into allowing remote access to their computer ref [1]. 
+
+    - relation: sequence::succeeds
+      vector: 58b98d75-fc63-4662-8908-a2a7f4200902 # Spearphishing with an attachment extension .rdp
+      description: | 
+       A threat actor may send emails with a .rdp attachment to entice 
+       the victim to establish a remote destop session with a server under 
+       attacker control. The RDP session might have broad device mapping
+       configured granting the attacker some access back to local drives.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Mobile
+  terrain: |
+    A threat actor needs initial user's interaction to gain access
+    to the platform. For example assistance, accept invitation to
+    a fake technical support or other "assistance". 
+  targets:
+    - Call center
+    - Customer
+    - End-user
+    - Laptop
+    - Workstations
+    - Email Platform
+    - Remote access
+    - Desktop
+  platforms:
+    - Windows
+    - Microsoft Teams
+    - iOS
+    - Android
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Spoofing
+    - Elevation of privilege
+  impact:
+    - Identity Theft
+    - Data Breach
+    - Impairement
+    - Reputational Damages
+    - Business disruption
+  viability: Likely
+  description: |
+    IT support impersonation via spoofed phone calls is a common social
+    engineering technique used by attackers to gain initial access to an
+    organisation's network. This tactic is often combined with other
+    techniques, such as email flooding or phishing, to create a sense
+    of urgency and legitimacy. To deceive victims, attackers may use
+    one of the following methids:
+
+    - Use spoofed phone numbers: The threat actors can use spoofed phone
+    numbers that appear to be from the organisation's IT department or a
+    legitimate company.  
+    - Create a sense of urgency: Attackers may claim that there is a critical
+    issue with the victim's computer or account that requires immediate
+    attention.
+    - Use technical jargon: Some threat actor groups are observed to use
+    technical terms and acronyms to sound legitimate and knowledgeable.
+    - Request remote access: Attackers may ask the victim to grant remote
+    access to their computer or network, often through tools like Zoom,
+    Anydesk, Any Connect, TeamViewer or Microsoft Quick Assist.    
+
+    ### Possible scenario
+    
+    Threat actor groups are targeting an organisation by gathering variety of
+    user's data, for example, employee email addresses and the IT department's
+    phone number. They can flood an employee with unsolicited emails and then
+    impersonate IT support via a spoofed phone call, tricking the employee
+    into granting remote access through `Microsoft Quick Assist` ref [1].   
+    
+    Because `Quick Assist` uses the RDP stack (T1021.001), the attacker gains
+    an RDP session under the user's context. If the targeted users has extended
+    rights, the attacker can sidesteps perimeter ACLs, and disables input
+    monitoring. A hidden admin account is added ref [1], [3]:  
+    
+    ```
+    *net user svc_updater P@ss123! /add*,
+    *net localgroup administrators svc_updater /add*)
+    ```
+    
+    and a signed Hyper-V VHDX (`*windows_storage.vhdx*`) containing Cobalt
+    Strike and the 3AM encryptor is transferred over SMB. Credential dumping
+    from *lsass.exe* and *net group "domain admins" /DOMAIN* follow, before
+    the payload encrypts mapped drives and drops *README_3AM.txt*.  
+
+    By performing such attack, the threat actor maintains persistence and
+    can exfiltrates available data towards any server he controls.  

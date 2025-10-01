@@ -1,0 +1,129 @@
+name: Abusing Lolbins to Enumerate Local and Domain Accounts and Groups
+criticality: High
+references:
+  public:
+    1: https://attack.mitre.org/techniques/T1087/001/
+    2: https://attack.mitre.org/software/S0039/
+    3: https://www.nextofwindows.com/the-net-command-line-to-list-local-users-and-groups
+
+metadata:
+  uuid: 3b1026c6-7d04-4b91-ba6f-abc68e993616
+  schema: tvm::2.0
+  tlp: clear
+  version: 5
+  created: 2022-11-10
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0006 #[Enterprise] APT1, Comment Crew, Comment Group, Comment Panda
+    - name: misp::1cb7e1cc-d695-42b1-92f4-fd0112a3c9be #APT1, COMMENT PANDA, PLA Unit 61398, Comment Crew, Byzantine Candor, Group 3, TG-8223, Comment Group, Brown Fox, GIF89a, ShadyRAT, G0006
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: att&ck::G0050 #[Enterprise] APT32, APT-C-00, BISMUTH, Canvas Cyclone, OceanLotus, SeaLotus
+    - name: misp::aa29ae56-e54b-47a2-ad16-d3ab0242d5d7 #APT32, OceanLotus Group, Ocean Lotus, OceanLotus, Cobalt Kitty, APT-C-00, SeaLotus, Sea Lotus, APT-32, APT 32, Ocean Buffalo, POND LOACH, TIN WOODLAWN, BISMUTH, ATK17, G0050, Canvas Cyclone
+    - name: att&ck::G0004 #[Enterprise] Ke3chang, APT15, GREF, Mirage, NICKEL, Nylon Typhoon, Playful Dragon, RoyalAPT, Vixen Panda
+    - name: misp::3501fbf2-098f-47e7-be6a-6b0ff5742ce8 #APT15, VIXEN PANDA, Ke3Chang, Playful Dragon, Metushy, Lurid, Social Network Team, Royal APT, BRONZE PALACE, BRONZE DAVENPORT, BRONZE IDLEWOOD, NICKEL, G0004, Red Vulture, Nylon Typhoon, Mirage
+  killchain: Discovery
+  att&ck:
+    - T1087.001
+    - T1087.002
+    - T1069.001
+    - T1069.002
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Adversaries can take advantage of already compromised system (Windows or 
+    Linux OS or OSX) to run commands.
+  targets:
+    - Desktop
+    - Directory
+    - Engineering Workstation
+    - Firewall
+    - Laptop
+    - Public-Facing Servers
+    - Web Application Servers
+    - Workstations
+  platforms:
+    - AWS EC2
+    - AWS ECS
+    - AWS EKS
+    - Linux
+    - macOS
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+  impact:
+    - Identity Theft
+    - Nuisance
+    - Reputational Damages
+  viability: Likely
+  description: |
+    Adversaries may attempt to enumerate the environment and list all
+    local system and domain accounts or groups.  
+    To achieve this purpose, they can use variety of tools and techniques.  
+    Their goal is reconnaissance, gathering of user's account information on 
+    the system or in the domain and further usage of accounts with higher 
+    privilege access.
+
+    
+    ### For Windows OS:
+
+    On Windows platforms threat actors can use the net utility or dsquery,
+    as examples as lolbins. Net utility commands, as examples, are executed
+    with additional parameters like "net localgroup", "net user" for
+    administrators and guest accounts. For domain users and groups net
+    utility commands are used with the parameter /domain.  
+    
+    Examples:   
+
+    - net user /domain
+    - net group /domain
+    - net localgroup on localhost
+    - net user on localhost
+    - net localgroup "Administrators" on localhost
+
+    Executable files net.exe or net1.exe are indicators for accounts enumeration.
+    "Net1.exe" resides in "C:\Windows\System32" like "net.exe" and indicates process 
+    known as Net Command or Application Installer. These .exe files are usually related 
+    to run applications, batch files, and scripts that call Net utility.  
+    
+    Threat actors may enumerate currently or previously connected users, or a subset
+    of users as for example administrative users.  
+
+    ### For Linux OS (including Windows Subsystem for Linux):
+
+    Here some example of commands typically used for discovery on accounts 
+    and groups.
+
+    - whoami        #current user (often used in legitimate scripts)
+    - hostname      #show or set the system's host name
+    - id            #print real and effective user and group IDs
+    - uname         #print system information
+    - arp
+    - users
+    - netdiscover
+    - ifconfig	  #configure a network interface
+    - nmap
+    - ps            #report a snapshot of the current processes
+    - netstat
+    - uname
+    - issue
+    - groups
+    - tcpdump
+    - sudo -l
+    - cat /etc/shadow
+    - cat /etc/passwd # other command could be used to list the content of the file ex: 'less', 'more' etc.
+    - cat /etc/group  # Groups
+    - cat /etc/sudoers # File that allocate system rights to users
+    - last            # most recent login sessions
+    - ldapsearch      # Get information from LDAP server
+    - rpcclient       # Command-line utility used to interact with Microsoft RPC protocol. Could be used to enumerate AD
+    - finger          #  user information lookup command 

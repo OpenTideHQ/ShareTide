@@ -1,0 +1,138 @@
+name: SharePoint ToolShell vulnerabilities
+criticality: High
+references:
+  public:
+    1: https://www.trendmicro.com/en_us/research/25/g/cve-2025-53770-and-cve-2025-53771-sharepoint-attacks.html
+    2: https://research.eye.security/sharepoint-under-siege # the threat actors are using a tool called ysoserial 
+    3: https://msrc.microsoft.com/blog/2025/07/customer-guidance-for-sharepoint-vulnerability-cve-2025-53770 # Customer guidance for SharePoint vulnerability CVE-2025-53770
+    4: https://thehackernews.com/2025/07/microsoft-releases-urgent-patch-for.html # Microsoft patches for SharePoint RCE flaw, includes patches for CVE-2025-53770 and CVE-2025-53771
+    5: https://support.microsoft.com/en-us/topic/description-of-the-security-update-for-sharepoint-enterprise-server-2016-july-8-2025-kb5002744-9196e240-c76d-4bb0-b16c-6f7d6645a1f0 # Security update for SharePoint vulnerabilities
+    6: https://securityaffairs.com/180267/apt/microsoft-linked-attacks-on-sharepoint-flaws-to-china-nexus-actors.html
+    7: https://www.microsoft.com/en-us/security/blog/2025/07/22/disrupting-active-exploitation-of-on-premises-sharepoint-vulnerabilities
+    8: https://thehackernews.com/2025/07/storm-2603-exploits-sharepoint-flaws-to.html
+    9: https://thehackernews.com/2025/07/microsoft-links-ongoing-sharepoint.html
+    10: https://www.microsoft.com/en-us/security/blog/2025/07/22/disrupting-active-exploitation-of-on-premises-sharepoint-vulnerabilities # Linen Typhoon threat actor, a China-based threat actor
+
+metadata:
+  uuid: 55227203-38dc-406b-943a-9c1c6023d1cd
+  schema: tvm::2.1
+  version: 1
+  created: 2025-07-28
+  modified: 2025-08-16
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0027 #[Enterprise] Threat Group-3390, APT27, BRONZE UNION, Earth Smilodon, Emissary Panda, Iron Tiger, LuckyMouse, TG-3390
+    - name: misp::834e0acd-d92a-4e38-bb14-dc4159d7cb32 #APT27, GreedyTaotie, TG-3390, EMISSARY PANDA, TEMP.Hippo, Red Phoenix, Budworm, Group 35, ZipToken, Iron Tiger, BRONZE UNION, Lucky Mouse, G0027, Iron Taurus, Earth Smilodon
+      sighting: |
+        Linen Typhoon (APT27) is linked threat actor to Ministry of State
+        Security (MSS) of the People's Republic of China. This threat actor is
+        observed to exploit SharePoint vulnerabilities since 2019. 
+
+        Since 2012, Linen Typhoon has focused on stealing intellectual property,
+        primarily targeting organizations related to government, defense,
+        strategic planning, and human rights ref [10].
+      references:
+        - https://www.microsoft.com/en-us/security/blog/2025/07/22/disrupting-active-exploitation-of-on-premises-sharepoint-vulnerabilities # ref[10].
+
+    - name: att&ck::G0128 #[Enterprise] ZIRCONIUM, APT31, Violet Typhoon
+    - name: misp::6bf7e6b6-5917-45a6-9567-f0baba79768c #APT31, ZIRCONIUM, JUDGMENT PANDA, BRONZE VINEWOOD, Red keres, Violet Typhoon, TA412, Zirconium
+      sighting: |
+        A Chinese affiliated threat actor Violet Typhoon (APT31) exploits
+        SharePoint vulnerabilities and targets internet-facing SharePoint
+        servers. More details in ref [4].
+      references:
+        - https://securityaffairs.com/180267/apt/microsoft-linked-attacks-on-sharepoint-flaws-to-china-nexus-actors.html # ref[4].
+
+    - name: att&ck::G1019 # Storm-2603, BORON, BRONZE MAYFAIR, Red Sylvan, Brocade Typhoon
+    - name: misp::981402be-3b2d-4310-a7c6-c773aec869c1 #Storm-2603
+      sighting: |
+          Another China-based threat actor, tracked as Storm-2603, exploiting the
+          same SharePoint vulnerabilities to deploy ransomware. Storm-2603 initial
+          access to the environment using the `spinstall0.aspx` payload. This
+          initial access is used to conduct command execution and then initiates
+          a series of discovery commands, including `whoami`, to enumerate user
+          context and validate privilege levels ref [7].     
+      references:
+        - https://www.microsoft.com/en-us/security/blog/2025/07/22/disrupting-active-exploitation-of-on-premises-sharepoint-vulnerabilities # ref[7].
+  killchain: Defense Evasion
+  att&ck:
+    - T1190 # Exploit Public-Facing Application
+    - T1212 # Exploitation for Credential Access
+    - T1078 # Valid Accounts
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  cve:
+    - CVE-2025-53770 # CVSS score: 9.8 (High), Microsoft SharePoint server remote code execution vulnerability - this flaw allows an unauthorised attacker to execute code over a network.
+    - CVE-2025-53771 # CVSS score: 6.3 (Medium), Spoofing vulnerability due to improper limitation of a path name to a restricted directory (path traversal). 
+  domains:
+    - Enterprise
+  terrain: |
+    Vulnerable SharePoint server allowing unauthenticated requests leading to
+    remote code execution.  
+  targets:
+    - Public-Facing Servers
+    - Customer
+    - End-user
+    - Remote access
+    - System admin
+  platforms:
+    - Microsoft SharePoint # SharePoint on premises istances affected
+    - Windows
+  severity: Highly significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Spoofing
+    - Tampering
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Reputational Damages
+  viability: Likely
+  description: |
+    SharePoint zero-day vulnerabilities, known also as `ToolShell` are affecting
+    on-premise Microsoft SharePoint servers, which enable the attackers to
+    execute code on SharePoint servers without authentication, bypassing
+    security mechanisms. This vulnerabilities are considered with a high
+    security risk because they may lead to a remote code execution (RCE)
+    and a fully compromise of a SharePoint environment. 
+
+    What is known until now for these vulnerabilities is that a threat actor
+    deploys initially a malicious ASPX file `spinstall0.aspx`, also knows as
+    `SharpyShell`. The malicious file purpose is to extract and leak
+    cryptographic secrets from the SharePoint server using a simple GET request.
+    The goal of the threat actor is to obtain the server's MachineKey
+    configuration, including the critical ValidationKey , which are essential
+    for generating valid payloads ref [1].    
+
+    With these keys, the attackers can effectively turn any authenticated
+    SharePoint request into a remote code execution opportunity, bypassing the
+    need for credentials and gaining full control of the server.  
+
+    The attacker then uses a tool called `ysoserial` to craft their own valid
+    SharePoint token for remote code execution with full persistence and no
+    authentication ref [2].
+    
+    It was identified successful zero-day exploitation in the SharePoint systems
+    of at least seven Union entities. But those incidents were not considered
+    as severe incident because the Defender EDR blocked post-compromise attempts.
+    Based on the current analysis and investigation there was not detected any
+    leak of credentials used for post-exploitation activities.
+
+    At this moment Microsoft released new SharePoint patches to fix these
+    vulnerabilities. Microsoft has released security updates that fully protect
+    customers using all supported versions of SharePoint affected by these two
+    vulnerabilities. For more information about patching review the customer
+    guidance for SharePoint vulnerability ref [3],[4].   
+ 

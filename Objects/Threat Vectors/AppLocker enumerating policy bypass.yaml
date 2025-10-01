@@ -1,0 +1,144 @@
+name: AppLocker enumerating policy bypass
+criticality: High
+references:
+  public:
+    1: https://oddvar.moe/2019/02/01/bypassing-applocker-as-an-admin
+    2: https://techyrick.com/applocker-bypass-windows-privilege-escalation
+    3: https://learn.microsoft.com/en-us/visualstudio/msbuild/walkthrough-using-msbuild?view=vs-2022 # MSBuild tool
+    4: https://deepwiki.com/peass-ng/PEASS-ng/3-winpeas # WinPEAS tool
+    5: https://securitycafe.ro/2023/05/02/bypassing-application-whitelisting
+    6: https://mycloudnet.wordpress.com/2015/08/20/verify-applocker-settings-in-the-registry
+    7: https://medium.com/@Idabian/abusing-applocker-misconfigurations-powershell-without-powershell-part-2-24d61ce3202f
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 9a1aeae5-912e-492c-b5d4-8bce91a95dae
+  schema: tvm::2.1
+  version: 1
+  created: 2025-07-11
+  modified: 2025-07-11
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29, Group 100, COZY BEAR, The Dukes, Minidionis, SeaDuke, YTTRIUM, IRON HEMLOCK, Grizzly Steppe, G0016, ATK7, Cloaked Ursa, TA421, Blue Kitsune, ITG11, BlueBravo, Nobelium, UAC-0029
+      sighting: |
+        APT29 group is observed threat actor in the time known to use AppLocker
+        enumeration techniques to bypass security controls and execute malicious
+        code.
+      references:
+        - https://medium.com/@Idabian/abusing-applocker-misconfigurations-powershell-without-powershell-part-2-24d61ce3202f # ref [7]
+  killchain: Defense Evasion
+  att&ck:
+    - T1218 # System Binary Proxy Execution
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor needs to have sufficient privileges to enumerate AppLocker
+    policies and initial access to the targeted system. 
+
+    Required level of privileges to enumerate SharpAppLocker could be one of
+    the listed below:
+
+    - Local Administrator or elevated privileges
+    - Access to the Windows Management Instrumentation (WMI) or Windows Registry
+    - Ability to execute PowerShell scripts or commands
+  targets:
+    - Workstations
+    - Customer
+    - End-user
+    - Laptop
+    - Other # Windows registries. A threat actor can use Rundll32 native Windows utility for example to bypass AppLocker policies.
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Tampering
+  impact:
+    - Impairement
+    - Data Breach
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    Enumerating policy bypass in AppLocker refers to the process of identifying
+    and exploiting weaknesses or vulnerabilities in AppLocker policies to run
+    unauthorised applications.    
+    
+    A threat actor can use various methods and tools to enumerate AppLocker
+    policies with the goal to find weaknesses in this protection mechanism and
+    to exploit its whitelisting. Some of them are listed below.
+
+    ### Bypass AppLocker policies
+
+    - Renaming executables method - renaming malicious executables to match the
+    name of an allowed application. In this way a threat actor can hide their
+    real malicious executables and intend in order to bypass AppLocker policies. 
+    - Using alternative executable extensions - using alternative executable
+    extensions, such as .scr or .pif, to bypass AppLocker rules.
+    - Enumeration of AppLocker policies tools - a threat actor can use different
+    enumeration tools to check if AppLocker policies are on place and what they
+    are blocking.
+
+    ### Enumerating AppLocker policies
+
+    AppLocker policies can be enumerated using the registry query functionality,
+    as show below ref [5],[6]:  
+
+    'reg query HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\SrpV2\'
+
+    ### Known tools for AppLocker policy enumeration
+
+    AppLocker is a Windows feature that allows administrators to control which
+    applications can run on a device. Threat actors often try to bypass or
+    enumerate AppLocker policies to execute malicious code.
+
+    - PowerShell: PowerShell is a powerful tool that can be used to enumerate
+    AppLocker policies. Threat actors can use PowerShell cmdlets like
+    `Get-AppLockerPolicy` to retrieve AppLocker policies and
+    `Test-AppLockerPolicy` to test whether a specific application is allowed
+    to run.
+    - AppLocker Bypass Tools: There are several tools available online that can
+    bypass AppLocker policies. For example, the tool named `AppLockerBypass` is
+    a tool that uses various techniques to bypass AppLocker policies. Another
+    tool used for this purpose is `BypassAppLocker`. This tool uses PowerShell
+    to bypass AppLocker policies.
+    - MSBuild: MSBuild is a legitimate Windows utility that can be used to build
+    and execute code. Threat actors can use MSBuild to bypass AppLocker policies
+    by executing malicious code.
+    - Rundll32 : RunDLL is a legitimate Windows utility that can be used to execute
+    dll. Threat actors can use RunDLL to bypass AppLocker policies.
+    - Regasm/Regsvr32: Regasm and Regsvr32 are legitimate Windows utilities that
+    can be used to register and execute DLLs. Threat actors can use these tools
+    to bypass AppLocker policies by executing malicious DLLs.
+    - Certutil: Certutil is a legitimate Windows utility that can be used to
+    manage certificates. Threat actors can use Certutil to bypass AppLocker
+    policies by executing malicious code.
+    - Wscript/Cscript: Wscript and Cscript are legitimate Windows utilities that
+    can be used to execute scripts. Threat actors can use these tools to bypass
+    AppLocker policies by executing malicious scripts.
+    - Invoke-AppLockerBypass: This is a PowerShell script that uses various
+    techniques to bypass AppLocker policies.
+    - SharpAppLocker: This is a C# tool that can be used to bypass AppLocker
+    policies.
+    - WinPEAS - WinPEAS is a powerful tool that can be used to audit and bypass
+    Windows security features, including AppLocker policies. For more details
+    related to WinPEAS Applocker enumeration usage check ref [2].  

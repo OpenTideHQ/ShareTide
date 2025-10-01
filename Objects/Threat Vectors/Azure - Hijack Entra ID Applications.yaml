@@ -1,0 +1,57 @@
+name: Azure - Hijack Entra ID Applications
+criticality: Severe
+#references:
+  #public:
+    #1: 
+
+metadata:
+  uuid: 78d5e363-14db-40c0-a1c4-4ba02a3e60d4
+  schema: tvm::2.0
+  tlp: clear
+  version: 3
+  created: 2022-03-17
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Collection
+  att&ck:
+    - T1114
+    - T1114.002
+    - T1098.001
+  terrain: | 
+    The threat actor first needs to compromise an account with a privileged 
+    directory role that was granted the ability to modify Enterprise Applications 
+    or Application Registrations. A frequently targeted role was the Application 
+    Administrator, because it allowed complete control over applications in Azure AD.
+  domains:
+    - Enterprise
+    - Private Cloud
+  targets:
+    - Identity Services
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Substantial incident
+  leverage:
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - IP Loss
+    - National Security
+  viability: Very Likely
+  description: |
+    Hijacking an application (by adding a rogue secret or certificate) with granted permissions 
+    will allow the attacker to access data that is normally protected by MFA requirements.
+    Modification of an application via the browser - The attacker connected to the 
+    Azure Portal with a web browser and added a new secret to an App Registration that
+    had permissions to read all mail. There is no supported way to add a credential 
+    to an Enterprise Application (service principal) via the browser.
+    Modification of an application via PowerShell - The attacker connected to the Microsoft 
+    365 tenant using Azure AD PowerShell. Once connected they added certificates to App 
+    Registrations and Enterprise Applications that had the mail.read and files.read permission.

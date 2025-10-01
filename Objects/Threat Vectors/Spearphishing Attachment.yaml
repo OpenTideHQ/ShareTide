@@ -1,0 +1,147 @@
+name: Spearphishing Attachment
+criticality: Medium
+references:
+  public:
+    1: https://www.greathorn.com/blog/what-are-the-3-phases-of-the-phishing-attack-kill-chain/
+    2: https://www.zerofox.com/blog/anatomy-of-a-phishing-attack/
+    3: https://www.aura.com/learn/phishing-email-examples
+    4: https://fileinfo.com/extension/xlsm # What is an XLSM file extension
+    5: https://www.welivesecurity.com/en/eset-research/update-winrar-tools-now-romcom-and-others-exploiting-zero-day-vulnerability # Threat actors in RomCom malicious campaign use CV lure documents 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84
+  schema: tvm::2.0
+  tlp: clear
+  version: 3
+  created: 2022-03-14
+  modified: 2025-09-23
+  #author:
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+    - name: att&ck::G0047 #[Enterprise] Gamaredon Group, ACTINIUM, Aqua Blizzard, Armageddon, DEV-0157, IRON TILDEN, Primitive Bear, Shuckworm
+    - name: misp::1a77e156-76bc-43f5-bdd7-bd67f30fbbbb #Gamaredon Group, ACTINIUM, DEV-0157, Blue Otso, BlueAlpha, G0047, IRON TILDEN, PRIMITIVE BEAR, Shuckworm, Trident Ursa, UAC-0010, Winterflounder, Aqua Blizzard, Actinium
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0129 #[Enterprise] Mustang Panda, BRONZE PRESIDENT, RedDelta, TA416
+    - name: misp::fceed509-938e-4f9e-acd4-76e6c28dc6f1 #RedDelta
+    - name: att&ck::G0092 #[Enterprise] TA505, CHIMBORAZO, Hive0065, Spandex Tempest
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505, SectorJ04, SectorJ04 Group, GRACEFUL SPIDER, GOLD TAHOE, Dudear, G0092, ATK103, Hive0065, CHIMBORAZO, Spandex Tempest
+    - name: misp::ba9e1ed2-e142-48d0-a593-f73ac6d59ccd #RomCom, Storm-0978, UAT-5647
+  killchain: Delivery
+  att&ck:
+    - T1566.001 #Phishing: Spearphishing Attachment
+  domains:
+    - Enterprise
+    - Mobile
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Spear phishing requires more preparation and time to achieve success 
+    than a phishing attack. That is because spear-phishing attackers
+    attempt to obtain vast amounts of personal information about their
+    victims.  
+    Attackers can get the personal information they need using different
+    ways:  
+    - to compromise an email or messaging system trough other means,
+    - to use OSINT, sourcing Social Media or glean personal information
+    from the user's online presence.
+    They want to craft emails that look as legitimate and attractive as possible 
+    to increase the chances of fooling their targets, for instance sending a malicious 
+    attachment where the filename references a topic the recipient is interested in.
+    The highly personalized nature of spear-phishing attacks makes it more 
+    difficult to identity than widescale phishing attacks.
+  targets:
+    - Email Platform
+    - End-user
+    - Customer
+    - Documents # PDF, Word MS docs, CV files or others which can attract attention
+  platforms:
+    - Windows
+    - Office 365
+    - Android
+    - iOS
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Software installation
+    - Elevation of privilege
+    - Information Disclosure
+    - Infrastructure Compromise
+  impact:
+    - Reputational Damages
+    - Data Breach
+    - Identity Theft
+    - Business disruption
+  viability: Likely
+  description: |
+    Spearphishing messages are often crafted using pernicious social engineering
+    techniques.
+
+    In Spearphishing Attachment attacks, recipients receive emails that contain
+    malicious attachments. The email message entices users to open the
+    attachment(s) using the knowlege gained.
+
+    - displayed sender name is known by the recipient
+    - topic/subject is in the field of activity of the recipient
+    - urgency of user action (less relevant TTP for spearphishing emails)
+
+    These attachments look like valid files. In some cases, they are disguised
+    as MS Office, PDF files or CV files ref [5]. It could be that the attacker
+    manage to capture a legit document, weaponise it and send it to (new)
+    recipients (it has been observed that such attack can occur within tens of
+    minutes after the original legit document was released). In addition, there
+    have also been reports of TAMs sending malicious PowerPoint (PPSX) files
+    that exploit vulnerabilities and emails with Word document attachments that
+    do not require macros to be enabled in order to execute.  
+
+    Attachments may:
+
+    - contain links leading to a page for credential harvesting.
+    - be weaponized to install malicious software on the computer of the user or
+    run some actions on the device;
+    - or open a decoy document. This is quite frequent in attack conducted by TA
+    when the malware within the attachment makes some check and assess that the
+    was not opened on the targeted organisation. Decoy document are meant to
+    evade detection and avoid raising alert or recipient report to cyber
+    security team, such as emails with attached Word documents that do not
+    require enabling macros to execute.
+    
+    ## Common techniques to evade detection
+
+    Attackers may use several way to try to hide visually the true nature of
+    the file.
+
+    ### Double extensions
+
+    Attackers may use double extensions to masquerade the true file type to 
+    trick users into opening files that might seem safe. But this TTP is quite
+    well addressed at front email gateway (blocking by default file with several
+    extension, usually also when within a compressed file). 
+    
+    ### Password-protected attachment
+
+    Malicious password-protected archive files are designed to deceive users
+    and bypass commonly deployed inspection engines to deliver malware and 
+    ransomware down to a user endpoint. If the Email Security tool detects a
+    password-protected attachment, it will scan the metadata of the file;
+    not the content.
+    
+    ### Right-to-Left Override (RLTO)
+
+    Another technique is to hide the real file extension is Right-to-Left 
+    Override (RLTO). Windows supports languages that are written from right 
+    to left using a Unicode character that causes the text that follows it 
+    to be displayed in reverse, this method is used to blend the real file 
+    extension with the file name.

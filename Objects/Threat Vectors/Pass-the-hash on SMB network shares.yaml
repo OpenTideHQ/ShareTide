@@ -1,0 +1,101 @@
+name: Pass-the-hash on SMB network shares
+criticality: High
+references:
+  public:
+    1: https://essay.utwente.nl/71415/1/Ullah_MA_EWI.pdf
+    2: https://www.stationx.net/pass-the-hash-attack/
+    3: https://viperone.gitbook.io/pentest-everything/everything/everything-active-directory/lateral-movement/alternate-authentication-material/wip-pass-the-hash
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 5ea50181-1124-49aa-9d2c-c74103e86fd5
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2023-08-30
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0006 #[Enterprise] APT1, Comment Crew, Comment Group, Comment Panda
+    - name: misp::1cb7e1cc-d695-42b1-92f4-fd0112a3c9be #APT1, COMMENT PANDA, PLA Unit 61398, Comment Crew, Byzantine Candor, Group 3, TG-8223, Comment Group, Brown Fox, GIF89a, ShadyRAT, G0006
+    - name: att&ck::G0087 #[Enterprise] APT39, Chafer, ITG07, Remix Kitten
+    - name: misp::c2c64bd3-a325-446f-91a8-b4c0f173a30b #APT39, Chafer, REMIX KITTEN, COBALT HICKMAN, G0087, Radio Serpens, TA454, ITG07
+    - name: att&ck::G0050 #[Enterprise] APT32, APT-C-00, BISMUTH, Canvas Cyclone, OceanLotus, SeaLotus
+    - name: misp::aa29ae56-e54b-47a2-ad16-d3ab0242d5d7 #APT32, OceanLotus Group, Ocean Lotus, OceanLotus, Cobalt Kitty, APT-C-00, SeaLotus, Sea Lotus, APT-32, APT 32, Ocean Buffalo, POND LOACH, TIN WOODLAWN, BISMUTH, ATK17, G0050, Canvas Cyclone
+    - name: att&ck::G0064 #[Enterprise] APT33, Elfin, HOLMIUM, Peach Sandstorm
+    - name: misp::4f69ec6d-cb6b-42af-b8e2-920a2aa4be10 #APT33, APT 33, Elfin, MAGNALLIUM, Refined Kitten, HOLMIUM, COBALT TRINITY, G0064, ATK35, Peach Sandstorm, TA451
+    - name: att&ck::G0143 #[Enterprise] Aquatic Panda
+    - name: misp::0ab7c8de-fc23-4793-99aa-7ee336199e26 #Tonto Team, CactusPete, KARMA PANDA, BRONZE HUNTLEY, COPPER, Red Beifang, G0131, PLA Unit 65017, Earth Akhlut, TAG-74
+    - name: att&ck::G0108 #[Enterprise] Blue Mockingbird
+    - name: att&ck::G0060 #[Enterprise] BRONZE BUTLER, REDBALDKNIGHT, Tick
+    - name: misp::add6554a-815a-4ac3-9b22-9337b9661ab8 #Tick, Nian, BRONZE BUTLER, REDBALDKNIGHT, STALKER PANDA, G0060, Stalker Taurus, PLA Unit 61419
+    - name: att&ck::G0080 #[Enterprise] Cobalt Group, Cobalt Gang, Cobalt Spider, GOLD KINGSWOOD
+    - name: misp::01967480-c49b-4d4a-a7fa-aef0eaf535fe #Cobalt, Cobalt Group, Cobalt Gang, GOLD KINGSWOOD, COBALT SPIDER, G0080, Mule Libra
+    - name: att&ck::G0037 #[Enterprise] FIN6, Camouflage Tempest, ITG08, Magecart Group 6, Skeleton Spider, TAAL
+    - name: misp::647894f6-1723-4cba-aba4-0ef0966d5302 #FIN6, SKELETON SPIDER, ITG08, MageCart Group 6, White Giant, GOLD FRANKLIN, ATK88, G0037, Camouflage Tempest, TA4557
+    - name: att&ck::G0117 #[Enterprise] Fox Kitten, Lemon Sandstorm, Parisite, Pioneer Kitten, RUBIDIUM, UNC757
+    - name: misp::bfb0bc20-5bdf-47ff-b07f-dbd9a3cb9772 #Fox Kitten, PIONEER KITTEN, PARISITE, UNC757, Lemon Sandstorm, RUBIDIUM
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+  chaining:
+    - relation: sequence::succeeds
+      vector: 02311e3e-b7b8-4369-9e1e-74c0a844ae0f #NTLM credentials dumping via SMB connection
+      description: Attackers needs to have successfully captured a valid NTLM hash
+  killchain: Lateral Movement
+  att&ck:
+    - T1003.001
+    - T1550.002
+    - T1021.002
+  domains:
+    - Enterprise
+  terrain: |
+    Attacker needs to have captured a valid NTLM hash,
+    Kerberos is disabled or NTML authentication is accepted as alternate method,
+    SMB ports needs to be open  from attacker perspective
+  targets:
+    - Control Server
+    - Desktop
+    - End-user
+    - Laptop
+    - Remote access
+    - Virtual Machines
+    - Workstations
+  platforms:
+    - Windows
+  severity: Highly significant incident
+  leverage:
+    - Alter behavior
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Data Breach
+    - Impairement
+  viability: Likely
+  description: |
+     In a **Pass-the-Hash attack (PtH)**, Attackers may use offensive tools to load 
+     the NTLM hash and try to connect to SMB network shares that are reachable 
+     from the attacker device (SMB port is open to the internet - initial access) 
+     or from a compromised station under attacker's control - lateral movement. 
+
+     Crackmapexec is an excellent tool to try to connect to SMB network 
+     shares using NTLM hash (PtH).  
+
+     It scales really well as you can simply point and shoot at a whole 
+     subnet or list of IP addresses.  
+
+     Attacker may obtain read-only access to SMB network shares and could retrieve 
+     additional information.  
+
+     They may get write access to the share and then be able to drop files 
+     that victims might be enticed to open or to execute.

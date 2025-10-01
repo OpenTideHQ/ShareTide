@@ -1,0 +1,99 @@
+name: GoGra backdoor
+criticality: High
+references:
+  public:
+    1: https://thehackernews.com/2024/08/new-go-based-backdoor-gogra-targets.html
+    2: https://thehackernews.com/2024/05/hackers-increasingly-abusing-microsoft.html
+    3: https://www.security.com/threat-intelligence/cloud-espionage-attacks
+  #reports:
+    #-
+
+metadata:
+  uuid: f2c59a8e-3b1f-4a99-80f0-3675b8c1f184
+  schema: tvm::2.0
+  version: 1
+  created: 2023-10-15
+  modified: 2023-10-15
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- Harvester, a nation-state-backed group observed to use this backdoor, ref [1, 2]  
+  killchain: Exploitation
+  # Exfiltration data
+  att&ck:
+    - T1134 # Access Token Manipulation, use built-in Microsoft Graph API to interact with a Command and Control server
+    - T1027 # Obfuscated Files or Information
+    - T1059.003 # Command and Scripting Interpreter: Windows Command Shell, execute commands via cmd.exe
+    - T1204.002 # User Execution: Malicious File, utilizes software packing to evade detection and analysis
+  chaining:
+    - relation: sequence::preceeds
+      vector: 06523ed4-7881-4466-9ac5-f8417e972d13 # using a Windows command prompt for credential manipulation
+      description: |
+        GoGra malware can execute cmd commands and change directories
+        for hiding and persistence purposes. 
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Cloud environments, with a primary focus on Microsoft cloud services
+    such as Microsoft 365 and Outlook. This threat leverages legitimate
+    Microsoft Graph APIs and authentication mechanisms (OAuth) to interact
+    with Microsoft services via a Command and Control server ref [a, 3].    
+  targets:
+    - End-user
+    - Windows API
+    - Workstations
+    - Desktop
+    - Media # deployed against media organization in South Asia in November, 2023
+    - Public-Facing Servers
+    - Email Platform
+  platforms:
+    - Office 365
+    - Windows
+  severity: Localised incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Spoofing
+  impact:
+    - Nuisance
+    - Impairement
+    - Data Breach
+    - Operating costs
+  viability: Likely
+  description: |
+    GoGra or also known as Trojan.Gogra is a newly discovered backdoor,
+    deployed against a media organization in South Asia in November 2023.
+    Written in Go, it uses the Microsoft Graph API to communicate with a
+    Command and Control server hosted on Microsoft mail services ref [1].  
+
+    Its authentication is managed via OAuth access tokens. GoGra is configured
+    to read messages from an Outlook account with the username "FNU LNU" whose
+    subject line begins with "Input". It decrypts the content using AES-256 in
+    Cipher Block Chaining (CBC) mode, with a specific key. The malware can
+    execute commands via cmd.exe and supports a "cd" command to change
+    directories ref [1, 3].        
+
+    After the command execution, the output is encrypted and sent back to the
+    Outlook account with the subject "Output". GoGra is believed to be
+    developed by a nation-state-backed group known for targeting South Asian
+    organizations.      
+    
+    GoGra is functionally similar to another known tool used by the same threat
+    actor called Graphon, written in .NET. Aside from the different programming
+    languages used, Graphon is using a different AES key and didn't contain an
+    extra “cd” command as well as haven't a hardcoded Outlook username to
+    communicate with. The username instead is received directly from the
+    C&C server ref [3].  
+  
+ 
+ 
+

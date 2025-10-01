@@ -1,0 +1,174 @@
+name: Spearphishing Link
+criticality: Medium
+references:
+  public:
+    1: https://www.greathorn.com/blog/what-are-the-3-phases-of-the-phishing-attack-kill-chain/
+    2: https://www.zerofox.com/blog/anatomy-of-a-phishing-attack/
+    3: https://www.csoonline.com/article/3334617/what-is-spear-phishing-examples-tactics-and-techniques.html
+    4: https://www.aura.com/learn/phishing-email-examples
+    5: https://www.accessnow.org/russian-phishing-campaigns/
+
+metadata:
+  uuid: 1a68b5eb-0112-424d-a21f-88dda0b6b8df
+  schema: tvm::2.0
+  tlp: clear
+  version: 5
+  created: 2022-03-14
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::35f887ad-6709-4d0b-8e9c-6b3fa09c783f #APT42
+      sighting: |
+        One of the reports shows strong similarities with TTPs
+        used by the Iran-linked APT42 threat actor.
+      references:
+         - https://git.s.cec.eu.int/catch/ec-tide/-/issues/incident/4480 # link to the report in which are observed very similar paterns APT42 threat actor group
+  killchain: Delivery
+  att&ck:
+    - T1566.002 # Phishing: Spearphishing Link
+    - T1036     # Masquerading, a spearphishing link may use this technique to look legitimate
+    - T1656     # Impersonation
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+  domains:
+    - Enterprise
+    - Mobile
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+     Spear phishing requires more preparation and time to achieve success than
+     a phishing attack. That is because spear-phishing attackers attempt to
+     obtain vast amounts of personal information about their victims,  
+     the entities their work for, or their areas of interest.  
+
+     Attackers can get the personal information they need using different ways:
+     to compromise an email or messaging system trough other means, to use OSINT,
+     scouring Social Media or glean personal information from the user's online
+     presence.       
+  targets:
+    - Email Platform
+    - End-user
+    - Mobile phone
+  platforms:
+    - Windows
+    - Office 365
+    - Android
+    - iOS
+    - Github
+    - Gitlab
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Software installation
+    - Elevation of privilege
+    - Information Disclosure
+    - Tampering
+    - Infrastructure Compromise
+  impact:
+    - Reputational Damages
+    - Data Breach
+    - Identity Theft # can include impersonation
+    - Business disruption
+    - Impairement
+    - Operating costs
+  viability: Very Likely
+  description: |
+    Adversaries may send spearphishing emails with a malicious link in an
+    attempt to gain access to victim systems. This sub-technique employs
+    the use of links to download malware, instead of attaching malicious
+    files to the email itself to avoid defences that may inspect email
+    attachments.      
+    
+    All forms of spearphishing are targeted at a specific individual or
+    company. Generally, the links will be accompanied by social engineering
+    text and require the user to actively click or copy and paste an URL into
+    a browser, leveraging user execution. The visited website may compromise
+    the web browser using an exploit, or the user will be prompted to download
+    applications, documents, zip files, or even executables depending on the
+    pretext for the email in the first place. Attackers may also include links
+    that are intended to interact directly with an email reader, including
+    embedded images intended to exploit the end system directly or verify
+    the receipt of an email (i.e. web bugs/web beacons).  
+
+    In this type of phishing a threat actor impersonates to appear as
+    a user's trusted contact like their colleague or other known friends.
+    Threat actors can also impersonate a large companies with trustworthy
+    image, brand and reputation to give the emails more believability and
+    reach. They put deceptive links in the email to entice a victim to
+    click on the link ref [4, 5].        
+
+    In some of the spearphishing campaigns, a threat actor named Webworm
+    was using GitHub malicious repositories and links to them to spread and
+    infect more developers and end-users. As GitHub is one of the top million
+    domains with a lot of visits and clicks the attacker's goal is to hide
+    in plain sight.   
+
+    #### AI-themed phishing campaigns
+
+    Adversaries create spearphishing links or sites that mimic AI
+    applications, which appear to offer legitimate AI tools, tricking
+    users into downloading and executing trojanised AI-themed software.
+    For example, this could lead to the installation of Gipy malware,
+    a strain of infostealer malware that steals sensitive information
+    and loads additional malicious software from GitHub, including
+    various types of information stealers and remote access trojans.  
+
+    #### Themed-documents lure campaigns 
+
+    Several reports mention that the threat actors prepare their campaign 
+    by using areas of activity and visual identity of companies or public 
+    administrations in contact with the targets in order to craft more 
+    deceiving and appealing emails to lure the targets. This preparation
+    aims to raise the successful rate of the phishing campaigns.  
+
+    Spearphishing emails prepared to deal with topics in the areas of an 
+    Union entity may decive more Union entity staff to follow the link.
+    ref [b].  
+
+    In one campaign it was observed that after direct exchanges over emails 
+    and whatsapp messages, the victim received an email having a specifically 
+    crafted politically oriented subject with a malicious link ref [e].    
+   
+    #### Spearphishing via QR Codes (Quishing)
+    ##### Description
+
+    Spearphishing via QR codes, also known as "quishing," is an emerging
+    cybersecurity threat where attackers use malicious QR codes to target
+    specific individuals or organizations. This technique combines the
+    deceptive nature of phishing with the convenience of QR codes to trick
+    victims into revealing sensitive information or compromising their
+    devices.  
+
+    ##### **How Quishing Works**
+
+    1. Attackers generate a QR code that leads to a falsified website or
+    malicious content.
+    2. The malicious QR code is distributed through various channels, such as
+    emails, social media, or even physical locations.
+    3. Victims are lured into scanning the QR code, often under the guise of
+    accessing exclusive content or necessary information.
+    4. Upon scanning, users are directed to phishing websites or trigger the
+    download of malware.  
+
+    #### Spearphishing with enbedded HTML link
+    ##### Description
+
+    Embedded HTML links in the context of spear phishing, refer
+    to malicious links that are embedded within an email or message
+    using HTML code. These links may appear legitimate from a trusted 
+    source or known organization but actually they mask their true
+    destionation. For example, they can be encoded or obfuscated
+    to hide their source destination.  
+
+    Example: 
+
+    In one of the reports was observed that clicking a malicious HTML
+    link redirected a victim first to malicious HubSpot Free Forms and then
+    to credential harvesting pages mimicking Microsoft Azure and Outlook Web
+    App (OWA) login portals ref [d].      

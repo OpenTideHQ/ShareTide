@@ -1,0 +1,173 @@
+name: Azure - Gather Role Information
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Reconnaissance/AZT106/AZT106/
+    2: https://posts.specterops.io/attacking-azure-azure-ad-and-introducing-powerzure-ca70b330511a
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 140907eb-c9fb-4330-9d71-656422388b2b
+  schema: tvm::2.1
+  version: 2
+  created: 2025-08-05
+  modified: 2025-09-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G1001 #[ICS] HEXANE, Lyceum, Siamesekitten, Spirlin
+      sighting: |
+        HEXANE has identified executives, HR, and IT staff at victim organizations for further targeting.
+      references:
+        - https://www.secureworks.com/blog/lyceum-takes-center-stage-in-middle-east-campaign
+    - name: misp::d9e5be22-1a04-4956-af6c-37af02330980 #LAPSUS, LAPSUS$, DEV-0537, SLIPPY SPIDER, Strawberry Tempest
+      sighting: |
+        LAPSUS$ has gathered detailed knowledge of team structures within a target organization.
+      references:
+        - https://www.microsoft.com/security/blog/2022/03/22/dev-0537-criminal-actor-targeting-organizations-for-data-exfiltration-and-destruction/
+    - name: misp::f02679fa-5e85-4050-8eb5-c2677d93306f #Volt Typhoon, BRONZE SILHOUETTE, VANGUARD PANDA, UNC3236, Insidious Taurus, VOLTZITE, Dev-0391, Storm-0391
+      sighting: |
+        Volt Typhoon has identified key network and IT staff members pre-compromise at targeted organizations.
+      references:
+        - https://www.cisa.gov/sites/default/files/2024-03/aa24-038a_csa_prc_state_sponsored_actors_compromise_us_critical_infrastructure_3.pdf
+  killchain: Reconnaissance
+  att&ck:
+    - T1591.004 #Gather Victim Org Information: Identify Roles
+    - T1087.002 #Account Discovery: Domain Account
+    - T1589.001 #Gather Victim Identity Information: Credentials
+    - T1482 #Domain Trust Discovery
+  chaining:
+    - relation: sequence::preceeds
+      vector: a8c7b250-a2d4-4a0d-82f8-23dc99c77d7b #Addition credentials OAuth applications & service principals
+      description: |
+        An adversary may obtain information about a role within Azure AD or within Azure Resource Manager.
+    - relation: sequence::preceeds
+      vector: 61ddc240-e5a6-4ca8-ae77-6b471b498913 #Code execution via custom script extensions in Azure
+      description: |
+        An adversary may obtain information about a role within Azure AD or within Azure Resource Manager.
+    - relation: sequence::preceeds
+      vector: f1dc4341-eb45-4d07-8075-b1a6b227cc76 #Cloud IAM role assumption
+      description: |
+        An adversary may obtain information about a role within Azure AD or within Azure Resource Manager.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Adversaries need to identify privileged accounts and misconfigured role assignments 
+    that can be exploited for privilege escalation.
+  targets:
+    - Identity Services
+    - Cloud Storage Accounts
+    - Compute Cluster
+    - Public-Facing Servers
+    - Virtual Machines
+    - Serverless
+    - API Endpoints
+    - Cloud Portal
+    - Server Authentication
+    - Directory
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Elevation of privilege
+    - Tampering
+    - Spoofing 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Business disruption 
+  viability: Likely
+  description: |
+    The "Gather Role Information" refers to an adversary's effort to enumerate and obtain 
+    details about roles, role assignments, and the privileges associated with specific 
+    accounts or applications within Azure Active Directory (AAD) and Azure Resource 
+    Manager environments. This reconnaissance phase is foundational, setting up future 
+    attacks by mapping out who can do what within the Azure estate.
+
+    #### Example Attack Scenario
+
+    An attacker gains access to a compromised low-privilege user account in an Azure tenant. 
+    Leveraging their access, the adversary initiates API and portal queries to enumerate 
+    all directory roles, their descriptions, nested role assignments, and identify which 
+    users or service principals hold elevated privileges (like Global Administrator, 
+    Application Admin, or Contributor). 
+
+    For example, the attacker uses available Microsoft Graph API permissions like `microsoft.directory/roleAssignments/standard/read` 
+    or `microsoft.directory/directoryRoles/members/read` to extract:
+    - A listing of all roles within the tenant.
+    - The users/groups assigned to these roles.
+    - The service principals and applications with privileged roles.
+
+    With this intelligence, the attacker pinpoints accounts with standing access to 
+    sensitive resources, cloud infrastructure, or the ability to modify security controls. 
+    This information enables them to focus follow-on attacks (such as phishing, lateral movement, 
+    privilege escalation, or controlling cloud resources) on the most impactful targets.
+
+    #### Attack Goals and Impact
+
+    **Attack Goals:**
+    - **Enumerate privileged accounts:** Learn which identities have administrator or 
+    other elevated roles.
+    - **Understand role-based access controls:** Discover which roles are assigned to 
+    cloud workloads, services, and third-party integrations.
+    - **Map the privilege model:** Identify paths to escalate privileges or move laterally 
+    within the tenant.
+    - **Target specific high-value accounts:** Single out accounts or service principals 
+    most beneficial for further attack phases.
+
+    **Impact:**
+    - **Precision in follow-on attacks:** Enables highly targeted privilege escalation, 
+    persistence, or data exfiltration.
+    - **Facilitates credential theft or misuse:** Attackers concentrate phishing, token theft, 
+    or abuse on users who can cause maximum damage.
+    - **Exposure of sensitive information:** Mapping out service principals, applications, 
+    and their privileges may reveal misconfigurations or vulnerabilities exploitable 
+    for direct access to business-critical resources.
+    - **Reduces attacker effort:** By understanding the privilege hierarchy, attackers 
+    avoid unnecessary noise and maximize their effectiveness.
+
+    #### Attack Flow and Methodology
+
+    1. **Access Acquisition:**
+      - Attacker obtains valid credentials or API access (even with limited privileges) within the Azure tenant.
+
+    2. **Role Enumeration:**
+      - Uses Microsoft Graph, AzureAD, or Azure Resource Management APIs/portals to 
+      list all directory roles (`directoryRoles/standard/read`), their descriptions, 
+      and their associated members.
+      - Specifically requests assignments (`roleAssignments/standard/read`) and membership 
+      lists to correlate identities with roles.
+
+    3. **Correlation and Mapping:**
+      - Maps users, groups, applications, and service principals to their assigned roles.
+      - Correlates admin accounts, app owners, and standing access roles across different 
+      Azure resources or subscriptions.
+
+    4. **Analysis:**
+      - Analyzes output to spot high-privilege accounts (e.g., Global Admin, Owner, Contributor), 
+      and applications with dangerous permissions.
+      - May additionally search for legacy, orphaned, or misconfigured roles to exploit 
+      gaps in security controls.
+
+    5. **Preparation for Exploitation:**
+      - Prepares to exploit the gathered intelligence, such as launching spear-phishing 
+      campaigns specifically targeting privileged users, leveraging known vulnerabilities 
+      in third-party applications, or planning lateral movement towards sensitive workloads.

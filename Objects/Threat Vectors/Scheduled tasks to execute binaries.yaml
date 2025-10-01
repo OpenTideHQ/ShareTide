@@ -1,0 +1,80 @@
+name: Scheduled tasks to execute binaries
+criticality: Medium
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2022/04/12/tarrask-malware-uses-scheduled-tasks-for-defense-evasion/
+    2: https://juggernaut-sec.com/scheduled-tasks/
+    3: https://redcanary.com/threat-detection-report/techniques/scheduled-task/
+    4: https://attack.mitre.org/techniques/T1053/005/
+    5: https://redcanary.com/threat-detection-report/techniques/windows-command-shell/
+    6: https://www.cynet.com/attack-techniques-hands-on/what-are-lolbins-and-how-do-attackers-use-them-in-fileless-attacks/
+    7: https://www.sentinelone.com/blog/how-do-attackers-use-lolbins-in-fileless-attacks/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 707bf160-5d78-42cc-85d3-e4831f62357c
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
+  created: 2022-12-14
+  modified: 2022-12-20
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0047 #[Enterprise] Gamaredon Group, ACTINIUM, Aqua Blizzard, Armageddon, DEV-0157, IRON TILDEN, Primitive Bear, Shuckworm
+    - name: misp::1a77e156-76bc-43f5-bdd7-bd67f30fbbbb #Gamaredon Group, ACTINIUM, DEV-0157, Blue Otso, BlueAlpha, G0047, IRON TILDEN, PRIMITIVE BEAR, Shuckworm, Trident Ursa, UAC-0010, Winterflounder, Aqua Blizzard, Actinium
+  killchain: Execution
+  att&ck:
+    - T1053.005
+  domains:
+    - Enterprise
+  terrain: |
+    An adversary has gained control over a Windows endpoint and has privileges
+    to create scheduled tasks.
+  targets:
+    - Workstations
+    - Control Server
+    - Laptop
+    - Desktop
+    - Remote access
+    - Web Application Servers
+    - Public-Facing Servers
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Dwelling
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    A threat actor can use scheduled tasks to execute binaries such as LOLBINs
+    or malware. LOLBINs is short for 'living off the land binaries', which
+    means that the threat actors often use native Windows binaries to try to
+    hide malicious activity.
+
+    A scheduled task to execute a binary is a way for an attacker to ensure 
+    that binaries of their choosing and with their settings are run
+    automatically at a specific time or on a regular basis. Scheduled tasks can
+    be set up to run a malicious binaries or LOLBINs in a number of ways, such
+    as through the use of the built-in task scheduler in Windows. Once the
+    scheduled task is created, it will run the specified binary at the
+    designated time. It is important to regularly check and disable any
+    suspicious scheduled tasks to protect against this type of attack.
+
+

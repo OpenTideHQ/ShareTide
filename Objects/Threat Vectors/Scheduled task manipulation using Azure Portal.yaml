@@ -1,0 +1,126 @@
+name: Scheduled task manipulation using Azure Portal
+criticality: High
+references:
+  public:
+    1: https://learn.microsoft.com/en-us/azure/virtual-machines/windows/scheduled-events
+    2: https://learn.microsoft.com/da-dk/azure/logic-apps/create-automation-tasks-azure-resources
+    3: https://xybytes.com/azure/Azure-SSRF/
+    4: https://community.citrix.com/tech-zone/design/reference-architectures/virtual-apps-and-desktops-azure/
+    5: https://learn.microsoft.com/en-us/azure/automation/shared-resources/schedules
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 437a43b9-6344-45a9-915b-d733d23173ae
+  schema: tvm::2.1
+  version: 2
+  created: 2024-12-17
+  modified: 2025-02-26
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: UNC3944 (not in our scope)
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Persistence
+  att&ck:
+    - T1053.005 #Scheduled Task/Job: Scheduled Task
+    - T1651 #Cloud Administration Command
+  chaining:
+    - relation: support::synergize
+      vector: 5e66f826-4c4b-4357-b9c5-2f40da207f34 #Scheduled tasks maintain persistence in registry
+      description: |
+        A threat actor can successfully maintain persistence on a compromised system 
+        by using scheduled tasks to create or edit registry entries. Windows Sc...
+    - relation: sequence::preceeds
+      vector: f9a6f927-d08c-40c1-85af-01331c471def #Phishing w/ Azure AD B2B Collaboration
+      description: |
+        Phishing with Azure AD B2B Collaboration involves exploiting the service to send 
+        malicious invitations that appear to come from Microsoft or other th...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:   
+    - Private Cloud
+    - SaaS
+    - Public Cloud
+  terrain: |
+    Adversary must have administrative privileges over Azure Portal or have access to 
+    Azure credentials.
+  targets:
+    - Cloud Storage Accounts
+    - Key Store
+    - Virtual Machines
+    - API Endpoints
+    - Cloud Portal
+  platforms:
+    - Azure
+    - Azure AD
+    - Office 365
+    - Windows
+    - Linux 
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Repudiation
+    - Infrastructure Compromise
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+  viability: Likely
+  description: |
+    Scheduled tasks in Azure, often called "WebJobs" or "Azure Functions" with timer 
+    triggers, are automated processes set to run at specific times or intervals. They 
+    are used for maintenance, backups, data processing, and other routine operations.
+
+    This scheduled tasks can be manipulated by threat actors to execute malicious 
+    code, steal sensitive information, or disrupt business operations. The manipulation 
+    of scheduled tasks can be achieved through various means, including:
+   
+    ### Azure metadata service exploitation
+
+    Adversaries can abuse the Azure Instance Metadata Service (IMDS) to gather sensitive 
+    information about virtual machines.  
+    The IMDSv1 endpoint is particularly vulnerable to Server-Side Request Forgery 
+    (SSRF) attacks due to its accessibility via GET requests.
+
+    ### Scheduled events manipulation
+
+    Attackers can exploit Azure scheduled events, a feature of the Azure Metadata 
+    Service, to prepare for and execute attacks during VM maintenance windows.  
+    This technique allows malicious actors to anticipate system changes and potentially 
+    exploit vulnerabilities during maintenance periods.
+
+    ### Custom script extensions
+
+    Threat actors can abuse Custom script extensions, which are designed to automate 
+    post-deployment scripts on VMs.  
+    This feature can be misused to execute malicious code, install unauthorized software, 
+    or reconfigure systems for nefarious purposes.      
+
+    ### Leveraging exploited vulnerabilities
+
+    Attackers can use exploited vulnerabilities in Azure services, such as Azure Automation 
+    or Logic Apps, to create more complex, distributed scheduled actions that are harder to detect.
+
+    ### Utilizing obfuscated code
+
+    Attackers might use obfuscated code within tasks to evade detection and make it 
+    harder for security teams to identify and mitigate the threat.
+
+    ### Deleting logs and hiding tracks
+
+    Attackers might delete logs related to task creation or modification, and modify 
+    task descriptions to seem innocuous, in an attempt to hide their tracks and make 
+    it harder to investigate and remediate the attack.

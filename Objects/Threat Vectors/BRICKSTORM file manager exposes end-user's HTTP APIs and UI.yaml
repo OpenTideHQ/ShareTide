@@ -1,0 +1,104 @@
+name: BRICKSTORM file manager exposes end-user's HTTP APIs and UI
+criticality: High
+references:
+  public:
+    1: https://blog.nviso.eu/wp-content/uploads/2025/04/NVISO-BRICKSTORM-Report.pdf # a public report for BRICKSTORM Backdoor analysis
+    2: https://www.techzine.eu/news/security/130580/belgian-security-experts-find-chinese-espionage-malware-on-windows
+    3: https://b2bdaily.com/it/can-brickstorm-malware-undermine-europes-strategic-industries
+    4: https://apt.etda.or.th/cgi-bin/listgroups.cgi?t=BRICKSTORM
+
+metadata:
+  uuid: 5e6af460-db12-4278-b44d-7a7a3fa7fe76
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-23
+  modified: 2025-05-20
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0022 #[Enterprise] APT3, Buckeye, Gothic Panda, Pirpi, TG-0110, Threat Group-0110, UPS Team, China-nexus cluster UNC5221
+    - name: misp::d144c83e-2302-4947-9e24-856fbf7949ae #APT3, UNC5221
+      sighting: |
+        UNC5221, also known as Gothic Panda or BlackBhamasura is
+        a known Chenese affiliated threat actor linked to a string
+        of cyberattacks targeting various sectors, including
+        telecommunications, healthcare, and government agencies.
+  killchain: Discovery
+  #killchain: Initial Access
+  att&ck:
+    - T1190      # Exploit Public-Facing Application
+    - T1204      # User Execution                        | An attacker could trick a user into executing malicious code or commands through the BRICKSTORM file manager's UI or APIs
+    - T1071.001  # Application Layer Protocol: Web Protocols
+    - T1082      # System Information Discovery          | An attacker could use the BRICKSTORM file manager's APIs or UI to gather system information
+    - T1588      # Obtain Capabilities                   | A threat actor could use the BRICKSTORM file manager's APIs or UI to obtain capabilities, such as file system access or network connectivity,
+    - T1552      # Unsecured Credentials
+  chaining:
+    - relation: atomicity::implements
+      vector: 901dd804-00cc-4034-85aa-3d10e257c16c # DNS over HTTPS tunneling exfiltrates data or communicates to C&C server
+      description: |
+        `BRICKSTORM` espionage backdoor provides threat actors the
+        ability to execute file management and network tunneling
+        functions and in this way to manipulate files and exfiltrate
+        data.    
+  #cve:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor abuses publicly exposed HTTP APIs
+    and end-user publicly exposed UIs (User Interfaces).  
+  targets:
+    - API Endpoints # HTTP API can be exposed by BRICKSTORM file manager
+    - End-user
+    - Laptop
+    - Workstations
+    - Public-Facing Servers
+    - Web Application Servers
+  platforms:
+    - Windows # ref [2]
+    - Linux   # ref [2]
+  severity: Localised incident
+  leverage:
+    - Infrastructure Compromise
+    - Tampering
+    - Modify data
+  impact:
+    - Impairement
+    - Lose Capabilities
+    - Operating costs
+  viability: Likely
+  description: |
+    One of the observed China-nexus cluster achieves their goals with
+    the involvement and the usage of previously unknown vulnerabilities
+    (a.k.a., zero-days) alongside with low-noise backdoors like `BRICKSTORM`
+    family.
+
+    The unauthorised access provided by `BRICKSTORM` grants attackers the
+    ability to execute file management and network tunneling functions
+    crucial for espionage. These capabilities enable them to browse file
+    systems, create or delete files and directories, and establish network
+    connections to facilitate lateral movement within the compromised
+    environment. Unlike many other forms of malware that create noticeable
+    disruptions, BRICKSTORM's operations are meticulously crafted to avoid
+    detection, maintaining a consistent and clandestine presence within
+    the target network ref [3]. 
+
+    Recently identified `BRICKSTORM` executables provide threat actors
+    with a file manager named `BRICKSTORM file manager`.   
+    
+    The `BRICKSTORM file manager` exposes an HTTP API and rudimentary UI
+    (User Interface) encapsulated within the protocol. The backdoor's
+    JSON-based API provides a wide range of file-related actions such
+    as uploading, downloading, renaming, and deleting files.
+    
+    Adversaries can further-more create or delete directories as well
+    as list their contents. The BRICKSTORM panel is served by the malware
+    itself and proxied through its protocol towards a Command & Control
+    server. Further this functionality and specific behavior allows the
+    adversary to select a drive they wish to browse. Once the drive is
+    selected, BRICKSTORM allows the adversaries to browse through the
+    file system and download files by their choice ref [1].  

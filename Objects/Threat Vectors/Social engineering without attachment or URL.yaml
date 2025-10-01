@@ -1,0 +1,112 @@
+name: Social engineering without attachment or URL
+criticality: High
+references:
+  public:
+    1: https://www.proofpoint.com/us/blog/email-and-cloud-threats/actionable-insights-reduce-your-organizations-risk-toad-attack#:~:text=What%20is%20a%20TOAD%20attack%3F%20A%20TOAD%20attack,financial%20data%2C%20by%20impersonating%20a%20trusted%20authority%20figure
+    2: https://www.microsoft.com/en-us/security/business/security-101/what-is-business-email-compromise-bec
+    3: https://www.fbi.gov/how-we-can-help-you/scams-and-safety/common-scams-and-crimes/business-email-compromise
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 0cdaee96-8595-4f3f-ba07-758b8be9d359
+  schema: tvm::2.0
+  version: 2
+  created: 2024-10-31
+  modified: 2025-01-01
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+  killchain: Social Engineering
+  att&ck:
+    - T1589.001 #Gather Victim Identity Information: Credentials
+  chaining:
+    - relation: sequence::preceeds
+      vector: 1a68b5eb-0112-424d-a21f-88dda0b6b8df #Spearphishing Link
+      description: |
+        After an initial conversation over email, attacker sends the user a malicious link
+    - relation: sequence::preceeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 #Spearphishing Attachment
+      description: |
+        After an initial conversation over email, attacker sends the user a malicious attachment
+    - relation: sequence::preceeds
+      vector: 6a7a493a-511a-4c9d-aa9c-4427c832a322 #SIM-card swapping
+      description: |
+        #After an initial conversation over email, attacker tricks the user pretending to be from IT Helpdesk to swap the SIM card
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - SaaS
+    - Mobile
+    - Networking
+  terrain: |
+    Adversary must have access to legitimate email accounts or impersonate authority 
+    figures to trick victims into disclosing sensitive information or transferring funds.
+  targets:
+    - Email Platform
+    - Personal Information
+    - Cloud Storage Accounts
+    - Mobile phone
+  platforms:
+    - AWS
+    - Azure
+    - Office 365
+    - Windows
+    - macOS
+    - Android
+    - iOS
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Information Disclosure
+    - Elevation of privilege
+    - Fraudulent transaction
+    - Infrastructure Compromise
+  impact:
+    - Data Breach
+    - Monetary Loss
+    - Reputational Damages
+    - Identity Theft
+  viability: Likely
+  description: |
+    TOAD (Telephone-Oriented Attack Delivery) and BEC (Business Email Compromise) attacks 
+    are sophisticated forms of social engineering that pose significant threats to organizations. 
+    These attacks often bypass traditional email security measures by avoiding the use 
+    of malicious attachments or URLs.    
+
+    ## TOAD Attacks    
+
+    TOAD attacks combine email and voice phishing techniques to trick victims into disclosing 
+    sensitive information or transferring funds.    
+
+    Key characteristics of TOAD attacks:    
+
+    - Initial contact via email, urging the recipient to call a phone number
+    - No malicious attachments or URLs in the email
+    - Social engineering tactics used during phone conversations
+    - Often impersonate legitimate brands or authority figures    
+
+    ## BEC Attacks    
+
+    BEC attacks involve impersonating or compromising legitimate email accounts to deceive 
+    individuals into sharing sensitive information or transferring funds.    
+
+    Key characteristics of BEC attacks:    
+
+    - Highly targeted and personalized emails
+    - Often impersonate executives, vendors, or trusted partners
+    - Create a sense of urgency
+    - Rarely include malicious payloads
+    - Frequently target Accounts Payable teams

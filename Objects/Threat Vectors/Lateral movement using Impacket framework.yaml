@@ -1,0 +1,90 @@
+name: Lateral movement using Impacket framework
+criticality: High
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2023/06/14/cadet-blizzard-emerges-as-a-novel-and-distinct-russian-threat-actor/
+    2: https://medium.com/threatpunter/detecting-attempts-to-steal-passwords-from-the-registry-7512674487f8
+    3: https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/basic-audit-object-access # Audit object access resource
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 75415bc5-6615-487e-a69c-7a4ffc196996
+  schema: tvm::2.0
+  version: 1
+  created: 2024-09-17
+  modified: 2024-09-18
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G1003 #[Enterprise] Ember Bear, Bleeding Bear, Cadet Blizzard, DEV-0586, Frozenvista, UAC-0056, UNC2589
+    - name: misp::a5f64c1a-c829-4855-903d-e0ff2098b2d7 #DEV-0586, Ruinous Ursa, Cadet Blizzard
+  killchain: Credential Access
+  att&ck:
+    - T1021 #Remote Services
+    - T1059.001 #Command and Scripting Interpreter: PowerShell
+    - T1552.002 #Unsecured Credentials: Credentials in Registry
+  chaining:
+    - relation: sequence::succeeds
+      vector: 3b1026c6-7d04-4b91-ba6f-abc68e993616 # Abusing Lolbins to Enumerate Local and Domain Accounts and Groups
+      description: |
+        A threat actor commonly utilizes living-off-the-land techniques
+        after gaining initial access to move laterally through the network.  
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor needs initial access to move laterally through the network.  
+  targets:
+    - Customer
+    - Laptop
+    - Workstations
+    - End-user
+    - Other # Registry keys and sub-keys
+  platforms:
+    - Windows
+  severity: Localised incident
+  leverage:
+    - Dwelling
+    - Elevation of privilege
+  impact:
+    - Identity Theft
+    - Business disruption
+    - Impairement
+    - Nuisance
+  viability: Likely
+  description: |
+    Threat actors conduct lateral movement with valid network credentials
+    obtained from credential harvesting. To conduct lateral movement more
+    efficiently, they typically use modules from the publicly available
+    Impacket framework ref [1].    
+
+    Some of the activities during the lateral movement might be:
+
+    - Enumerate the volume of a device (example: PS get-volume), 
+      access volumes via network shares like \\127.0.0.1\ADMINS$\__  
+    - Copying critical registry hives that contain password hashes
+      and computer information.  
+    - Downloading files directly from actor-owned infrastructure
+      (example: cmdlet: DownloadFile)  
+    - Extract both system and security event logs into operational
+      directory (example: Win32_NTEventlogFile cmdlet) 
+
+    Variety of reports and analysis show that the threat actor commonly
+    deletes files used during operational phases seen in lateral movement.
+
+    In some cases the threat actors may try to manipulate the Group Policies
+    to hide their traces. For example, the registries which are related to
+    the access of the System Registries. They may also try to turn off `Audit
+    object access` for successful and failed access events. ref [2, 3]  
+  
+

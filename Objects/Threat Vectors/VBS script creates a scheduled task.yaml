@@ -1,0 +1,197 @@
+name: VBS script creates a scheduled task
+criticality: High
+references:
+  public:
+    1: https://stackoverflow.com/questions/31549393/vbscript-for-creating-a-scheduled-task
+    2: https://www.picussecurity.com/resource/blog/picus-10-critical-mitre-attck-techniques-t1060-registry-run-keys-startup-folder
+    3: https://www.tek-tips.com/threads/create-scheduled-task-using-vbscript.1802745 # a discussion how to create schedules task with a vbs script
+    4: https://www.itninja.com/question/vbscript-to-create-a-scheduled-task # an example for a VBS script which runs a scheduled task every Monday, Wednesday, and Friday
+    5: https://cloud.google.com/blog/topics/threat-intelligence/fin7-phishing-lnk # FIN7 threat actor is using VBS script to create a named scheduled task for persistence, this group is financially motivated and their goal was to gain access to sensitive financial information
+    6: https://www.virusbulletin.com/virusbulletin/2018/11/vb2018-paper-hacking-sony-pictures # Sony Pictures hack in 2014
+    7: https://www.kaspersky.com/blog/operation-blockbuster/11407 # Lazarus Group behind the Sony hack campaign observed using VBS script to schedule tasks and hide their activities
+
+metadata:
+  uuid: 53ca52ed-a7e7-4094-95ec-b4ef522dc689
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-25
+  modified: 2025-07-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0046 #[ICS] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+      sighting: |
+        FIN7 threat actor group has been observed using VBS scripts to create
+        scheduled tasks for persistence, lateral movement and financial gain
+        ref [5].     
+      references:
+        - https://cloud.google.com/blog/topics/threat-intelligence/fin7-phishing-lnk
+
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+      sighting: |
+        A North Korean state-sponsored threat actor group that has been linked
+        to various high-profile attacks, including the 2014 Sony Pictures hack.
+        They have used VBS scripts to create scheduled tasks for malware
+        execution and persistence ref [6], [7].  
+      references:
+        - https://www.virusbulletin.com/virusbulletin/2018/11/vb2018-paper-hacking-sony-pictures # Sony pictures threat campaign in 2014
+        - https://www.kaspersky.com/blog/operation-blockbuster/11407
+
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29, Group 100, COZY BEAR, The Dukes, Minidionis, SeaDuke, YTTRIUM, IRON HEMLOCK, Grizzly Steppe, G0016, ATK7, Cloaked Ursa, TA421, Blue Kitsune, ITG11, BlueBravo, Nobelium, UAC-0029
+      sighting: |
+        A Russian state-sponsored threat actor group that has been linked to
+        various cyber espionage campaigns. They have been observed using VBS
+        scripts to create scheduled tasks for malware execution and persistence.
+      references:
+        - https://malpedia.caad.fkie.fraunhofer.de/actor/apt29 # used VBS loader, review in the references in the link
+  killchain: Persistence
+  att&ck:
+    - T1569.002 # System Services: Service Execution
+    - T1053     # Scheduled Task/Job
+    - T1082     # System Information Discovery | an adversary may use a VBS script to gather system information, including scheduled tasks, to inform their attack strategy.
+    - T1005     # Data from Local System
+    - T1112     # Modify Registry, in some scenarios VBS scripts via scheduled task can lead to registry modification
+    - T1053.005 # Scheduled Task/Job: Scheduled Task
+  chaining:
+    - relation: sequence::succeeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 # Spearphishing Attachment
+      description: |
+        A threat actor may use a delivery technique - for example spreading
+        password protected documents which looks legitimate. This is a
+        spear-phishing technique and the goal is a user interaction which
+        leads to a payload execution and infection with a malware.
+
+    - relation: sequence::succeeds
+      vector: c7ed4fad-a58f-47da-9938-4a673526b3f4 #HTML smuggling technique
+      description: |
+        In one of the malicious campaigns a threat actor used HTML smuggling to
+        deliver a password-protected ZIP archive containing a VBScript loader
+        for remote access capabilities. 
+  #cve:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor needs to entice an end user to execute VBScript loader to
+    gain an initial access to the system. Some of these techniques include
+    social engineering and targeted (spear-phishing) or mass-spread phishing
+    campaigns.  
+  targets:
+    - Customer
+    - End-user
+    - Workstations
+    - Other # Windows registeries
+    - Laptop
+    - Remote access
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Tampering
+  impact:
+    - Impairement
+    - Data Breach
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    Threat actors often use Visual Basic Scripting (VBS) to create scheduled
+    tasks on compromised Windows systems. VBS is a built-in scripting language
+    on Windows systems, making it an attractive choice for threat actors. It
+    allows the threat actors to execute code without relying on external tools
+    or binaries, reducing the risk of detection.    
+
+    Once executed by the victim, the VBScript establishes persistence on
+    infected machines by creating scheduled tasks and modifying the Windows
+    Registry.
+
+    ### Creating a scheduled task using a VBS script
+
+    To create a scheduled task using VBS, threat actors typically follow the
+    steps provided below:
+    1. An initial VBS script creation - the attacker creates a VBS script that
+    contains the malicious code. This script can be embedded in an email
+    attachment, downloaded from a compromised website, or created locally on
+    the compromised system.  
+    2. The created VBS script uses `schtasks` - the VBS script uses the
+    `schtasks` to create a new scheduled task. The `SchTasks` command is a
+    built-in Windows utility that allows users to create, delete, and manage
+    scheduled tasks.
+    3. Task details: The VBS script specifies the task details, including the
+    task name, description, and the command or script to be executed.
+    4. Set a task trigger - the VBS script may set a task trigger, which defines
+    when the task should be executed. This can be a specific time, daily,
+    weekly, or on system startup.
+    5. A task preservation - the VBS scrip
+
+    ### Some of the techniques used to achieve VBS persistence and
+    obfuscation
+
+    - Obfuscation: Threat actors often obfuscate their VBS scripts to evade
+    detection by security software. They use techniques like random variable
+    names, fake function calls or garbage code to hide the function of the
+    malicious code.  
+
+    - Scheduled task chaining: Threat actors create as tasks under the current
+    user or if allowed under SYSTEM to elevate privileges and maintain foothold
+    onto the system.  
+    
+    ### An example for a VBS script which creates a scheduled task
+
+    Below is given an example of a VBS (Visual Basic Scripting) script that
+    creates a scheduled task to run a command or application at a specified
+    time. This script uses the Windows Task Scheduler to schedule the task.  
+   
+    ```visualbasic
+
+    ' Create a new task
+    Dim sch, task
+    Set sch = CreateObject("Schedule.Service")
+    sch.Connect()
+
+    ' Define the task
+    Dim taskDefinition
+    Set taskDefinition = sch.CreateNewTask(0)
+
+    ' Set task registration info
+    taskDefinition.RegistrationInfo.Description = "This is a test task created by VBS script"
+    taskDefinition.RegistrationInfo.Author = "Your Name"
+
+    ' Set task principal (who runs the task)
+    Dim principal
+    Set principal = taskDefinition.Principal
+    principal.LogonType = 3 ' Interactive or 3 for S4U
+    principal.UserId = "NT AUTHORITY\SYSTEM" ' You can change this to a different user
+
+    ' Set task trigger (when to run the task)
+    Dim trigger
+    Set trigger = taskDefinition.Triggers.Create(_
+    TaskTriggerType2.Daily)
+    trigger.StartTime = "08:00:00" ' 8 AM daily
+    trigger.Id = "DailyTrigger"
+
+    ' Set task action (what to run)
+    Dim action
+    Set action = taskDefinition.Actions.Create(_
+    TaskActionType.Exec)
+    action.Path = "C:\Windows\System32\notepad.exe" ' Path to the application to run
+    action.Arguments = "" ' Arguments if any
+
+    ' Register the task
+    Dim taskFolder
+    Set taskFolder = sch.GetFolder("\")
+    taskFolder.RegisterTaskDefinition "TestVBS Task", taskDefinition, 6, , , 3, , , task
+    
+    ```

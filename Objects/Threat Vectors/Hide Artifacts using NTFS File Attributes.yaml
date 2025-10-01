@@ -1,0 +1,115 @@
+name: Hide Artifacts using NTFS File Attributes
+criticality: High
+references:
+  public:
+    1: https://www.atomicredteam.io/atomic-red-team/atomics/T1564.004 # Atomic test article for hide artifacts using NTFS file attributes
+    2: https://axelarator.github.io/posts/ntfs
+    3: https://cyber-kill-chain.ch/techniques/T1564/001 # APT28 has saved files with hidden file attributes.
+    4: https://www.cisa.gov/eviction-strategies-tool/info-attack/T1564
+    5: https://www.welivesecurity.com/en/eset-research/update-winrar-tools-now-romcom-and-others-exploiting-zero-day-vulnerability # A Russia-aligned group RomCom uses ADSes Alternate Data Stream vulnerability
+  #internal:
+    #a:
+
+metadata:
+  uuid: d15bff6c-b902-4975-ad3a-7a18f3026aca
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-27
+  modified: 2025-08-26
+  tlp: clear
+  #author:
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors: 
+     - name: att&ck::G0007 #[Mobile] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, GruesomeLarch, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+     - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+       sighting: |
+        APT28, a Russian state-sponsored threat actor, has been known to use
+        NTFS file attributes to hide malware and other artifacts on compromised
+        systems. They have saved files with hidden file attributes ref [3].  
+       references:
+         - https://cyber-kill-chain.ch/techniques/T1564/001
+    
+     - name: misp::ba9e1ed2-e142-48d0-a593-f73ac6d59ccd #RomCom, Storm-0978, UAT-5647
+       sighting: |
+        RomCom uses alternate data streams (ADSes) for path traversal. One of
+        their campaigns is related to WinRar exploitation. There is more
+        detailed information provided in ref [5].  
+       references:
+       - https://www.welivesecurity.com/en/eset-research/update-winrar-tools-now-romcom-and-others-exploiting-zero-day-vulnerability
+
+  killchain: Defense Evasion
+  att&ck: 
+    - T1564.004 # Hide Artifacts: NTFS File Attributes
+  chaining:
+    - relation: atomicity::implements
+      vector: b330d3a8-1783-4210-9fec-11e6ecfe135e # Web Path Traversal Attack
+      description: |
+        A threat actor can provide multiple ADSes with increasing depths of
+        parent directory relative path elements (`..\\`). They can use ADSes for
+        path traversal attack. An example is WinRAR traversal exploitation
+        disclosed on June and August 2025 ref [5].  
+  cve: 
+    - CVE-2025-8088 # This vulnerability is related to Alternate Data Streams (ADSes) flaw for path thraversal. 
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Threat actors need to deliver on the host a file that uses NTFS extended
+    attributes.  
+  targets:
+    - Desktop
+    - Workstations
+  platforms:
+    - Windows
+  severity: Localised incident
+  leverage:
+    - Dwelling
+    - Elevation of privilege
+  impact:
+    - Business disruption
+    - Impairement
+  viability: Likely
+  description: |
+    Threat actors are using a hiding technique to conceal malicious files,
+    folders, or other artifacts on a Windows system by leveraging the attributes
+    of the NTFS file system. NTFS provides a range of attributes that can be
+    used to hide or obscure files and folders, making them difficult to detect
+    ref [1].  
+
+    Threat actors may use NTFS alternate data stream attribute to evade
+    detection and deliver binary or other files that would have been otherwise
+    blocked by the security controls.
+
+    They may store malicious data or binaries in file attribute metadata instead
+    of directly in files. This may be done to evade some defenses, such as
+    static indicator scanning tools and anti-virus ref [1], [2].      
+
+    An example is to attach a binary or a DLL as an ADS to a PDF file or text
+    file that does not contain anything suspicious (decoy content) and acts just
+    a carrier for the malicious payload store into the ADS.
+
+    In one of the malicious campaign a Russian affiliated threat actor is
+    observed to use Alternate Data Streams (ADSes) vulnerability `CVE-2025-8088`
+    for path traversal. The attackers specially crafted the archive to
+    apparently contain only one benign file, while it contains many malicious
+    addresses. Once a victim opens this seemingly benign file, WinRAR unpacks it
+    along with all its ADSes ref [5].  
+
+    ### Known Techniques used by Threat Actors
+
+    - Setting attributes using the command line - a malicious operator can use
+      the attrib command to set attributes on files and folders.
+    - Using API calls -  threat actor can use Windows API calls, such as
+      `SetFileAttributes` or `SetFileAttribute`, to set attributes on files and
+      folders.
+    - Exploiting vulnerabilities - exploit vulnerabilities in software or the
+      operating system is another common used technique. Using these type of
+      vulnerabilities a threat actor can set attributes on files and folders
+      without being detected.        

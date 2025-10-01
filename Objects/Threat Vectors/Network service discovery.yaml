@@ -1,0 +1,145 @@
+name: Network service discovery
+criticality: Medium
+references:
+  public:
+    1: https://developer.android.com/training/connect-devices-wirelessly/nsd
+    2: https://en.wikipedia.org/wiki/Service_discovery
+    3: https://www.w3.org/TR/discovery-api/
+    4: https://www.servicenow.com/products/it-operations-management/what-is-network-discovery.html
+    5: https://medium.com/@andrenogueira.dev/network-service-discovery-on-android-simplifying-device-communication-5de1d2d9996b
+    6: https://www.bleepingcomputer.com/sysadmin/guides/best-network-discovery-tools/
+    7: https://linuxize.com/post/netcat-nc-command-with-examples/
+    8: https://github.com/robertdavidgraham/masscan
+  #internal:
+    #a: 
+
+metadata:
+  uuid: fd0542bd-1541-42a7-8c07-0e073a198a53
+  schema: tvm::2.1
+  version: 1
+  created: 2025-02-04
+  modified: 2025-02-04
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+      sighting: |
+        Lazarus Group employs sophisticated reconnaissance techniques, including active 
+        port scanning and passive traffic analysis, to map out enterprise environments 
+        and identify vulnerable systems.
+      references:
+        - https://ics-cert.kaspersky.com/publications/reports/2021/02/25/lazarus-targets-defense-industry-with-threatneedle
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group
+  killchain: Discovery
+  # Reconaissence
+  att&ck:
+    - T1046 # Network Service Discovery
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745 # Abuse of Windows Utilities
+      description: |
+        Some of the build-in Windows utilities can be used
+        for network discovery. For example, net commands (net stat,
+        net config, net view, net user, net session and others).  
+  #cve:
+    #-
+  #misp:
+    #- not found yet
+  domains:
+    - Enterprise
+    - IoT
+    - Mobile
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    An adversary is looking to exploit native system applications
+    or to use enumeration external tools in an attempt to find
+    an entry network point.   
+  targets:
+    - End-user
+    - Firewall
+    - LAN
+    - Laptop
+    - Network Equipment
+    - Router or switch
+    - Workstations
+    - Customer
+    - Mobile phone
+    - Peripheral # printers and others. webcams and other possible attached devices
+    - Web Application Servers # HTTPS servers
+    - Other # API interference / API services ref [3]
+    - Public-Facing Servers
+  platforms:
+    - Active Directory
+    - AWS VPC
+    - Azure
+    - Windows
+    - Linux
+    - macOS
+    - Apache HTTP Server
+    - Android
+    - iOS
+    - Network Router
+  severity: Localised incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Tampering
+  impact:
+    - Impairement
+    - Lose Capabilities
+    - Nuisance
+  viability: Likely
+  description: |
+    Network service discovery is the process of identifying and mapping
+    the services and applications running on a network. This can include
+    discovering open ports, protocols, and services, as well as identifying
+    the operating systems and devices connected to the network. Devices that
+    support NSD include printers, webcams, HTTPS servers, and other mobile
+    devices ref [1].  
+
+    Adversaries may attempt to get a listing of services running on remote hosts, 
+    including those that may be vulnerable to remote software exploitation. 
+    Methods to acquire this information include port scans and vulnerability 
+    scans, using tools that are brought onto a system.  
+
+    ### Types of Network Service Discovery:
+
+    - Active Scanning: Sending probes to the network to gather information
+    about the services and devices connected.
+    - Passive Scanning: Monitoring network traffic to gather information
+    about the services and devices connected.
+    - OS Detection: Identifying the operating system and device type
+    connected to the network.
+
+    ### Some of the tools which can be used for network service discovery:
+
+    - Nmap: A popular network scanning tool that can perform active and
+    passive scanning.
+    - Netcat - this tool is a command-line utility scanning tool across
+    network connections over TCP and UDP protocols. It scan ports, transfer
+    files, create chat servers, and perform HTTP requests ref [7].  
+    - MASSCAN - Internet-scale port scanner. It can scan the entire network
+    in a very short interval of time ref [8].   
+    - OpenVAS: A vulnerability scanner that can perform network service
+    discovery and identify potential vulnerabilities.
+    - Nessus: A vulnerability scanner that can perform network service
+    discovery and identify potential vulnerabilities.
+    - Wireshark: A network protocol analyzer that can be used to monitor
+    network traffic and identify services and devices connected.
+    - Netstat (net commands Windows): A command-line tool that can be used
+    to view active
+    network connections and listening ports.
+    - Native Bonjour application
+    - Intermapper tool: Stands out for its strong focus on visual network
+    discovery and mapping. A free 30-day trial is available on request.
+    - NetBrain: Goes beyond traditional network discovery tools, offering
+    a comprehensive solution for visualizing, managing, and automating
+    hybrid networks.
+
+    Example for such activity could be scan port in a specific ip and
+    port ranges.

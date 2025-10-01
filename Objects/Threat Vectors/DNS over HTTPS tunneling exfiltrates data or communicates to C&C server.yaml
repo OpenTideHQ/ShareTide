@@ -1,0 +1,123 @@
+name: DNS over HTTPS tunneling exfiltrates data or communicates to C&C server
+criticality: Medium
+references:
+  public:
+    1: https://www.approach-cyber.com/blog-article/doh-cybersecurity-risk-in-enterprise/ # What is  DNS over HTTPS (DoH) and possible vulnerabilities?
+    2: https://quointelligence.eu/2021/02/dns-over-https-doh
+    3: https://medium.com/@0xHossam/evading-detection-and-stealthy-data-exfiltration-with-dns-over-https-doh-ee134b5766d4
+    4: https://medium.com/@scottbolen/mitre-attunes-spotlight-on-unc5221-decoding-chinas-apt-with-recent-attack-findings-2c3e7781c73b # who are Gothic Panda or also known as UNC5221
+    5: https://www.zdnet.com/article/dns-over-https-causes-more-problems-than-it-solves-experts-say
+    6: https://www.csoonline.com/article/570867/understanding-doh-challenges-a-necessary-step-in-improving-network-privacy-and-security.html
+
+metadata:
+  uuid: 901dd804-00cc-4034-85aa-3d10e257c16c
+  schema: tvm::2.1
+  version: 2
+  created: 2025-04-22
+  modified: 2025-05-08
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0022 #[Enterprise] APT3, Buckeye, Gothic Panda, Pirpi, TG-0110, Threat Group-0110, UPS Team
+    - name: misp::d144c83e-2302-4947-9e24-856fbf7949ae #APT3
+      sighting: |
+        UNC5221, also known as Gothic Panda or BlackBhamasura is
+        a known Chenese affiliated threat actor linked to a string
+        of cyberattacks targeting various sectors, including
+        telecommunications, healthcare, and government agencies.
+      references:
+        - https://medium.com/@scottbolen/mitre-attunes-spotlight-on-unc5221-decoding-chinas-apt-with-recent-attack-findings-2c3e7781c73b
+  killchain: Exfiltration
+  #killchain2: Command and Control
+  att&ck:
+    - T1572 # Protocol Tunneling
+    - T1036 # Masquerading, one protocol is encapsulated and transmitted as a traffic of another one
+    - T1041 # Exfiltration Over C2 Channel
+    - T1190 # Exploit Public-Facing Application
+    - T1566 # Phishing
+  #cve:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor can use DNS over HTTPS tunneling technique
+    to hide traffic and activities.
+  targets:
+    - Control Server
+    - Customer
+    - Public-Facing Servers
+  platforms:
+    - Windows
+    - Network Router
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Tampering
+  impact:
+    - Impairement
+    - Identity Theft # may lead to identity theft if there is any sensitive personal data in the exfiltrated data to C&C server
+    - Data Breach
+    - Operating costs
+    - Reputational Damages
+  viability: Likely
+  description: |
+    DNS over HTTPS (DoH) tunneling is a technique used by threat actors
+    to exfiltrate data or communicate to a Command and Control (C&C)
+    server. The data exchange and transfer between the victim and the
+    attacker's server can include - data exfiltration (stolen data) as
+    confidential documents or files, PIIs, financial data or intellectual
+    property. The data flow can be also an administrative traffic like
+    covert C&C communication, for example - chat or messaging traffic,
+    file (malicious payload) transfers, system control, manipulation
+    instructions and other possible signaling or instructions transfer.
+
+    DoH is a protocol that encrypts DNS requests and responses, making
+    it more difficult for third parties to intercept and manipulate DNS
+    traffic. However, threat actors have found a way to exploit this
+    protocol for malicious purposes ref [1].      
+
+    In a DoH tunneling attack, the threat actor uses the DoH protocol
+    to encapsulate malicious data, such as stolen credentials, sensitive
+    information, or malware, within DNS requests. The encrypted DNS requests
+    are then sent to a C&C server, which can be hosted on a compromised domain
+    or a domain controlled by the threat actor ref [2].    
+
+    A threat actor can use some of the following initial access techniques
+    or methods to perform DNS over HTTPS tunneling:   
+
+    - Compromises a device: Gains access to a victim's device, either through
+    phishing, exploiting vulnerabilities, or using malware.
+    - Installs malware: Installs malware on the compromised device, which can
+    be designed to collect sensitive information, such as login credentials
+    or personal data.
+    - Configures DoH: Configures the device to use DoH, either by modifying
+    the device's DNS settings or by installing a malicious DoH client.
+    - Encapsulates data: Encapsulates the stolen data within DNS requests,
+    using techniques such as:
+    - Data encoding: Encoding the data using techniques like Base64 or
+    hexadecimal encoding.
+    - Data fragmentation: Breaking the data into smaller fragments and
+    sending them across multiple DNS requests.
+    - Sends DNS requests: Sends the encrypted DNS requests to the C&C
+    server, which can be hosted on a compromised domain or a domain
+    controlled by the threat actor.
+    - Exfiltrates data: The C&C server receives the DNS requests, extracts
+    the encapsulated data, and stores or forwards it to the threat actor.
+
+    Example for DNS over HTTP tunneling 
+
+    In some of the reports and analysis is observed that the BRICKSTORM 
+    backdoor family resolves its Command & Control servers through DoH
+    (DNS over HTTPS), hindering most network monitoring solutions ref [a].
+
+    BRICKSTORM resolves its Command & Control domains through public
+    DoH (DNS over HTTPS) providers which encapsulates plaintext DNS
+    messages within secure HTTPS connections. Within multiple samples
+    BRICKSTORM relied on Quad9, NextDNS, Cloudflare and Google for domain 
+    name resolution. Due to DoH's usage of HTTPS, regular network-level
+    DNS monitoring is circumvented ref [a].  

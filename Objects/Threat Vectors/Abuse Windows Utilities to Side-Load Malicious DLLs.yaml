@@ -1,0 +1,141 @@
+name: Abuse Windows Utilities to Side-Load Malicious DLLs
+criticality: Medium
+#references:
+  #public:
+    #1: 
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 86f62c3a-6556-4a64-a9f5-a79168ad42d9
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-05
+  modified: 2024-11-05
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Execution
+  att&ck:
+    - T1574.001 #Hijack Execution Flow: DLL
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745
+      description: |
+        This TVM is implementing the bigger TVM : Abuse of Windows Utilities
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    The targeted Windows systems must have applications that improperly handle DLL loading, 
+    allowing unsigned or malicious DLLs to be loaded without proper validation. 
+    This often involves software that looks for DLLs in directories writable 
+    by non-administrative users
+  targets:
+    - Laptop
+    - Workstations
+    - Virtual Machines
+  platforms:
+    - Windows
+    - PowerShell
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Tampering
+    - Spoofing
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+    - Legal and regulatory
+  viability: Likely
+  description: |
+    ### 1. Squirrel.exe
+
+    **Description**: Associated with the Squirrel installation/update framework. 
+    Threat actors can perform DLL side-loading by placing a malicious DLL 
+    that squirrel.exe loads during execution.
+
+    Example:
+
+    > Attackers place a malicious DLL named Squirrel.dll in the same directory as squirrel.exe.
+    
+    ```
+    C:\Program Files\App\Squirrel.exe
+    C:\Program Files\App\Squirrel.dll  (malicious)
+    ```
+
+    ### 2. Tracker.exe
+    
+    **Description**: A Windows process related to search indexing. 
+    It can be abused for DLL side-loading.
+    
+    Example:
+
+    > An attacker places a malicious DLL named tracker.dll in the same directory as tracker.exe.
+    
+    ```
+    C:\Windows\System32\tracker.exe
+    C:\Windows\System32\tracker.dll  (malicious)
+    ```
+
+    ### 3. Tttracer.exe and Ttdinject.exe
+
+    **Description**: Part of the Windows Time Travel Tracing toolset. 
+    Threat actors can inject code into processes or load malicious DLLs.
+
+    Example:
+
+    ```
+    ttdinject.exe -p <PID> -l C:\path\to\malicious.dll
+    ```
+
+    ## 4. Wmiprvse.exe\
+    
+    **Description**: stands for Windows Management Instrumentation Provider Service
+    Threat actors can exploit wmiprvse.exe for DLL side-loading by placing malicious WMI provider 
+    DLLs that wmiprvse.exe loads during execution.
+
+    Example:
+
+    ```
+    C:\Windows\System32\wbem\wmiprvse.exe
+    C:\Windows\System32\wbem\malicious_provider.dll  (malicious)
+    ```
+
+    ### 5. InstallUtil.exe\
+    
+    **Description**: A command-line utility that allows for the installation 
+    and uninstallation of resources by executing installer components specified 
+    in .NET assemblies. Threat actors can run malicious code by passing a crafted assembly.
+
+    Example:
+
+    ```
+    InstallUtil.exe /logfile= /LogToConsole=false /U C:\path\to\malicious.dll
+    ```
+
+    ### 6. Odbcconf.exe\
+    
+    **Description**: Configures ODBC drivers and data source names. Can be used to execute DLLs.
+
+    Example:
+
+    ```
+    odbcconf.exe /S /A {REGSVR C:\path\to\malicious.dll}
+    ```

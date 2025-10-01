@@ -1,0 +1,130 @@
+name: Azure - SAS URI Generation
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Impact/AZT701/AZT701/
+    2: https://www.cyngular.com/resource-center/pathways-of-privilege-navigating-secure-access-with-microsoft-azure-sas-uris/
+    3: https://www.paloaltonetworks.com/blog/cloud-security/sas-token-abuse-mitigation/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 9edfeee4-63ee-49cc-ab7f-43a7e602ab58
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-11
+  modified: 2025-09-11
+  tlp: clear
+  #author: 
+  contributors:
+    - jaime.montane-lorenzo@ext.ec.europa.eu
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Impact
+  att&ck:
+    - T1537 #Transfer Data to Cloud Account
+    - T1078.004 #Valid Accounts: Cloud Accounts
+    - T1098.001 #Account Manipulation: Additional Cloud Credentials
+  chaining:
+    - relation: atomicity::implemented
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys)
+        granting at least Reader access to the target Azure tenant.
+    - relation: atomicity::implemented
+      vector: 2d7ed070-e5c5-4796-b150-ea1d02ed1785 #Azure - Storage container reconnaissance
+      description: |
+        Adversaries need to enumerate and discover publicly accessible or misconfigured 
+        Azure storage containers by scanning for storage account names and container names, 
+        often using automated tools or scripts, to identify open containers that may expose 
+        sensitive data.
+    - relation: atomicity::implemented
+      vector: 2d7ed070-e5c5-4796-b150-ea1d02ed1785 #Azure - Storage container reconnaissance
+      description: |
+        Adversaries need to enumerate and discover publicly accessible or misconfigured 
+        Azure storage containers by scanning for storage account names and container names, 
+        often using automated tools or scripts, to identify open containers that may expose 
+        sensitive data.
+    - relation: support::enabled
+      vector: 3435c5fd-1069-40ee-ae79-54c672ce454d #Azure - Virtual Machine Scripting
+      description: |
+        Through compromised account credentials or misused RBAC permissions, adversaries 
+        obtains sufficient access to invoke scripting features (RunCommand, extensions).
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+  terrain: |
+    Adversaries must gain access to an Azure account or service principal with the required 
+    permissions (for example, via stolen credentials or overly-permissive roles) to 
+    generate or obtain SAS tokens for targeted storage resources.
+  targets:
+    - Cloud Storage Accounts
+    - Virtual Machines
+    - Compute Cluster
+    - Serverless
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Elevation of privilege
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Monetary Loss 
+  viability: Likely
+  description: |
+    The following threat vector enables attackers to exfiltrate or manipulate data by 
+    generating Shared Access Signature (SAS) URIs for Azure resources such as virtual 
+    machine disks or storage containers, often without authentication or sufficient oversight.
+
+    ## Example Attack Scenario
+
+    An adversary with sufficient Azure permissions compromises a resource (like a VM 
+    or storage account) and generates an SAS URI for the VM disk or storage container. 
+    The attacker then uses the generated SAS URI to download or exfiltrate sensitive 
+    data, such as disk images containing credentials or proprietary information. For 
+    example, a well-publicized incident involved researchers leaking terabytes of confidential 
+    data after distributing SAS-protected links with overly broad permissions.
+
+    ## Attack Goals and Impact
+
+    - The key **attack goal** is **data exfiltration** or unauthorized access to sensitive 
+    data without detection or need for ongoing authentication.
+    - Attackers can download full VM disks, access entire storage containers, manipulate 
+    data, or even inject and delete files if permission scopes are broad.
+    - **Impact** includes extensive data breaches, loss of intellectual property, ransom 
+    demands, or irreparable harm due to deletion or manipulation of business-critical resources.
+    - SAS URIs are particularly dangerous because, once generated, they can't be easily 
+    revoked, and their permissions/duration may be overprovisioned by design or accident.
+
+    ## Attack Flow and Methodology
+
+    1. **Privilege Acquisition**: Attacker gains access to an Azure resource or user 
+    account with permissions to generate SAS URIs.
+    2. **SAS Generation**: Using privileged actions (such as 'Microsoft.Compute/disks/beginGetAccess/action' 
+    for VM disks or 'Microsoft.Storage/storageAccounts/listAccountSas/action' for Storage Accounts), 
+    the attacker generates a SAS URI for the target resource.
+    3. **Data Access or Exfiltration**: The attacker uses the SAS URI to access, download, 
+    modify, or delete data directly, often bypassing logging or security controls if 
+    not properly monitored.
+    4. **Persistence and Stealth**: Since SAS URIs can have long or indefinite validity 
+    periods and are rarely tracked, the attacker maintains ongoing access until the 
+    token expires or underlying keys are rotated.
+    5. **Cleanup or Covering Tracks**: In advanced scenarios, the attacker removes evidence 
+    of token generation and exfiltration or uses the access to establish further persistence 
+    within the environment.

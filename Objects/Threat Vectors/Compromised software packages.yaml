@@ -1,0 +1,159 @@
+name: Compromised software packages
+criticality: High
+references:
+  public:
+    1: https://cycode.com/blog/software-supply-chain-risks/ # Software Supply Chain Risks, software packages
+    2: https://www.balbix.com/insights/what-are-software-supply-chain-vulnerabilities-understanding-the-risks-how-to-mitigate-them/
+    3: https://secureframe.com/blog/software-supply-chain-security
+    4: https://www.bleepingcomputer.com/news/security/infostealer-campaign-compromises-10-npm-packages-targets-devs/
+    5: https://www.reversinglabs.com/blog/malicious-npm-patch-delivers-reverse-shell
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 1c1c9665-a30e-479b-bd80-1afb7b53ac83
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-15
+  modified: 2025-04-22
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b # UNC2452 or also known as SolarWinds hackers 
+      #sighting: |
+        #...
+      references:
+        - https://cloud.google.com/blog/topics/threat-intelligence/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor
+    
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, StellarParticle, The Dukes, UNC2452, UNC3524, YTTRIUM
+      sighting: |
+        A Russian state-sponsored threat actor that has been linked
+        to the SolarWinds hack and has also been known to compromise 
+        software packages.
+      references:
+        - https://sensorstechforum.com/apt29-tactics-revealed-five-eyes
+    
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM
+      sighting: |
+        A Chinese state-sponsored threat actor that has been known
+        to exploit vulnerabilities in software packages, including
+        Microsoft Exchange Server.
+      references:
+        - https://edition.cnn.com/2021/03/10/tech/microsoft-exchange-hafnium-hack-explainer/index.html
+
+    - name: att&ck::G0045 #[Enterprise] menuPass, APT10, BRONZE RIVERSIDE, CVNX, Cicada, HOGFISH, POTASSIUM, Red Apollo, Stone Panda
+    - name: misp::56b37b05-72e7-4a89-ba8a-61ce45269a8c # APT10 , Stone Panda
+      sighting: |
+        A Chinese threat actor that has been known to compromise
+        software packages, including the NetSarang software.
+      references:
+        - https://medium.com/aardvark-infinity/apt10-in-depth-analysis-of-an-advanced-persistent-threat-group-e897cc7e8efe
+    
+    - name: att&ck::G0004 #[Enterprise] Ke3chang, APT15, GREF, Mirage, NICKEL, Nylon Typhoon, Playful Dragon, RoyalAPT, Vixen Panda
+    - name: misp::3501fbf2-098f-47e7-be6a-6b0ff5742ce8 #APT15
+      sighting: |
+        A Chinese threat actor that has been known to compromise
+        software packages, including the CCleaner software.
+      references:
+        - https://arstechnica.com/information-technology/2017/09/backdoor-malware-planted-in-legitimate-software-updates-to-ccleaner
+
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group
+      sighting: |
+         A North Korean state-sponsored threat actor that has been known
+         to compromise software packages, including the Adobe Flash Player.
+      references:
+        - https://dailysecurityreview.com/resources/lazarus-ransomware-group-the-north-korean-cyber-menace
+  killchain: Exploitation
+  #killchain2: Initial Access
+  att&ck:
+    - T1546.016 # Event Triggered Execution: Installer Packages
+    - T1195     # Supply Chain Compromise
+  chaining:
+    - relation: atomicity::implements
+      vector: 78683822-44dc-41ac-8fef-b5f0968743c9 # Malicious Software Dependencies Faking Known Packages
+      description: |
+        Threat actors use a technique to mimic legitimate software
+        packages in order to mislead the developers in downloading
+        and infecting their systems.     
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - IoT
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor can use vulnerabilities in the function and appearance
+    of software malicious dev packages to entice a developer to install them.
+  targets:
+    - CI/CD Pipelines
+    - Developer
+    - Workstations
+    - Laptop
+  platforms:
+    - Windows
+    - macOS
+    - Linux
+  severity: Highly significant incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Elevation of privilege
+    - Tampering
+  impact:
+    - Business disruption
+    - Impairement
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    Compromised software packages in a supply chain attack refer to the
+    intentional or unintentional inclusion of malicious code or vulnerabilities
+    in software components, libraries, or dependencies that are used by multiple
+    organizations or products. This type of attack targets the software supply
+    chain, which includes all the organizations, people, and processes involved
+    in designing, developing, testing, building, delivering, and maintaining
+    software.
+
+    ### Types of compromised software packages
+
+    - Malicious libraries or dependencies: Open-source or third-party libraries
+    that contain malicious code, which can be used to steal sensitive data,
+    disrupt operations, or create backdoors.
+    - Tampered software updates: Legitimate software updates that have been
+    compromised by an attacker, allowing them to inject malware or backdoors
+    into the updated software.
+    - Infected software components: Software components, such as DLLs or
+    executables, that contain malware or vulnerabilities, which can be
+    used to compromise the entire system.
+    - Fake or counterfeit software: Software that is intentionally designed
+    to mimic legitimate software, but contains malware or vulnerabilities.
+    - Typosquatting attacks: This type of approach includes a small changes
+    in the name of the software packages. In this way is very difficult to
+    recognise a malicious from a legitimate software package for installation.
+    The packages with names similar to legitimate ones could be deceiving and
+    easily lure the victim to download and use them. 
+    
+    ### Dependency poisoning 
+
+    Threat actors can add intentional vulnerabilities to open-source libraries
+    by exploiting their accessibility. Such example is typosquatting attacks
+    in which an adversary uploads malicious packages with names similar to
+    popular NPM or PyPI libraries to trick developers into downloading
+    the wrong one. Threat actors can also inject malicious code into trusted
+    libraries,for example: Log4j, NPM, or PyPI, compromising thousands of
+    applications that rely on them. This type of attack, often referred
+    to as “supply chain poisoning,” can have a massive impactful
+    consequences. ref [2].  
+    
+    It's recommended a security officer to establish robust policies for
+    evaluating, approving, and managing open-source libraries. This includes
+    selecting packages from trusted sources and monitoring their activity.

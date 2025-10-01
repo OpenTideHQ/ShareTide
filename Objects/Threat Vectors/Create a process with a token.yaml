@@ -1,0 +1,59 @@
+name: Create a process with a token
+criticality: High
+references:
+  public:
+    1: https://attack.mitre.org/techniques/T1134/002/
+    2: https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/cc771525(v=ws.11)
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 54adba8e-e3f8-43e2-bcd5-7c3cd61112d9
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-08-04
+  modified: 2022-08-04
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Credential Access
+  att&ck:
+    - T1134.002
+  domains:
+    - Enterprise
+  terrain: |
+    The victim Window endpoints need to have vulnerable accounts with 
+    misconfigured settings that may leak access tokens.  
+  targets:
+    - Auth token
+    - Remote access
+    - Identity Services
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+  impact:
+    - Identity Theft
+    - Impairement
+  viability: Likely
+  description: |
+    Adversaries may create a new process with a different token 
+    to escalate privileges and bypass access controls. A processes 
+    can be created with the token and resulting security context 
+    of another user using features such as CreateProcessWithTokenW 
+    and runas.
+
+    An adversary creates a new access token with DuplicateToken(Ex) 
+    and uses it with CreateProcessWithTokenW to create a new process 
+    running under the security context of the impersonated user. 
+    This is useful for creating a new process under the security 
+    context of a different user.
