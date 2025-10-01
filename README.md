@@ -19,7 +19,7 @@ In such cases, we recommend either importing objects one by one to allow the sch
  
 ### Contributing
 
-You are welcome to open a PR and propose new OpenTide object to share to the community.
+You are welcome to open a PR and propose new OpenTide objects to share to the community, and to engage in issues or discussions.
 
 ### Licensing
 
