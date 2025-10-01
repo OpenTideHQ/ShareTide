@@ -108,12 +108,6 @@ threat:
         Adversaries obtain the username and password of an AzureAD user either through
         phishing, password spraying, brute-force attacks, or credentials leaked online.
     - relation: sequence::preceeds
-      vector: 2c4f996e-ce48-435b-ac4c-413dabaa5a59 #Cloned device within the organisation
-      description: |
-        A cloned device is already in the organisation, it is fully operational 
-        (as the original device is fully onboarded, the clone has exactly the same config
-        and will appear on the console as another instance of the same device).
-    - relation: sequence::preceeds
       vector: 61ddc240-e5a6-4ca8-ae77-6b471b498913 #Code execution via custom script extensions in Azure
       description: |
         Adversaries must have an Azure role that grants the ability to write or deploy 
