@@ -22,17 +22,6 @@ metadata:
     name: EC DIGIT CSOC
 
 threat:
-  #actors:
-    #- name: PurpleHaze, Chinese nexus threat actor group
-      #sighting: |
-        # PurpleHaze is a Chinese affiliated threat actor known to target
-        # institutions in Europa, for example  "leading" European media
-        # organization. Their targets include also manufacturing,
-        # finance, media, cybersecurity, public administration and
-        # telecommunications ref [1], [a].    
-      #references:
-        #- https://thehackernews.com/2025/06/over-70-organizations-across-multiple.html
-        #- https://www.darkreading.com/remote-workforce/china-hackers-target-sentinelone-purplehaze-attack
   killchain: Defense Evasion
   att&ck:
     - T1190     # Exploit Public-Facing Application

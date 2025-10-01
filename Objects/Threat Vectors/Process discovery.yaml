@@ -93,13 +93,7 @@ threat:
     ### Living-off-the-Land (LOTL) techniques to identify potential targets 
     
     The threat actors may abuse native tools (PowerShell, WMIC) to blend
-    in with normal activity, avoiding suspicion.  
-
-    ### EXE files and other indicators for process discovery activities
-
-    The following processes can indicate thet a threat actor is performing
-    process discovery on a target system: qprocess.exe, query.exe
-    tasklist.exe and PowerShell commands ref [a].    
+    in with normal activity, avoiding suspicion.    
 
     ### Used tools by threat actors for process discovery on a target system
 

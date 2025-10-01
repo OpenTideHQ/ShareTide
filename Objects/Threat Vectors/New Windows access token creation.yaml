@@ -132,7 +132,7 @@ threat:
     context from the administrator level to the SYSTEM level. An adversary
     can use a token to authenticate to a remote system as the account for
     that token if the  account has appropriate permissions on the remote
-    system ref [a].  
+    system. 
   
     ### Known toolset used by the threat actors
 

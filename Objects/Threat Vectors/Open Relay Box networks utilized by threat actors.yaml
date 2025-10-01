@@ -87,32 +87,8 @@ threat:
     cases and vulnareble edge devices or networks composed by compromised
     devices like smartphones, IoT sensors, industrial robots or the
     combination between multiple smart (IoT), industrial or other type
-    of portable or industrial internet of things devices ref [3].    
-
-    The obfuscation networks are observed to have sevarel different
-    version of the networks - for example, ORB primamry initial network,
-    after it the upgraded ORB02 network or also known as "SuperJump"
-    that comprises about 500 hosts. Several modifications of these
-    type of network are observed as networks composed of “nodes,”
-    or individual physical or virtual devices, that are typically
-    routers or leased virtual private servers ref [a, 2].
+    of portable or industrial internet of things devices ref [3].    .
 
     The entities targeted by this ORB network, named also as ORB02,
     are located in Europe and South America, and include a European
     Union entity.
-
-    This activity occurred between August and November 2024. A government
-    website directly associated with the G20 Summit held in Brazil in
-    mid-November 2024 was among the likely targeted systems. 
-
-    The targeted IP addresses are associated with moderate confidence
-    to entities in Brazil, Peru, Spain, Slovenia, Romania, and the Czech
-    Republic, as well as an EU entity. Several targeted IP addresses displayed
-    characteristics consistent with websites, mail servers, name servers,
-    government login pages, and systems hosting Fortinet and F5 BIG-IP
-    appliances ref [a].  
-
-    The connections likely represent operator activity such as reconnaissance
-    between ORB02 nodes and the targeted entities systems. There is no evidence
-    that the targeted entities were compromised ref [a].  
-

