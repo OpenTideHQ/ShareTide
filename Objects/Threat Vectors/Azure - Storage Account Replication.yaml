@@ -16,9 +16,6 @@ metadata:
   created: 2025-09-08
   modified: 2025-09-08
   tlp: clear
-  #author: 
-  contributors:
-    - jaime.montane-lorenzo@ext.ec.europa.eu
   organisation:
     uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
     name: EC DIGIT CSOC
