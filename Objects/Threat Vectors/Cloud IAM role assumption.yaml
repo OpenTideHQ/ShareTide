@@ -1,0 +1,56 @@
+name: Cloud IAM role assumption
+criticality: Severe
+references:
+  public:
+    1: https://sysdig.com/blog/lateral-movement-cloud-containers/#:~:text=Lateral%20movement%20is%20a%20growing,serve%20as%20an%20entry%20point.
+    2: https://hackingthe.cloud/aws/exploitation/iam_privilege_escalation/#iamattachrolepolicy
+  #internal:
+    #a: 
+
+metadata:
+  uuid: f1dc4341-eb45-4d07-8075-b1a6b227cc76
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-05-19
+  modified: 2025-01-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Privilege Escalation
+  att&ck:
+    - T1098.003
+  domains:
+    - Public Cloud
+  terrain: |
+    Adversaries will have already compromised some cloud credentials,
+    and now aim at escalating privileges while moving laterally.
+    The credentials they gained access to also must have sufficient
+    privileges to allow role assumption.
+  targets:
+    - Software Containers
+    - Virtual Machines
+  platforms:
+    - AWS IAM
+    - Azure AD
+  severity: Substantial incident
+  leverage:
+    - Modify privileges
+  impact:
+    - Data Breach
+  viability: Likely
+  description: |
+    Once adversaries gained a set of creentials, they will
+    try to discover and leverage identity policies to increase their
+    control over the infrastructure. This is especially the case for
+    instance credentials, which can be stolen through exploitation.
+    
+    Changing roles will allow the adversary to assume a
+    more powerful role, escalate privileges and eventually move further
+    in the cloud to achieve objectives. This can be particularly
+    impactful if cross account roles are leveraged.

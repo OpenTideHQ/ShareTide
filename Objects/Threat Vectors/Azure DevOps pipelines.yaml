@@ -1,0 +1,168 @@
+name: Azure DevOps pipelines
+criticality: High
+references:
+  public:
+    1: https://learn.microsoft.com/en-us/azure/devops/pipelines/security/overview?view=azure-devops
+    2: https://statusneo.com/best-practices-for-securing-azure-devops-pipelines/
+    3: https://learn.microsoft.com/bs-latn-ba/azure/devops/pipelines/security/overview?view=azure-devops&toc=%2Fazure%2Fdevops%2Forganizations%2Ftoc.json
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 490a5d5d-5880-45bd-a05d-176878e0ae24
+  schema: tvm::2.1
+  version: 3
+  created: 2025-06-19
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Execution
+  att&ck:
+    - T1190 #Exploit Public-Facing Application
+    - T1528 #Steal Application Access Token
+    - T1078 #Valid Accounts
+    - T1195.001 #Supply Chain Compromise: Compromise Software Dependencies and Development Tools
+  chaining:
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online.  
+    - relation: support::enabled
+      vector: 2900d389-3098-49d3-8166-5b2612d03576 #Azure - Gatherr Information
+      description: |
+        Adversaries use publicly accessible endpoints, misconfigured applications, or phishing 
+        emails to harvest user names, email addresses, job titles, and group memberships.
+    - relation: support::enabled
+      vector: bb2501d5-99c7-44a6-ac5a-9510102d6611 #Azure - Principal Impersonation
+      description: |
+        Adversaries gains access via phishing, credential stuffing, or exploiting misconfigurations 
+        allowing access to an account with application management permissions or to a pipeline 
+        that exposes service principal credentials.
+  cve:
+    - CVE-2025-29813
+    - CVE-2025-29827
+    - CVE-2023-21553
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - SaaS   
+  terrain: |
+    Adversaries may gain access by stealing user credentials, including personal access 
+    tokens (PATs) or Azure Active Directory (AAD) tokens, often through phishing or 
+    credential theft.
+  targets:
+    - Cloud Storage Accounts
+    - Key Store
+    - Compute Cluster
+    - Workstations
+    - Public-Facing Servers
+    - API Endpoints
+    - Cloud Portal
+    - Software Development Tools
+    - Code Repositories
+    - CI/CD Pipelines
+    - Serverless
+    - Virtual Machines
+    - IaaS
+    - Relational Database
+    - NoSQL Database
+    - Microservices
+    - SAML-Joined Applications
+  platforms:
+    - Azure
+    - Azure AD
+    - Office 365
+    - Windows
+    - Linux
+    - Docker Engine
+    - Kubernetes
+    - Azure AKS
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Repudiation
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Elevation of privilege
+    - New Accounts
+    - Modify configuration
+    - Modify privileges
+    - Modify data
+    - Software installation
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Lose Capabilities
+    - Business disruption
+    - Operating costs
+    - Competitive disadvantage
+  viability: Likely
+  description: |
+    Azure DevOps pipelines are a critical component in modern software development but 
+    also present significant attack surfaces for threat actors. Key threats include 
+    supply chain compromises, insider attacks, privilege escalation vulnerabilities, 
+    and misconfigurations that can lead to unauthorized access, data breaches, and malicious 
+    code execution.
+
+    ## Comprehensive Threat Vectors for Azure DevOps Pipelines
+
+    ### Supply Chain Attacks
+    - **Malicious Extensions and Tasks:** Attackers may upload harmful extensions to 
+    the Azure DevOps Marketplace, which can execute arbitrary code if installed and 
+    run in pipelines.
+    - **Compromised Build Agents:** Outdated or unpatched build agents can be exploited 
+    to gain persistent access or execute malicious code within pipelines.
+    - **Dependency Poisoning:** Malicious code can be injected into package dependencies 
+    (e.g., NuGet, npm, Maven), which are then pulled and executed during pipeline builds.
+    - **Third-Party Tool Integrations:** Compromised integrations or plugins can introduce 
+    vulnerabilities into the pipeline execution environment.
+
+    ### Insider Threats
+    - **Unauthorized Pipeline Modifications:** Users with access can alter pipeline 
+    YAML files or scripts to introduce malicious code, especially if branch protections 
+    are weak or absent.
+    - **Token Abuse:** Attackers can abuse pipeline job tokens (e.g., swapping short-term 
+    for persistent tokens via vulnerabilities like CVE-2025-29813) to escalate privileges 
+    or access sensitive resources.
+    - **Malicious Code Injection:** Insiders might inject malicious scripts or commands 
+    during pipeline runs, potentially bypassing code reviews if pull requests are not 
+    enforced.
+
+    ### Credential and Secret Exposure
+    - **Hardcoded Secrets:** Storing API keys, passwords, or tokens directly in pipeline 
+    scripts or configuration files can lead to exposure if logs are not properly secured.
+    - **Leaked Logs:** Pipeline logs may inadvertently contain sensitive information 
+    if proper masking and filtering are not enforced.
+    - **Forked Repositories:** Secrets in pipelines can be exposed if pipelines run 
+    on forked repositories, especially if pull requests are not properly secured.
+    - **Insufficient Secret Rotation:** Failing to regularly rotate secrets increases 
+    the risk of exploitation if credentials are compromised.
+
+    ### Network and Access Control Weaknesses
+    - **Unrestricted Network Access:** Lack of IP allowlisting or network security groups 
+    (NSGs) can allow attackers to access pipeline resources from untrusted locations.
+    - **Weak Authentication:** Using personal access tokens (PATs) instead of OAuth 
+    or managed identities can increase the risk of credential theft.
+    - **Insufficient Role-Based Access Control (RBAC):** Overprivileged users or service 
+    accounts can lead to unauthorized actions or data exfiltration.
+    - **Lack of Isolation:** Pipelines not isolated from each other or from sensitive 
+    resources can enable lateral movement within the environment.

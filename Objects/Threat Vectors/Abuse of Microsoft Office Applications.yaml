@@ -1,0 +1,119 @@
+name: Abuse of Microsoft Office Applications
+criticality: Medium
+#references:
+  #public:
+    #1: 
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: b663b684-a80f-4570-89b6-2f7faa16fece
+  schema: tvm::2.0
+  version: 1
+  created: 2024-10-31
+  modified: 2024-10-31
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0092 #[Enterprise] TA505, CHIMBORAZO, Hive0065, Spandex Tempest
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505, SectorJ04, SectorJ04 Group, GRACEFUL SPIDER, GOLD TAHOE, Dudear, G0092, ATK103, Hive0065, CHIMBORAZO, Spandex Tempest
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+  killchain: Execution
+  att&ck:
+    - T1059.005 #Command and Scripting Interpreter: Visual Basic
+    - T1204.002 #User Execution: Malicious File
+    - T1137 #Office Application Startup
+    - T1203 #Exploitation for Client Execution
+  chaining:
+    - relation: sequence::succeeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 #Spearphishing Attachment
+      description: |
+        Most of malware comes from email attachment and can be executed afterwards
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Target systems must have Microsoft Office applications installed with macros 
+    enabled or be susceptible to social engineering tactics that prompt users 
+    to enable macros or execute malicious content.
+  targets:
+    - Email Platform
+    - Desktop
+    - Laptop
+    - Critical Documents
+    - Personal Information
+    - Workstations
+  platforms:
+    - Windows
+    - Office 365
+    - Microsoft SharePoint
+    - Outlook Web Access
+  severity: Moderate incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Information Disclosure
+    - Elevation of privilege
+    - Software installation
+  impact:
+    - Data Breach
+    - IP Loss
+    - Identity Theft
+    - Business disruption
+  viability: Very Likely
+  description: |
+      An employee named receives an email that appears to be from a trusted business 
+      partner or colleague. The email contains an office document. The end-user clic on it.
+
+      The attached file, is a macro-enabled Word document. It usually pops-up with 
+      the following message :
+      "This document was created in an earlier version of Microsoft Word. 
+      Please click 'Enable Content' above to view the full document."
+
+      This message is designed to entice end-user to enable macros or active content, 
+      which is disabled by default for security reasons.
+
+      By clicking ont it, it allows the embedded macro, written in 
+      Visual Basic for Applications (VBA), to execute without further prompts.
+
+      Once executed, the macro initiates a hidden process that launches Windows PowerShell, 
+      which run:
+
+      - Run silently without displaying a window to the user.
+      - Bypass execution policies that normally restrict script running.
+      - Connect to an external server controlled by the attacker.
+      - Download and execute additional malicious code or a payload.
+
+      Threat actors may also modify Windows Registry settings related to 
+      Microsoft Office security.
+
+      - Disabling the COM Kill Bit: This involves changing registry values 
+      that control the activation of certain COM objects or ActiveX controls 
+      within Office applications. By disabling the "kill bit," the threat actor 
+      re-enables outdated or vulnerable components that can be exploited.
+
+      - Altering Macro Security Settings: Changing registry keys to lower the 
+      macro security level, allowing macros to run without prompts in the future.
+
+      To maintain long-term access to the compromised system, 
+      the attacker may target Microsoft Outlook.
+
+      - Embedding Malicious Code in Outlook's VBA Project:
+      - The attacker adds VBA code to Outlook's VbaProject.otm file.
+      This code executes every time Outlook starts, performing actions without the user's knowledge.

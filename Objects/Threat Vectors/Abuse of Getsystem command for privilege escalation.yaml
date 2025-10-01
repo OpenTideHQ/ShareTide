@@ -1,0 +1,123 @@
+name: Abuse of Getsystem command for privilege escalation
+criticality: High
+references:
+  public:
+    1: https://github.com/S1ckB0y1337/Cobalt-Strike-CheatSheet
+    2: https://redcanary.com/threat-detection-report/threats/cobalt-strike/
+    3: https://www.offsec.com/metasploit-unleashed/privilege-escalation/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 49625e57-94e0-4185-8466-ac68fe15b7e1
+  schema: tvm::2.1
+  version: 2
+  created: 2025-02-03
+  modified: 2025-02-04
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+
+threat:
+  actors:
+    - name: att&ck::G0143 #[Enterprise] Aquatic Panda
+    - name: att&ck::G0080 #[Enterprise] Cobalt Group, Cobalt Gang, Cobalt Spider, GOLD KINGSWOOD
+    - name: att&ck::G1021 #[Enterprise] Cinnamon Tempest, BRONZE STARLIGHT, DEV-0401, Emperor Dragonfly
+    - name: att&ck::G1014 #[Enterprise] LuminousMoth
+    - name: misp::78bf726c-a9e6-11e8-9e43-77249a2f7339 #MUSTANG PANDA
+    - name: misp::aa29ae56-e54b-47a2-ad16-d3ab0242d5d7 #APT32
+    - name: misp::091a0b69-74de-44b6-bb12-16b7a8fd078b #ToddyCat
+    - name: misp::066d25c1-71bd-4bd4-8ca7-edbba00063f4 #APT19
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505
+    - name: misp::8cca9a1d-66e4-4bc4-ad49-95f759f4c1ae #CopyKittens
+    - name: misp::ce2c2dfd-2445-4fbc-a747-9e7092e383f9 #DarkHydrus
+    - name: misp::3ce9610b-2435-4c41-80d1-3f95a5ff2984 #Mustard Tempest
+    - name: misp::9c124874-042d-48cd-b72b-ccdc51ecbbd6 #APT41
+    - name: misp::56b37b05-72e7-4a89-ba8a-61ce45269a8c #APT10
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7
+    - name: misp::f512de42-f76b-40d2-9923-59e7dbdfec35 #Sandworm
+    - name: misp::5b4b6980-3bc7-11e8-84d6-879aaac37dd9 #APT40
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29
+    - name: misp::50cd027f-df14-40b2-aa22-bf5de5061163 #APT37
+    - name: misp::bdf4fe4f-af8a-495f-a719-cf175cecda1f #WIZARD SPIDER
+    - name: misp::658314bc-3bb8-48d2-913a-c528607b75c8 #INDRIK SPIDER
+      #sighting: |
+        #Type Here
+      #references:
+        #-
+  killchain: Privilege Escalation
+  att&ck:
+    - T1134.002 #Access Token Manipulation: Create Process with Token
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+     Adversary must have administrative privileges on Windows systems within 
+     the enterprise network.
+  targets:
+    - Laptop
+    - Workstations
+  platforms:
+    - Active Directory
+    - PowerShell
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Modify configuration
+    - Modify data
+    - Tampering
+    - New Accounts
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+    - Operating costs
+  viability: Likely
+  description: |
+    Use of Getsystem command to elevate from a local administrator to the SYSTEM user.
+    There are different tools to do this, most popular are Cobalt Strike beacons and 
+    Metasploit Meterpreter payload.
+
+    Both tools first attempt to use “named pipe impersonation” to achieve SYSTEM privileges.
+    This involves creating a Windows Service to execute as NT AUTHORITY\SYSTEM and feeding
+    data to it through a named pipe that is randomly created by the malicious payload.
+
+    The getsystem command has three techniques. The first two rely on named pipe impersonation.
+    The last one relies on token duplication.
+
+    ## Technique 1.
+  
+    It creates a named pipe from Meterpreter. It also creates and runs a service that runs
+    cmd.exe /c echo “some data” >\\.\pipe\[random pipe here]. When the spawned cmd.exe connects
+    to Meterpreter’s named pipe, Meterpreter has the opportunity to impersonate that security 
+    context. Impersonation of clients is a named pipes feature. 
+    The context of the service is SYSTEM, so when you impersonate it, you become SYSTEM.
+
+    ## Technique 2.
+
+    It is like technique 1. It creates a named pipe and impersonates the security context of
+    the first client to connect to it. To create a client with the SYSTEM user context,
+    this technique drops a DLL to disk(and schedules rundll32.exe as a service to run the
+    DLL as SYSTEM. The DLL connects to the named pipe.
+
+    ## Technique 3.
+ 
+    It is a little different. This technique assumes you have SeDebugPrivileges—something getprivs
+    can help with. It loops through all open services to find one that is running as SYSTEM and
+    that you have permissions to inject into. It uses reflective DLL injection to run its elevator.dll
+    in the memory space of the service it finds. This technique also passes the current thread id 
+    (from Meterpreter) to elevator.dll. When run, elevator.dll gets the SYSTEM token, opens the primary 
+    thread in Meterpreter, and tries to apply the SYSTEM token to it.
+
+    This technique’s implementation limits itself to x86 environments only. On the bright side, 
+    it does not require spawning a new process and it takes place entirely in memory.

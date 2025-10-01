@@ -1,0 +1,137 @@
+name: Scheduled tasks to maintain persistence in registry
+criticality: Medium
+references:
+  public:
+    1: https://redcanary.com/threat-detection-report/techniques/windows-command-shell/
+    2: https://www.microsoft.com/en-us/security/blog/2022/04/12/tarrask-malware-uses-scheduled-tasks-for-defense-evasion/
+    3: https://attack.mitre.org/techniques/T1053/005/
+    4: https://learn.microsoft.com/en-us/troubleshoot/developer/webapps/iis/general/use-registry-keys
+    5: https://dmfrsecurity.com/2021/09/07/scheduled-task-persistence/
+    6: https://www.cyborgsecurity.com/cyborg-labs/hunting-for-persistence-registry-run-keys-startup-folder
+    7: https://github.com/netero1010/GhostTask
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 5e66f826-4c4b-4357-b9c5-2f40da207f34
+  schema: tvm::2.0
+  tlp: clear
+  version: 6
+  created: 2022-12-14
+  modified: 2025-06-11
+  #author:
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+    - name: att&ck::G0117 #[Enterprise] Fox Kitten, Lemon Sandstorm, Parisite, Pioneer Kitten, RUBIDIUM, UNC757
+    - name: misp::bfb0bc20-5bdf-47ff-b07f-dbd9a3cb9772 #Fox Kitten, PIONEER KITTEN, PARISITE, UNC757, Lemon Sandstorm, RUBIDIUM
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Persistence
+  att&ck:
+    - T1053.005 #Scheduled Task/Job: Scheduled Task
+    - T1112 #Modify Registry
+  chaining:
+    - relation: sequence::succeeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 #Spearphishing Attachment
+      description: |
+        Phishing emails with malicious macros are used to deliver the malware.
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    An adversary has gained control over a Windows endpoint and has privileges 
+    to create scheduled tasks in order to maintain persistence in the registry.
+  targets:
+    - Workstations
+    - Control Server
+    - Laptop
+    - Desktop
+    - Remote access
+    - Web Application Servers
+    - Public-Facing Servers
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Infrastructure Compromise
+    - Tampering
+    - Modify configuration
+    - Modify data
+  impact:
+    - Impairement
+    - Business disruption
+  viability: Likely
+  description: |
+   A threat actor can successfully maintain persistence on a compromised system 
+   by using scheduled tasks to create or edit registry entries.
+   
+   Windows Scheduled Task is a feature of the Windows operating system that 
+   allows users to schedule a command or program to run automatically at a 
+   specific time or interval. This can be useful for running tasks that need to
+   be performed regularly, such as backing up files or checking for updates. 
+   Scheduled tasks can be configured to run in the background, without the need
+   for user intervention.
+   
+   One example for a scheduled task that establish persistence in the registry 
+   is a task that is configured to run when specific condition is met - as 
+   example on system start up. The task will have an action configured, which 
+   might be to download and run a payload, which for example could be a payload
+   that sets a registry run key. Registry run keys are keys in the Windows 
+   registry that are called during system start up. These keys enable 
+   configurations to be loaded automatically. Registry run keys can also 
+   directly execute binary files on system start up. 
+
+   To create a scheduled task that runs at system startup attackers are using 
+   for example Windows Task Scheduler, cmd.exe or PowerShell commands in a 
+   script. Once the task has been created, it will be added to the registry and 
+   will run automatically every time the system starts up, or until discovered 
+   and deleted.
+
+   **Examples for mechanism of persistence in the registries**
+
+    - Run/RunOnce Keys: Malware can add entries to the registry keys
+    (or their RunOnce counterparts) to execute every time the system
+    boots or a user logs in. An example for such Reg keys:
+    
+    ` HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run `
+    
+    or 
+    
+    ` HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run `
+    
+    
+    - Scheduled Tasks: Utilizing the Task Scheduler, malware can create
+    tasks that run at specific intervals or times, ensuring persistence.
+    These tasks are often registered in the registry under
+    
+    ` HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache `.
+
+    - Windows Services: Malicious services can be installed and configured
+    to start automatically upon system boot. These are typically registered
+    under `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services`.
+
+   ### Additional persistence techniques
+
+   Other common techniques used by malware in general include:
+
+   - **Modifying Registry Keys**: Malware often alters specific registry keys 
+   (like those in `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`) 
+   to ensure they are executed at startup.
+
+   - **Modifying Registry Keys**: The following enables the malware to run for all 
+   users on the system: (HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run)
+
+   - **Using Startup Folders**: Malware can place executable files in startup
+   folders so that they run automatically when a user logs into their account.   
+

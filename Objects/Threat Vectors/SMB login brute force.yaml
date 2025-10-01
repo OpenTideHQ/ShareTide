@@ -1,0 +1,151 @@
+name: SMB login brute force
+criticality: Medium
+references:
+  public:
+    1: https://0xma.github.io/hacking/brute_force_windows_server_metasploit.html
+    2: https://exploit-notes.hdks.org/exploit/windows/active-directory/smb-pentesting
+    3: https://github.com/MrUknownm/SMB-Bruteforce # smbrute.bat file, SMB-Bruteforce tool resource
+    4: https://github.com/KunalPsycho100/Simple-SMB-Brute-Forcer # Simple SMB Brute Forcer tool, an example for batch script tool
+    5: https://www.infosecmatter.com/smb-brute-force-attack-tool-in-powershell-smblogin-ps1 # PowerShell brute-force script
+    6: https://github.com/Liragbr/BruteForce1v # SMB brute-force tool; attempts to log in to the SMB server using each password in the provided list
+    7: https://github.com/InfosecMatter/Minimalistic-offensive-security-tools/blob/master/smblogin-extra-mini.ps1 # PowerShell based minimalistic offensive tool
+  #internal:
+    #a: 
+
+metadata:
+  uuid: fa4c66c6-a69b-4e16-84cb-7ad8c772af41
+  schema: tvm::2.1
+  version: 1
+  created: 2025-07-21
+  modified: 2025-08-07
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0096 #[Enterprise] APT41, BARIUM, Brass Typhoon, Wicked Panda
+    - name: misp::9c124874-042d-48cd-b72b-ccdc51ecbbd6 #APT41, G0096, TA415, Blackfly, Grayfly, LEAD, BARIUM, WICKED SPIDER, WICKED PANDA, BRONZE ATLAS, BRONZE EXPORT, Red Kelpie, G0044, Earth Baku, Amoeba, HOODOO, Brass Typhoon, Winnti, Double Dragon, TG-2633
+      sighting: |
+        This threat actor is a known Chinese affiliated threat actor observed
+        to use brute-force techniques against SMB shares. 
+      references:
+        - https://malpedia.caad.fkie.fraunhofer.de/actor/apt41
+        - https://cloud.google.com/blog/topics/threat-intelligence/apt41-dual-espionage-and-cyber-crime-operation
+  killchain: Credential Access
+  att&ck:
+    - T1110     # Brute Force                     | A threat actor is using a brute-force approach to guess the password for the SMB share
+    - T1110.001 # Brute Force: Password Guessing  | A threat actor may use a password-guessing for SMB share password technique, using a list of common passwords or a password cracking tool
+  chaining:
+    - relation: atomicity::implements
+      vector: cc546bbc-f71c-4538-934c-415d6adc293b # Password spraying attack
+      description: |
+        A password spraying technique can be used to bruteforce and compromise
+        an SMB share. Threat actors brute-force the credentials using a list of
+        common or expected passwords against a set of usernames.  
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor needs an access to a compromised host and availability to
+    try to connect to a SMB share.  
+  targets:
+    - Workstations
+    - Remote access
+    - Other # SMB share
+    - Laptop
+    - Customer
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Tampering
+    - Denial of Service
+  impact:
+    - Data Breach
+    - Impairement
+    - Lose Capabilities
+    - Reputational Damages
+  viability: Likely
+  description: |
+    SMB (Server Message Block) brute-force is a type of cyber attack where an
+    attacker attempts to guess the password for an SMB share by trying a large
+    number of possible passwords. The goal is to gain unauthorised access to
+    the SMB share, which can contain sensitive data, such as files, folders,
+    and other resources.
+    
+    ### Different methods and techniques used by the threat actors to brute-force an SMB share
+
+    - Dictionary attacks - a threat actor is using in this type of an attack a
+    list of common passwords, such as words, phrases, and combinations of
+    characters, to try and guess the password.
+    - Brute force attacks - a threat actor is trying all possible combinations
+    of characters, numbers, and special characters to guess the password.
+    - Password spraying - in this technique a threat actor uses a small number
+    of common passwords against a large number of usernames, in an attempt to
+    guess the password for at least one account.
+    - Hybrid attacks - combining dictionary and brute force attacks to try and
+    guess the password.
+    - Rainbow Table Attacks - this is a possible brute-force attack in which a
+    threat actor is using precomputed tables of hash values for common
+    passwords to try and guess the password.
+    - Exploiting weak passwords - a threat actor may identify and exploit weak
+    passwords, such as default passwords, easily guessable passwords, or
+    passwords that have not been changed in a long time.
+
+    They can use eumeration tools like nmap, smbclient, Metaspoit and others to
+    listen for an open SMB port and perform automated brute-forcing password
+    matches against an SMB share. 
+
+    ### Automated script tools used for SMB brute-force attack
+
+    Threat actors may use different automated tools which have the capability
+    to use a wordlist and to try logon attemts to an SMB share. For example,
+    bat, batch, PowerShell or other type of scripts and tools based on these
+    scripts ref [3], [4], [5], [7].  
+
+    Examples:
+
+    - smbrute.bat              (uses `passlist.txt` wordlist) ref [3];
+    - Smb.bat script           (uses `Wordlist.txt` wordlist) ref [4];
+    - SMBLogin.ps1 script      for more information ref [5]. 
+    - smblogin-extra-mini.ps1  (uses .\smblogin.results.txt wordlist)
+      Minimalistic offensive tool based on PowerShell ref [7].
+
+    ### Metasploit auxiliary module brute-force SMB share
+
+    A threat actor can use a Metasploit auxiliary scanner module to brute force
+    the SMB credentials. In the example below `<user_file>.txt` is a set of
+    user's possible names and `<password_file>.txt` is a list of possible user's
+    password for brute-force attack ref [2].   
+
+    Example: 
+    
+    ```
+    > set RHOST <ip_address>
+    RHOST => <ip_address>
+    > set PORT 445
+    RPORT => 445
+    > set user_file ./<user_file>.txt
+    user_file => ./<user_file>.txt
+    > set password_file ./<password_file>.txt
+    password_file => ./<password_file>.txt
+
+    ```
+    Metaspoit `run` command runs the auxiliary module and displays if there are
+    found successful brute-force credentials matches. 
+
+    ```
+    msf5 auxilary(scanner/smb/smb_login) > run
+
+    ```

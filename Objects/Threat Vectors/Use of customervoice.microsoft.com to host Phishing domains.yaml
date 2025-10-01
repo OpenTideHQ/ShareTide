@@ -1,0 +1,58 @@
+name: Use of customervoice.microsoft.com to host Phishing domains
+criticality: Low
+references:
+  public:
+    1: https://twitter.com/gossithedog/status/1583728676075495424?s=43&t=936wMjmog0hEXuMjeUHhSQ
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: cef11e0a-32c7-46c6-8c9c-667d0f1055e2
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-10-25
+  modified: 2022-10-25
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Delivery
+  att&ck:
+    - T1566.002
+    - T1566.003
+  domains:
+    - Enterprise
+  terrain: |
+    Phishing email or message sent another way with a link that includes 
+    the real microsoft.com domain as customervoice.microsoft.com
+  targets:
+    - End-user
+  platforms:
+    - Windows
+  severity: Localised incident
+  leverage:
+    - Software installation
+    - Information Disclosure
+    - Dwelling
+    - Infrastructure Compromise
+  impact:
+    - Identity Theft
+    - Reputational Damages
+    - Operating costs
+    - Data Breach
+    - Legal and regulatory
+  viability: Almost certain
+  description: |
+    This threat vector is based on real phishing domains built and utilized by
+    a real, still unknown threat actor. The subdomain 
+    customervoice.microsoft.com should be blocked on forward proxies by most 
+    organizations, unless they have legit reasons to have traffic to this, and
+    legit traffic going there.

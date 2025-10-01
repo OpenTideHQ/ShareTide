@@ -1,0 +1,158 @@
+name: Azure - Policy with DeployIfNotExists definition
+criticality: High
+references:
+  public:
+    1: https://cloudbrothers.info/azure-persistence-azure-policy-guest-configuration/
+    2: https://securitylabs.datadoghq.com/articles/azure-policy-privilege-escalation/
+    3: https://microsoft.github.io/Azure-Threat-Research-Matrix/Persistence/Persistence/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 37f24c48-4a38-4682-aa76-5845ed2d6890
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-29
+  modified: 2025-09-29
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Persistence
+  att&ck:
+    - T1098 #Account Manipulation
+    - T1078.004 #Valid Accounts: Cloud Accounts
+    - T1578 #Modify Cloud Compute Infrastructure
+  chaining:
+    - relation: sequence::preceeds
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 ##Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online. 
+    - relation: support::enabled
+      vector: fe6827f2-efb4-43b3-9ca3-b7d417111b32 ##Azure - Gather Application Information
+      description: |
+        Adversaries obtain minimal access (often as a standard user or via an external account) 
+        in the target Azure AD tenant, then utilizes API endpoints and tools, such as Azure CLI, 
+        PowerShell modules (e.g., MSOnline, Microsoft.Graph), or custom scripts, to list 
+        all registered applications.
+    - relation: sequence::preceeds
+      vector: 61ddc240-e5a6-4ca8-ae77-6b471b498913 #Code execution via custom script extensions in Azure
+      description: |
+        Adversaries must have an Azure role that grants the ability to write or deploy 
+        custom script extensions on virtual machines.
+    - relation: sequence::preceeds
+      vector: 23f6a192-a25d-48b8-a235-7bb55e483682 #Persistence w/ Azure Automanage Machine Configuration
+      description: |
+        The adversary needs the owner access role on the targeted Azure subscription to apply
+        the Azure Policy and grant permissions for the system-managed identities.
+    - relation: sequence::preceeds
+      vector: b954303c-0ad0-4dc0-b5ca-492c3de9cd53 #Collecting sensitive information via custom script extensions
+      description: |
+        Attackers need to gain access to an Azure account with the Virtual Machine Contributor 
+        role (or equivalent) can use custom script extensions to execute arbitrary code 
+        as SYSTEM or root on VMs.
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) granting 
+        at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+  terrain: |
+    Adversaries identifies existing policy and permissions landscape,
+    acquiring sufficient privileges over Azure Policy management and
+    remediation.
+  targets:
+    - Cloud Storage Accounts
+    - Compute Cluster
+    - Virtual Machines
+    - Serverless
+    - Cloud Portal
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Repudiation
+    - Information Disclosure
+    - Elevation of privilege
+    - Modify configuration
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+  viability: Very Likely
+  description: |
+    The following threat vector, let attackers maintain long-term access or
+    facilitate further exploitation. 
+
+    ### Example Attack Scenario
+
+    An attacker with sufficient permissions in an Azure tenant creates or modifies 
+    an Azure Policy using the `DeployIfNotExists` policy definition. This policy is
+    engineered to deploy a malicious resource (e.g., a virtual machine extension,
+    a role assignment, or a script backdoor) whenever certain conditions are met, 
+    such as new VMs being provisioned. The attacker also triggers remediation so
+    the malicious payload is retroactively deployed to existing resources in scope.  
+    
+    For example, the attacker could use Azure Policy to automatically grant their
+    account or service principal administrative permissions on every new or existing
+    VM, or silently disable logging and monitoring across sensitive assets to evade
+    detection.
+
+    ### Attack Goals and Impact
+
+    The objective is to enable persistent access or privilege escalation by leveraging 
+    Azure's orchestration and policy automation features. Typical goals include:
+    - Establishing backdoors in affected resources (VMs, service principals, databases) 
+    for repeated covert access.
+    - Modifying logging, auditing, or security configurations to avoid detection (for 
+    instance, disabling Azure Activity Logs for specific assets).
+    - Automatically re-applying attacker-controlled changes whenever the legitimate 
+    administrator attempts remediation or, through continuous policy enforcement, on 
+    every new resource.
+    - Assigning additional permissions, modifying access control lists, or deploying 
+    malware through policy-triggered tasks.
+    The impact is broad, enabling attackers to maintain long-term access with minimal 
+    operational footprint, bypass typical monitoring controls, manipulate resources 
+    at scale, and orchestrate further attack stages (such as lateral movement or
+    privilege escalation).
+
+    ### Attack Flow and Methodology
+
+    The typical attacker workflow follows these steps:
+
+    - **Policy Creation/Modification**: A new policy is created, or an existing one 
+    is modified, with a "DeployIfNotExists" or similarly reactive definition. The definition 
+    specifies a payload—such as deploying a VM extension, custom script, role assignment, 
+    or other resource manipulation—that achieves the persistence goal.
+    - **Scope Assignment**: The attacker assigns the malicious policy to targeted scopes 
+    (resource groups, subscriptions, or management groups) to maximize coverage and effect.
+    - **Remediation Triggering**: Remediation is kicked off so policy enforcement is 
+    applied to existing resources—retrospectively deploying the backdoor.
+    - **Continuous Enforcement**: As policy is automatically enforced, every future 
+    resource creation or update within scope will bear the attacker's payload—ensuring 
+    persistence and stealth.
+    - **Evading Detection**: The attacker may also configure policies to weaken monitoring, 
+    disable security logging, or only target specific assets to avoid suspicion and discovery.

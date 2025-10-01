@@ -1,0 +1,116 @@
+name: Disable Windows event logging through PowerShell
+criticality: Medium
+references:
+  public:
+    1: https://www.reddit.com/r/PowerShell/comments/5fxblg/disable_event_logs_with_powershell/
+    2: https://www.manageengine.com/network-monitoring/Eventlog_Tutorial_Part_I.html#:~:text=Types%20of%20Event%20Logs%20Each%20event%20entry%20is,Audit%20%28Security%20Log%29%20and%20Failure%20Audit%20%28Security%20Log%29.
+    3: https://social.technet.microsoft.com/Forums/officeocs/en-US/43753fb1-7055-4994-93ef-43ea828acc58/disable-windows-powershell-event-logging
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: e5e4397f-eea4-423b-8b71-9b30d34a9d59
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-01-06
+  modified: 2022-01-06
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+  killchain: Defense Evasion
+  att&ck:
+    - T1562.002
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    A threat actor has gained control over a Windows endpoint and has
+    privileges to disable event logging by using PowerShell commands or
+    scripts.
+  targets:
+    - Desktop
+    - Laptop
+    - Server Logs
+    - Control Server
+    - Public-Facing Servers
+    - Web Application Servers
+    - Workstations
+    - Virtual Machines
+  platforms:
+    - Windows
+    - PowerShell
+    - AWS
+    - Azure
+  severity: Moderate incident
+  leverage:
+    - Log tampering
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    Threat actors can use PowerShell to disable Windows event logging.
+    They use this technique for example to disable diagnostic eventlogs
+    or some individual Windows log (for example: Application, Security
+    or System log).
+
+    Disabling of Application log can cause lost of the tracks for specific
+    application, for example: lack of visibility for authentication, time of
+    logon, failure events of the application or other related application
+    details.
+
+    Threat actors may disable Security Event log to prevent detection of
+    their logons on the system: number of logons, timestamp of the logon and 
+    with what privilege account and username they logon on the system. 
+
+    PowerShell command to clear event logs with 'Disable-EventLog' cmdlet:
+
+    Disable-EventLog -LogName "Parameter"
+    where the "Parameter" can be Application, Security or System
+    
+    Example how to clear individual logs with -ListLog parameter:
+
+    (Get-WinEvent -ListLog *).LogName | %{[System.Diagnostics.Eventing.Reader.EventLogSession]::GlobalSession.ClearLog($_)}
+
+    The threat actors can specify the logname and clear an individual log with:
+    [System.Diagnostics.Eventing.Reader.EventLogSession]::GlobalSession.ClearLog("Microsoft-Windows-FailoverClustering/Diagnostic")
+
+    With the following section the Event log is disabled competely:
+
+    $wineventlog = get-winevent -ListLog "Microsoft-Windows-FailoverClustering/Diagnostic" -ComputerName hyperv-01
+    $wineventlog.IsEnabled = $false
+    $wineventlog.SaveChanges()
+
+    If the threat actors want to disable multiple event logs at once, they can
+    use a loop in their customly prepared PowerShell script to iterate through a
+    list of event log names and disable them one by one.
+
+    Example:
+
+    # Create a list of event log names to disable
+    $eventLogs = "Application", "System", "Security"
+
+    # Iterate through the list of event logs and disable them one by one
+    foreach ($eventLog in $eventLogs) {
+    Disable-EventLog -LogName $eventLog
+    }
+    
+    This script will disable the "Application", "System", and "Security" event logs on the local computer.
+    There is an option to modify the list of event logs to include any other specific event log that the
+    threat actor wants to disable.
+
+
+
+

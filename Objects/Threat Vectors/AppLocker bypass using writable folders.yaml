@@ -1,0 +1,136 @@
+name: AppLocker bypass using writable folders
+criticality: High
+references:
+  public:
+    1: https://techyrick.com/applocker-bypass-windows-privilege-escalation
+    2: https://github.com/api0cradle/UltimateAppLockerByPassList/blob/master/Generic-AppLockerbypasses.md
+    3: https://www.windowscentral.com/software-apps/windows-11/what-is-the-appdata-folder-windows-11-app-data-storage-explained
+    4: https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid?redirectedfrom=MSDN#roaming # Roaming User Data / Application Data, a source for writable AppLocker directories
+    5: https://www.reddit.com/r/sysadmin/comments/dvu43i/psa_applocker_default_rules_can_be_easily_bypassed
+    6: https://gist.github.com/egre55/6b91444b8da8ccff65a9670a334fc05d # AppLocker bypass checker
+    7: https://cybersecuritynews.com/writable-file-in-lenovos-windows-directory # Writable file in Lenovo’s Windows directory enables AppLocker bypass
+  #internal:
+    #a: 
+
+metadata:
+  uuid: ff8c52ac-77d0-4bee-9f6d-e40fc6e0da63
+  schema: tvm::2.1
+  version: 1
+  created: 2025-07-14
+  modified: 2025-07-15
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+      sighting: |
+        In one of the steps of Lazarus group malicious campaign was observed
+        that a writable file in Lenovo's Windows directory bypass AppLocker
+        security due to incorrect permissions.    
+      references:
+        - https://cybersecuritynews.com/writable-file-in-lenovos-windows-directory # Lazarus group, Writable file in Lenovo’s Windows Directory Enables a stealthy AppLocker bypass
+  #killchain: 
+  att&ck:
+    - T1218 # System Binary Proxy Execution
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor needs and initial access to a Windows system and user's write
+    permissions where AppLocker policies allow execution from common writable
+    directories like C:\\Windows\\Temp or Tasks.     
+  targets:
+    - Workstations
+    - End-user
+    - Customer
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Tampering
+  impact:
+    - Impairement
+    - Data Breach
+    - Business disruption
+    - Lose Capabilities
+    - Reputational Damages
+  viability: Likely
+  description: |
+    AppLocker bypass using writable folders is a technique where an attacker
+    exploits the fact that AppLocker only checks the executable file's path,
+    not the path of the folder containing the executable. By placing a malicious
+    executable in a writable folder that is not restricted by AppLocker, an
+    attacker can bypass AppLocker controls.  
+
+    AppLocker uses a set of rules to determine which applications are allowed
+    to run. These rules are based on factors like the application's path,
+    publisher, and hash. If a threat actor can write to a folder that is allowed
+    by AppLocker, they can potentially bypass the restrictions.  
+
+    ### Examples for AppLocker writable folders
+
+    The list below includes some of the folders in Windows where a standard user
+    have write permissions by default. These permissions can be used by threat
+    actors and let them to bypass AppLocker Windows whitelisting functionality.
+    For more information please check ref [1], [2].  
+
+    - `C:\Windows\Tasks` - Windows Tasks directory, writable by the "Users" group
+    - `C:\Windows\Temp`  - Temporary Files
+    - `C:\Windows\tracing`
+    - `C:\Windows\Registration\CRMLog`
+    - `C:\Windows\System32\FxsTmp`
+    - `C:\Windows\System32\com\dmp`
+    - `C:\Windows\System32\Microsoft\Crypto\RSA\MachineKeys`
+    - `C:\Windows\System32\spool\PRINTERS`
+    - `C:\Windows\System32\spool\SERVERS`
+    - `C:\Windows\System32\spool\drivers\color`
+    - `C:\Windows\System32\Tasks\Microsoft\Windows\SyncCenter`
+    - `C:\Windows\System32\Tasks_Migrated`
+       (after peforming a version upgrade of Windows 10)
+    - `C:\Windows\SysWOW64\FxsTmp`
+    - `C:\Windows\SysWOW64\com\dmp`
+    - `C:\Windows\SysWOW64\Tasks\Microsoft\Windows\SyncCenter`
+    - `C:\Windows\SysWOW64\Tasks\Microsoft\Windows\PLA\System`
+    
+    Additional ref [3], [4]:
+
+    - `%APPDATA%`                        # Application Data / Roaming User Data
+    - `%LOCALAPPDATA%`                   # Local Application Data / Local User Data
+    - `%USERPROFILE%\Desktop`            # User's Desktop): Desktop
+    - `%USERPROFILE%\AppData\Local\Temp` # Local Low, this is a subfolder of %LOCALAPPDATA%
+
+    ### Other possible writable folders in AppLocker
+
+    There are some other possible writable folders in `C:\WINDOWS` where a
+    standard Windows user may have write permissions by default. For example,
+    'accesschk.exe' from Sysinternals Suite can be used to find folders that
+    are writable and can be leveraged. Furthermore, 'icacls.exe' can be used to
+    determine if we also have execute rights within the targeted folder.
+
+    Different threat actors are actively exploiting this AppLocker bypass
+    technique to deploy malware, execute malicious code, and gain persistence
+    on compromised systems.
+
+    ### Example
+    
+    Lenovo devices include a file, MFGSTAT.zip, in C:\\Windows that is writable
+    by authenticated users. An attacker can embed a malicious payload into an
+    NTFS alternate data stream within this ZIP file and invoke it via a signed
+    Windows binary (e.g., AppVLP.exe), bypassing AppLocker rules.  

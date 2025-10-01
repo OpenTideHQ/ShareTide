@@ -1,0 +1,143 @@
+name: Azure - Key Vault reconnaissance
+criticality: High
+references:
+  public:
+    1: https://www.azure-sec.com/labs/azure-key-vault-secrets-exfiltration
+    2: https://learn.microsoft.com/en-us/azure/key-vault/general/security-features
+    3: https://cirriustech.co.uk/blog/azure-vault-recon/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 81338b90-f80c-40cc-8a57-ba97cdf86948
+  schema: tvm::2.1
+  version: 3
+  created: 2025-06-16
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Reconnaissance
+  att&ck:
+    - T1555.006 #Credentials from Password Stores: Cloud Secrets Management Stores
+    - T1082 #System Information Discovery
+    - T1555 #Credentials from Password Stores
+  chaining:
+    - relation: atomicity::implements
+      vector: bcf3bb96-ed97-4853-98ab-937c2d214f4e #Azure Key Vault persistence
+      description: |
+        Adversaries must first gain access to an Azure environment, typically through
+        compromised user accounts, service principals, or managed identities.
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through
+        phishing, password spraying, brute-force attacks, or credentials leaked online. 
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys)
+        granting at least Reader access to the target Azure tenant.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+    - Enterprise
+  terrain: |
+    Adversaries must first compromise user accounts, service principals, or managed 
+    identities that already possess some level of Azure access.
+  targets:
+    - Cloud Storage Accounts
+    - Key Store
+    - Identity Services
+    - Serverless
+    - API Endpoints
+    - Cloud Portal
+    - IaaS
+    - Relational Database
+    - NoSQL Database
+    - Server Authentication
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Elevation of privilege
+    - Tampering 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss 
+  viability: Likely
+  description: |
+    Azure Key Vault reconnaissance refers to the techniques and activities adversaries 
+    use to discover, enumerate, and gather information about Azure Key Vault resources 
+    within a target environment. The goal is to identify valuable secrets, misconfigurations, 
+    and potential attack paths, often as a precursor to privilege escalation, lateral movement, 
+    or data exfiltration.
+
+    ## Why Azure Key Vaults Are Targeted
+
+    - **High Value**: Key Vaults store cryptographic keys, secrets (like API keys and passwords), 
+    and certificates, making them attractive to attackers.
+    - **Widespread Usage**: They are commonly used by organizations to manage sensitive 
+    information for applications and services.
+
+    ## Common Reconnaissance Techniques
+
+    ### Enumeration of Key Vaults
+
+    Attackers with the `Microsoft.KeyVault/vaults/read` permission can list all Key 
+    Vaults in a subscription, revealing vault names and resource groups. This helps 
+    identify which vaults to target based on naming conventions or access policies.
+
+    - **Azure CLI Example**:  
+      `az keyvault list --query "[].{Name:name, ResourceGroup:resourceGroup}" -o table`
+
+    ### Listing Keys, Secrets, and Certificates
+
+    Once a vault is identified, attackers may attempt to enumerate keys, secrets, and 
+    certificates within it, provided they have appropriate permissions. This can expose 
+    metadata that hints at the vault’s contents and potential value.
+
+    - **Azure CLI Example**:  
+      `az keyvault secret list --vault-name  --query "[].{Name:name, Enabled:attributes.enabled}" -o table`
+
+    ### Access Policy and RBAC Reconnaissance
+
+    Attackers may enumerate access policies and RBAC assignments to identify users, 
+    service principals, or managed identities with privileged access. Misconfigurations 
+    or excessive permissions can be exploited for further attacks.
+
+    - **Azure CLI Example**:  
+      `az keyvault show --name  --query "properties.accessPolicies[].{ObjectId:objectId, Permissions:permissions}"`
+
+    ### Control Plane vs. Data Plane Enumeration
+
+    Reconnaissance can occur via both the management/control plane (e.g., Azure Resource Manager API) 
+    and the data plane (direct Key Vault API). Weak separation or insufficient RBAC 
+    enforcement between these planes can increase risk.
+
+    ### Exploiting Network and Access Misconfigurations
+
+    Attackers may probe for Key Vaults with public network access enabled or weak firewall 
+    rules, increasing the likelihood of successful enumeration and subsequent attacks.

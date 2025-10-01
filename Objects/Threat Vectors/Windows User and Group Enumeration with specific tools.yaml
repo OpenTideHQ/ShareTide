@@ -1,0 +1,104 @@
+name: Windows User and Group Enumeration with specific tools
+criticality: High
+references:
+  public:
+    1: https://book.hacktricks.xyz/windows-hardening/active-directory-methodology
+    2: https://github.com/Samsar4/Ethical-Hacking-Labs/blob/master/3-Enumeration/3-Enum4linux-Win-and-Samba-Enumeration.md
+    3: https://stridergearhead.medium.com/domain-enumeration-using-bloodhound-f2894d5f0da8
+    4: https://book.hacktricks.xyz/windows-hardening/active-directory-methodology/bloodhound
+    5: https://github.com/ropnop/windapsearch
+    6: https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-302a
+    7: https://nmap.org/nsedoc/scripts/smb-enum-users.html
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: fe243f7f-ffc5-49c0-94e6-293ae2411ad6
+  schema: tvm::2.0
+  version: 1
+  created: 2024-01-29
+  modified: 2024-02-06
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0035 #[Enterprise] Dragonfly, BROMINE, Berserk Bear, Crouching Yeti, DYMALLOY, Energetic Bear, Ghost Blizzard, IRON LIBERTY, TEMP.Isotope, TG-4192
+    - name: misp::64d6559c-6d5c-4585-bbf9-c17868f763ee #ENERGETIC BEAR, BERSERK BEAR, ALLANITE, CASTLE, DYMALLOY, TG-4192, Dragonfly, Crouching Yeti, Group 24, Havex, Koala Team, IRON LIBERTY, G0035, ATK6, ITG15, BROMINE, Blue Kraken, Ghost Blizzard
+    - name: att&ck::G0045 #[Enterprise] menuPass, APT10, BRONZE RIVERSIDE, CVNX, Cicada, HOGFISH, POTASSIUM, Red Apollo, Stone Panda
+    - name: misp::56b37b05-72e7-4a89-ba8a-61ce45269a8c #APT10, STONE PANDA, Menupass Team, happyyongzi, POTASSIUM, Red Apollo, CVNX, HOGFISH, Cloud Hopper, BRONZE RIVERSIDE, ATK41, G0045, Granite Taurus, TA429, Cicada
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: misp::8bcd855f-a4c1-453a-bede-ff36582f4f40 #APT20, VIOLIN PANDA, TH3Bug, Crawling Taurus
+    - name: att&ck::G0037 #[Enterprise] FIN6, Camouflage Tempest, ITG08, Magecart Group 6, Skeleton Spider, TAAL
+    - name: misp::647894f6-1723-4cba-aba4-0ef0966d5302 #FIN6, SKELETON SPIDER, ITG08, MageCart Group 6, White Giant, GOLD FRANKLIN, ATK88, G0037, Camouflage Tempest, TA4557
+    - name: att&ck::G0004 #[Enterprise] Ke3chang, APT15, GREF, Mirage, NICKEL, Nylon Typhoon, Playful Dragon, RoyalAPT, Vixen Panda
+    - name: misp::3501fbf2-098f-47e7-be6a-6b0ff5742ce8 #APT15, VIXEN PANDA, Ke3Chang, Playful Dragon, Metushy, Lurid, Social Network Team, Royal APT, BRONZE PALACE, BRONZE DAVENPORT, BRONZE IDLEWOOD, NICKEL, G0004, Red Vulture, Nylon Typhoon, Mirage
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+    - name: att&ck::G0010 #[Enterprise] Turla, BELUGASTURGEON, Group 88, IRON HUNTER, Krypton, Secret Blizzard, Snake, Venomous Bear, Waterbug, WhiteBear
+    - name: misp::fa80877c-f509-4daf-8b62-20aba1635f68 #Turla, Snake, VENOMOUS Bear, Group 88, Waterbug, WRAITH, Uroburos, Pfinet, TAG_0530, KRYPTON, Hippo Team, Pacifier APT, Popeye, SIG23, IRON HUNTER, MAKERSMARK, ATK13, G0010, ITG12, Blue Python, SUMMIT, UNC4210, Secret Blizzard, UAC-0144, UAC-0024, UAC-0003
+    - name: att&ck::G0049 #[Enterprise] OilRig, APT34, COBALT GYPSY, EUROPIUM, Evasive Serpens, Hazel Sandstorm, Helix Kitten, IRN2, ITG13
+    - name: misp::42be2a84-5a5c-4c6d-9864-3f09d75bb0ba #OilRig, Twisted Kitten, Cobalt Gypsy, Crambus, Helix Kitten, APT 34, APT34, IRN2, ATK40, G0049, Evasive Serpens, Hazel Sandstorm, EUROPIUM, TA452, Earth Simnavaz
+    - name: att&ck::G0060 #[Enterprise] BRONZE BUTLER, REDBALDKNIGHT, Tick
+    - name: misp::add6554a-815a-4ac3-9b22-9337b9661ab8 #Tick, Nian, BRONZE BUTLER, REDBALDKNIGHT, STALKER PANDA, G0060, Stalker Taurus, PLA Unit 61419
+    - name: att&ck::G0117 #[Enterprise] Fox Kitten, Lemon Sandstorm, Parisite, Pioneer Kitten, RUBIDIUM, UNC757
+    - name: misp::bfb0bc20-5bdf-47ff-b07f-dbd9a3cb9772 #Fox Kitten, PIONEER KITTEN, PARISITE, UNC757, Lemon Sandstorm, RUBIDIUM
+  killchain: Discovery
+  att&ck:
+    - T1087.002
+  chaining:
+    - relation: support::synergize
+      vector: 3b1026c6-7d04-4b91-ba6f-abc68e993616 #Abusing Lolbins to Enumerate Local and Domain Accounts and Groups
+      description: |
+        Several LOLBins tools are used by adversaries to enumerate 
+        groups and users.
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Adversaries can take advantage of already compromised system (Windows or 
+    Linux OS or OSX) to run commands.
+  targets:
+    - Directory
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+  impact:
+    - Identity Theft
+  viability: Likely
+  description: |
+      Adversaries may attempt to enumerate the environment and list all local system 
+      and domain accounts or groups.To achieve this purpose, they can use variety of 
+      tools and techniques. Their goal is reconnaissance, gathering of user's account 
+      information on the system or in the domain and further usage of accounts with higher 
+      privilege access.
+
+      There are several tools that can be used by adversaries, such as the following:
+        
+      - Kali Tool like enum4linux 
+      - Bloodhound can also 
+      - smbmap, smbclient, etc..
+      - nmap
+      - Use of any developped tools or scripts like this one: - windapsearch
+
+      Some cases in which adversaries have used such tools include the following:
+
+      ## Wizard Spider using Bloodhound after Ryuk ransomware compromise:
+
+      Ryuk actors quickly map the network to understand the infection scope. They use native 
+      tools like net view, net computers, and ping to locate network shares and domain controllers. 
+      For lateral movement, they rely on PowerShell, WMI, Remote Management, RDP, and third-party 
+      tool Bloodhound.

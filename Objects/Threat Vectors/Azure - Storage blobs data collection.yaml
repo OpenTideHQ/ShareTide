@@ -1,0 +1,118 @@
+name: Azure - Storage blobs data collection
+criticality: High
+references:
+  public:
+    1: https://techcommunity.microsoft.com/blog/microsoftdefendercloudblog/protect-your-storage-resources-against-blob-hunting/3735238
+    2: https://www.microsoft.com/en-us/security/blog/2021/04/08/threat-matrix-for-storage/
+    3: https://wizardcyber.com/azure-blob-storage-navigating-misconfiguration-risks/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: c856d1b5-b351-49ad-b8f4-8ab9720ba510
+  schema: tvm::2.1
+  version: 3
+  created: 2025-06-17
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Collection
+  att&ck:
+    - T1530 #Data from Cloud Storage
+    - T1119 #Automated Collection
+    - T1078 #Valid Accounts
+  chaining:
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through
+        phishing, password spraying, brute-force attacks, or credentials leaked online. 
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys)
+        granting at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud 
+  terrain: |
+    Adversaries need access to enumeration tools and a misconfigured Azure Blob Storage 
+    environment with public access enabled.
+  targets:
+    - Cloud Storage Accounts
+  platforms:
+    - Blob Storage
+    - Azure
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Tampering
+    - Infrastructure Compromise 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Monetary Loss 
+  viability: Likely
+  description: |
+    The threat vector refers to techniques used by attackers to discover, enumerate, 
+    and exfiltrate data from Azure Blob Storage containers, often due to misconfigurations 
+    that allow unauthorized or public access to sensitive data. This is commonly known 
+    as "blob hunting" and is a significant risk for organizations using cloud storage.
+
+    ## Attack Techniques
+
+    ### 1. Blob Hunting and Enumeration
+
+    - **Blob Hunting**: Attackers attempt to discover Azure storage accounts, containers, 
+    and blobs by guessing or brute-forcing names, leveraging predictable naming conventions, 
+    or using automated tools such as MicroBurst and BlobHunter.
+    - **Enumeration Process**:
+      - **Storage Account Discovery**: Attackers identify potential storage account 
+      names, often using subdomain enumeration or company naming conventions (e.g., `companyname.blob.core.windows.net`).
+      - **Container Enumeration**: Once the account is found, attackers guess or enumerate 
+      container names, which are often generic (e.g., "images", "backups").
+      - **Blob Listing**: If a container allows anonymous access, attackers can list 
+      and access all blobs within it, potentially exposing sensitive files.
+
+    ### 2. Exploiting Misconfigurations
+
+    - **Public Access Settings**:
+      - **Private Access**: Only authorized users can access data (most secure).
+      - **Blob Access**: Anyone with the blob URL can access the data, but cannot list 
+      all blobs.
+      - **Container Access**: Anyone can list and access all blobs in the container, 
+      if they know the container name.
+    - Attackers exploit misconfigurations where containers are set to "Blob" or "Container" 
+    access, allowing unauthorized data collection.
+
+    ### 3. Automated Tools
+
+    - **BlobHunter**: Scans Azure blob storage for publicly accessible blobs and reports 
+    misconfigured containers.
+    - **MicroBurst**: Automates enumeration and brute-forcing of storage account and 
+    container names.
+    - **Legitimate Tools Misused**: Tools like Azure Storage Explorer and AzCopy can 
+    be used by attackers for bulk data exfiltration if credentials or access are compromised.

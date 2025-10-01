@@ -1,0 +1,114 @@
+name: OneDrive API abuse to exfiltrate sensitive data
+criticality: High
+references:
+  public:
+    1: https://www.paloaltonetworks.com/blog/security-operations/detecting-threats-with-microsoft-graph-activity-logs/
+    2: https://www.scworld.com/news/embargo-lifts-6-am-eastern-august-7-symantec-points-to-rise-in-attacks-on-cloud-infrastructure
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 10663f4a-6432-4c8f-bd3a-eaa599bb474e
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-25
+  modified: 2025-06-25
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1190 #Exploit Public-Facing Application
+    - T1534 #Internal Spearphishing
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - SaaS
+    - Enterprise
+  terrain: |
+    Adversaries need an authenticated user or application identity (such as a compromised 
+    user account or a maliciously registered OAuth application) with the necessary permissions 
+    to access OneDrive files. And also, API permissions (like “Files.Read.All” or “Files.ReadWrite.All”) 
+    that allow reading or downloading files from OneDrive via the Microsoft Graph API.
+  targets:
+    - Cloud Storage Accounts
+    - Personal Information
+    - Production Database
+    - Identity Services
+    - Public-Facing Servers
+    - API Endpoints
+    - Cloud Portal
+  platforms:
+    - Office 365
+    - Azure AD 
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Tampering
+    - Spoofing
+    - Elevation of privilege 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss 
+  viability: Likely
+  description: |
+    OneDrive API abuse to exfiltrate sensitive data occurs when attackers misuse legitimate 
+    Microsoft Graph API endpoints and OneDrive’s cloud storage features to steal confidential 
+    or sensitive information from an organization.
+
+    ### How Does It Work?
+
+    1. **API Exploitation via Microsoft Graph**
+      - Attackers use the Microsoft Graph API to access users’ OneDrive storage.
+      - Common endpoints include:
+        - `https://graph.microsoft.com/v1.0/users/{id}/drive` (to list drives)
+        - `https://graph.microsoft.com/v1.0/drive/items/{item-id}/content` (to download files)
+      - These APIs are normally used for legitimate cloud storage operations.
+
+    2. **OAuth and Application Permissions**
+      - Attackers may compromise existing OAuth applications or create new ones.
+      - By granting these applications broad permissions (like “Files.Read.All” or 
+      “Files.ReadWrite.All”), attackers gain access to OneDrive files without direct 
+      user interaction.
+
+    3. **Use of Trusted Cloud Services**
+      - Data exfiltration is carried out through OneDrive, a trusted and widely used 
+      cloud service.
+      - This makes malicious activity harder to distinguish from normal business operations.
+
+    4. **Automated Exfiltration**
+      - Attackers often use scripts or malware to automate the process of accessing 
+      and transferring files via OneDrive.
+      - This allows for large-scale, stealthy data theft.
+
+    ### Attack Scenarios
+
+    - **Compromised Credentials:** An attacker gains access to an account with OneDrive 
+    API permissions.
+    - **Malicious OAuth App:** An attacker registers an OAuth app with excessive permissions 
+    and uses it to access OneDrive files.
+    - **Automated Scripts:** Attackers use PowerShell or other scripting tools to interact 
+    with the OneDrive API, extracting sensitive files at scale.

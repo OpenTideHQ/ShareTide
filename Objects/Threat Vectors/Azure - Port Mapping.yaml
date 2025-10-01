@@ -1,0 +1,118 @@
+name: Azure - Port Mapping
+criticality: High
+references:
+  public:
+    1: https://techcommunity.microsoft.com/discussions/azure/port-mapping-on-new-azure-portal/63181
+    2: https://microsoft.github.io/Azure-Threat-Research-Matrix/Reconnaissance/AZT101/AZT101/
+    3: https://security.packt.com/identify-vulnerabilities-in-azure/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 394dde97-4a8c-4b6a-8f8b-c6bf18a7a87f
+  schema: tvm::2.1
+  version: 3
+  created: 2025-07-10
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Reconnaissance
+  att&ck:
+    - T1190 #Exploit Public-Facing Application
+    - T1078 #Valid Accounts
+    - T1110 #Brute Force
+  chaining:
+    - relation: support::enabled
+      vector: 4e7eae8e-6615-41f2-bfe1-21a04f7a6088 #Azure - Gather Victim Data
+      description: |
+        An adversary successfully compromises a user's Azure Active Directory account credentials 
+        or session token through phishing, credential theft, or token theft.
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) granting 
+        at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+  terrain: |
+    Adversaries need an exposed service or port that is accessible from outside the Azure 
+    environment—typically via a public IP and a mapped port (such as SSH, RDP, or web services).
+  targets:
+    - Virtual Machines
+    - Public-Facing Servers
+    - Network Equipment 
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Repudiation
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Elevation of privilege
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Business disruption 
+  viability: Likely
+  description: |
+    Port mapping in Azure refers to the process of exposing internal ports of virtual 
+    machines (VMs), containers, or services to external networks, often through Azure 
+    Load Balancers, Network Security Groups (NSGs), or NAT rules. This allows external 
+    users or services to access resources inside a private Azure network by mapping 
+    public ports to private ones.
+
+    ### How Port Mapping Can Be a Threat Vector
+
+    Port mapping, if misconfigured or left unsecured, can introduce several security risks:
+
+    - **Exposure of Internal Services:** Mapping internal ports to public endpoints 
+    can expose services (e.g., RDP, SSH, HTTP) to the internet, making them targets 
+    for scanning, brute-force attacks, and exploitation of vulnerabilities.
+    - **Reconnaissance by Attackers:** Attackers can enumerate open ports by analyzing 
+    NSG rules or scanning Azure IP ranges, identifying which services are accessible 
+    and potentially vulnerable.
+    - **Misconfigured NSGs:** If NSGs are not properly configured, they may inadvertently 
+    allow unrestricted access to sensitive ports, increasing the attack surface.
+    - **Bypassing Security Controls:** Using non-standard port mappings 
+    (e.g., mapping RDP 3389 to a random high port) may provide slight obscurity but 
+    does not prevent targeted attacks, especially if attackers scan all ports.
+    - **Container and VM Risks:** Improper port mapping in Azure container services 
+    or VMs can lead to exposure of management interfaces or application endpoints, increasing 
+    the risk of unauthorized access or lateral movement within the environment.
+
+    ### Common Attack Scenarios
+
+    - **Brute Force Attacks:** Exposed RDP (3389) or SSH (22) ports are frequent targets 
+    for automated brute-force attempts.
+    - **Service Exploitation:** Attackers may exploit known vulnerabilities on exposed 
+    ports, especially if services are outdated or unpatched.
+    - **Information Gathering:** Attackers use port mapping information to build a profile 
+    of the environment, identifying potential entry points for further attacks.

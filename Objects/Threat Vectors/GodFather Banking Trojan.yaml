@@ -1,0 +1,127 @@
+name: GodFather Banking Trojan
+criticality: High
+references:
+  public:
+    1: https://securityaffairs.com/179191/malware/godfather-android-trojan-uses-virtualization-to-hijack-banking-and-crypto-apps.html
+    2: https://zimperium.com/blog/your-mobile-app-their-playground-the-dark-side-of-the-virtualization
+    3: https://www.americanbanker.com/news/godfather-malware-poses-new-threat-to-android-banking-apps
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 46a79e6f-3df1-4332-a452-3f1fe83bdaf3
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-17
+  modified: 2025-09-17
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::b8c8b96d-61e6-47b1-8e38-fd8ad5d9854d #DarkHotel, DUBNIUM, Fallout Team, Karba, Luder, Nemim, Nemin, Tapaoux, Pioneer, Shadow Crane, APT-C-06, SIG25, TUNGSTEN BRIDGE, T-APT-02, G0012, ATK52, Zigzag Hail
+      sighting: |
+        Darkhotel malware has employed just-in-time decryption of strings to evade sandbox detection.
+      references:
+        - https://www.lastline.com/labsblog/defeating-darkhotel-just-in-time-decryption/
+    - name: att&ck::G1031 #[Enterprise] Saint Bear, Lorec53, Storm-0587, TA471, UAC-0056
+      sighting: |
+        Saint Bear contains several anti-analysis and anti-virtualization checks.
+      references:
+        - https://unit42.paloaltonetworks.com/ukraine-targeted-outsteel-saintbot/
+  killchain: Delivery
+  att&ck:
+    - T1055 #Process Injection
+    - T1497 #Virtualization/Sandbox Evasion
+    - T1056.001 #Input Capture: Keylogging
+  chaining:
+    - relation: sequence::succeeds
+      vector: 1a68b5eb-0112-424d-a21f-88dda0b6b8df #Spearphishing Link
+      description: |
+        Attacker must be able to compromise the username and password of a valid account.
+    - relation: sequence::succeeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 #Spearphishing Attachment
+      description: |
+        Attacker must be able to compromise the username and password of a valid account.
+    - relation: support::synergize
+      vector: 4a4a7c81-ca98-4761-8f23-7ef6354e9d1c #Android attack using app running on emulator
+      description: |
+        Adversaries require users to download emulators that have been compromised or
+        misconfigured and through these, they can carry out malicious activities.
+    - relation: support::enabled
+      vector: 99c78650-8e19-4756-90fb-2573242577ca #Mobile device compromised by spyware app
+      description: |
+        Adversaries can abuse iOS or Android devices which are vulnerable to a zero-click
+        or zero-day exploitation, without user intervention.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Mobile
+  terrain: |
+    Adversaries achieve granting AccessibilityService permissions to GodFather
+    malware primarily through social engineering techniques that trick users into
+    enabling these permissions. 
+  targets:
+    - Mobile phone
+    - Personal Information 
+  platforms:
+    - Android
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Information Disclosure
+    - Elevation of privilege
+  impact:
+    - Data Breach
+    - Monetary Loss
+    - Identity Theft 
+  viability: Very Likely
+  description: |
+    The GodFather malware is a highly advanced Android banking trojan that has evolved 
+    into one of the most effective and disruptive mobile threats targeting financial, 
+    banking, and cryptocurrency applications globally.
+
+    ### Main Threat Vectors
+
+    - **On-Device Virtualization**: GodFather’s core tactic is deploying a virtualization 
+    framework on infected Android devices. It creates a virtual environment into which 
+    it loads real banking or crypto apps. When a legitimate app is launched, the user 
+    is redirected invisibly to the app’s clone running inside the sandbox, allowing 
+    the malware to monitor every action, tap, and credential input in real-time.
+    - **Overlay Attacks**: Beyond virtualization, GodFather can also display fake overlays 
+    that look identical to lock screens or login pages, capturing PINs, patterns, or 
+    passwords as users enter them, further compromising device and account security.
+    - **Hooking and Network Interception**: The malware uses the Xposed framework to 
+    hook into the OkHttp network library, which is utilized by many Android apps, thus 
+    logging network requests and credentials.
+
+    ### Infection and Evasion
+
+    - **Infection Chain**: Typically distributed as trojanized or impersonated apps 
+    (e.g., fake music downloaders or bogus “Google Protect” apps), GodFather prompts 
+    users to grant invasive permissions for storage, SMS, contacts, and especially accessibility 
+    services.
+    - **Bypassing Security**: It employs advanced ZIP manipulation and code shifting 
+    to the Java layer to bypass static analysis tools. It also hooks Android APIs such 
+    as `getEnabledAccessibilityServiceList` to hide from anti-malware scans.
+    - **Command Capabilities**: Once active, it supports a broad command set for attackers, 
+    including remote control to simulate gestures, manipulate settings, execute overlay 
+    attacks, log keystrokes, and exfiltrate a wide range of sensitive data.
+
+    ### Targets and Impact
+
+    - **Scope**: GodFather targets over 484 of the world’s most popular financial and 
+    cryptocurrency apps, with campaigns observed in Europe, the U.S., Canada, Asia, 
+    and the Middle East.
+    - **Consequences**: It can lead to severe financial loss, reputational damage, operational 
+    disruption, and regulatory fines for both consumers and organizations. The malware 
+    is particularly dangerous in BYOD enterprise environments, as it can compromise 
+    corporate data if personal devices are infected.
+    - **Stealth**: The virtualization attack results in “perfect deception,” as users 
+    interact with their real apps, making visual or user-driven detection virtually 
+    impossible.

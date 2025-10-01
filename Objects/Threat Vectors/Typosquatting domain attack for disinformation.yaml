@@ -1,0 +1,117 @@
+name: Typosquatting domain attack for disinformation
+criticality: Medium
+references:
+  public:
+    1: https://www.csoonline.com/article/570173/what-is-typosquatting-a-simple-but-effective-attack-technique.html
+    2: https://www.comparitech.com/blog/information-security/typosquatting-cybersquatting-combosquatting/
+    3: https://www.proofpoint.com/us/threat-reference/typosquatting
+    4: https://www.authentic8.com/blog/what-is-typosquatting
+
+metadata:
+  uuid: db3cae2f-3e6b-4aed-b346-43686bbb382e
+  schema: tvm::2.0
+  version: 1
+  created: 2025-01-09
+  modified: 2025-01-09
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    #- Carbanak Group
+    #- Multiple other threat actors may use this technique because is common and spread
+  #killchain: 
+  att&ck:
+    - T1583.001 # Acquire Infrastructure: Domains
+  chaining:
+    - relation: sequence::preceeds
+      vector: 1a68b5eb-0112-424d-a21f-88dda0b6b8df # Spearphishing Link
+      description: |
+        Malicious spearphishing campaign can use a typosquatting domain
+        technique - a threat actor may embed fraudulent web pages / domains
+        in the links in a customized and initially prepared emails.   
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Mobile
+    - IoT # tablet or other type of portable device
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor use vulnerabilities in domain providers to buy similar
+    to a legit domain and to use them for malicious purposes.
+
+    Usually the threat actors are buying as much as possible domains
+    on a bulk with impersonation goal, social engineering or just spreading
+    disinformation.
+  targets:
+    - Customer
+    - End-user
+    - Email Platform
+    - Other # Domain, ISP and domain providers
+    - Public-Facing Servers
+  platforms:
+    - Windows
+    - Linux
+  severity: Moderate incident
+  leverage:
+    - Spoofing # a web page looks similar and pretends to be a legitimate one
+    - Infrastructure Compromise
+  impact:
+    - Impairement
+    - Asset and fraud
+    - Identity Theft # Impersonation
+  viability: Likely
+  description: |
+    Typosquatting, also known as URL hijacking, is a form of cyber attack
+    where an attacker registers a domain name that is very similar to a
+    legitimate and popular website, often by exploiting common typing
+    errors or misspellings. This is done to deceive users into visiting
+    the fake domain, usually with the intention of spreading disinformation,
+    stealing personal information, or installing malware ref [1].  
+
+    In the context of disinformation, typosquatting can be used to create
+    a fake version of a trusted news source or government website in order
+    to spread false or misleading information. By exploiting users' trust
+    in familiar domain names, attackers can manipulate public opinion,
+    confusion, and undermine the credibility of legitimate sources.  
+
+    Threat actors can impersonate domains in different ways.
+
+    Some of them are:
+
+    - A common misspelling of the target domain (example: CSOnline.com rather than CSOOnline.com)
+    - A different top-level domain (example: using .uk rather than .co.uk)
+    - Combining related words into the domain (CSOOnline-Cybersecurity.com)
+    - Adding periods to the URL (CSO.Online.com)
+    - Using similar looking letters to hide the false domain (ÇSÓOnliné.com)
+
+    Typosquatting is a lookalike domain with one or two wrong or different
+    characters with the aim of trying to trick people onto the wrong webpage.
+
+    The threat actors can buy and use a domain only with a little change
+    compared to the legitimate and official site of some service.
+    It can be difficult for the end user to recognise the difference, for
+    example between goggle.com and google.com or google.com written with
+    similar character for the character "o" but actually from different
+    UTF encoding system. It can looks like a well known and legit
+    domain but to be actually a malicious one with a very close name.
+
+    In some of the cases regarding the security reports typosquatting
+    domain attack is used in malicious campaigns for disinformation.
+    For example, Doppelganger is a pro-Russian misleading information
+    operation targeting the European Union (EU) and other geopolitical
+    actors. This campaign exploits political, economic, and social
+    divisions within the EU and its member states. 
+

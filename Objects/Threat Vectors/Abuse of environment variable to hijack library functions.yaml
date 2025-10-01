@@ -1,0 +1,97 @@
+name: Abuse of environment variable to hijack library functions
+criticality: High
+references:
+  public:
+    1: https://research.splunk.com/endpoint/35c50572-a70b-452f-afa9-bebdf3c3ce36/
+    2: https://www.getambassador.io/blog/code-injection-on-linux-and-macos
+    3: https://www.goldsborough.me/c/low-level/kernel/2016/08/29/16-48-53-the_-ld_preload-_trick/
+
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 4d0bd987-1430-4433-9b58-a71ba8798435
+  schema: tvm::2.0
+  version: 1
+  created: 2025-01-10
+  modified: 2025-01-10
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+
+threat:
+  actors:
+    - name: att&ck::G0139 #[Enterprise] TeamTNT
+    - name: misp::27de6a09-844b-4dcb-9ff9-7292aad826ba #TeamTNT, Adept Libra
+    - name: att&ck::G0067 #[Enterprise] APT37, Group123, InkySquid, Reaper, Ricochet Chollima, ScarCruft, TEMP.Reaper
+    - name: misp::50cd027f-df14-40b2-aa22-bf5de5061163 #APT37, APT 37, Group 123, Group123, InkySquid, Operation Daybreak, Operation Erebus, Reaper Group, Reaper, Red Eyes, Ricochet Chollima, ScarCruft, Venus 121, ATK4, G0067, Moldy Pisces, APT-C-28
+  killchain: Privilege Escalation
+  att&ck:
+    - T1574.006 #Hijack Execution Flow: Dynamic Linker Hijacking
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Threat actor must have sufficient privileges to modify environment variables or 
+    system configurations and deploy malicious libraries in the filesystem in order 
+    to hijack library calls via LD_PRELOAD.
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Server Logs
+  platforms:
+    - Linux
+    - Docker Engine
+    - Kubernetes
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Modify configuration
+    - Software installation
+    - Infrastructure Compromise
+    - Alter behavior
+  impact:
+    - Data Breach
+    - Business disruption
+    - Monetary Loss
+    - Reputational Damages
+  viability: Likely
+  description: |
+    This threat vector focuses on the malicious use of the `LD_PRELOAD` environment 
+    variable on Linux systems to hook or hijack library function calls. Attackers, 
+    Red Teams, and advanced persistent threats leverage this trick to intercept and 
+    modify the behavior of dynamically linked libraries before the legitimate 
+    functions are called. By loading a rogue or malicious library via `LD_PRELOAD`, 
+    adversaries can achieve elevated privileges, persist on the target, and run 
+    arbitrary code under the guise of otherwise legitimate processes.    
+
+    Scenario example: 
+    - An attacker already possessing local or remote administrative access to a Linux 
+    host can set or modify the `LD_PRELOAD` environment variable in order to inject 
+    custom libraries during program execution.   
+
+    - When an application starts, the system dynamic linker reads the `LD_PRELOAD` variable 
+    and forces the loading of the malicious library.  
+
+    - The malicious library intercepts and potentially manipulates function calls—such as 
+    file I/O or network operations—allowing attackers to subvert security controls or 
+    execute code of their choice.
+    
+    ```bash
+    LD_PRELOAD=/tmp/malicious.so /usr/bin/anyApp
+    ```
+    
+    This indicates that a potentially unauthorized library (`/tmp/malicious.so`) is being 
+    force-loaded into `anyApp`.  

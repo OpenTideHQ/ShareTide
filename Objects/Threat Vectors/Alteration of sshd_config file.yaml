@@ -1,0 +1,122 @@
+name: Alteration of sshd_config file
+criticality: High
+references:
+  public:
+    1: https://research.splunk.com/endpoint/acb3ea33-70f7-47aa-b335-643b3aebcb2f/
+    2: https://www.hackingarticles.in/ssh-penetration-testing-port-22/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: b32ced71-138b-4076-8376-4f13161af4b0
+  schema: tvm::2.0
+  version: 1
+  created: 2025-01-07
+  modified: 2025-01-07
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+    - name: att&ck::G0139 #[Enterprise] TeamTNT
+    - name: misp::27de6a09-844b-4dcb-9ff9-7292aad826ba #TeamTNT, Adept Libra
+  killchain: Persistence
+  att&ck:
+    - T1098.004 #Account Manipulation: SSH Authorized Keys
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Threat actor must have root or sudo privileges on the target Linux system, 
+    as well as the ability to interact with sshd_config 
+    (e.g., via nano, vim, vi, or cat commands), before this threat is realized.
+  targets:
+    - Virtual Machines
+    - Workstations
+    - Laptop
+  platforms:
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Tampering
+    - Modify configuration
+    - Elevation of privilege
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+  viability: Likely
+  description: | 
+    This threat vector highlights the risk associated with unauthorized access or 
+    alteration of the `sshd_config` file on Linux systems. Adversaries who manage 
+    to gain elevated privileges (root or sudo) can modify SSH service parameters 
+    in `sshd_config` to allow additional keys, redirect ports, or weaken 
+    authentication requirements.  
+
+    Possible scenario done by a threat actor :
+
+    ### Adding Rogue SSH Keys
+    An attacker with root or sudo privileges could append a malicious public key to 
+    the authorized_keys directive in sshd_config. For instance:
+
+    ```bash
+    echo "AuthorizedKeysFile /etc/ssh/my_malicious_keys" >> /etc/ssh/sshd_config
+    ```
+    They might then place their public key in that file. This allows them to log in 
+    via SSH without needing a password, often bypassing standard detection.  
+
+    ### Enabling Root Login
+    If an organization has wisely disabled direct root login, an attacker could revert 
+    that setting in sshd_config:
+
+    ```bash
+    sed -i 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+    ```
+    By doing so, they allow themselves to authenticate as root directly.  
+
+    ### Allowing Password Authentication
+    In secure environments, SSH often requires key-based authentication. 
+    An attacker might weaken this by enabling password-based access and choosing 
+    easy-to-guess credentials:
+    
+    ```bash
+    sed -i 's/^PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+    ```
+    Once changed, brute-force or credential-stuffing techniques become more feasible, 
+    helping the adversary maintain illicit access.  
+
+    ### Redirecting SSH Ports
+    Defenders commonly monitor TCP port 22 for suspicious activities. An attacker 
+    could modify sshd_config to run SSH on a high or less-monitored port:
+
+    ```bash
+    sed -i 's/^Port 22/Port 2222/' /etc/ssh/sshd_config
+    ```
+    This tactic helps attackers blend into legitimate traffic patterns or bypass 
+    perimeter defenses that only monitor the default SSH port.  
+
+    ### Creating Hidden Backdoors
+    Attackers may add an additional Match block in sshd_config that grants special 
+    privileges to a specific user or from a specific IP range:
+
+    ```bash
+    echo "Match User hiddenuser
+        X11Forwarding yes
+        AllowTcpForwarding yes" >> /etc/ssh/sshd_config
+    ```
+    This configuration could stealthily enable features like port forwarding, 
+    further helping attackers evade detection and maintain persistence.  

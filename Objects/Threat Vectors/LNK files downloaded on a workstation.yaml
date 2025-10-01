@@ -1,0 +1,99 @@
+name: LNK files downloaded on a workstation
+criticality: Medium
+references:
+  public:
+    1: https://socradar.io/windows-shortcut-zero-day-zdi-can-25373-exploited
+    2: https://www.csoonline.com/article/3850346/new-windows-zero-day-feared-abused-in-widespread-espionage-for-years.html
+    3: https://windowsforum.com/threads/hidden-windows-vulnerability-the-lnk-shortcut-threat-explained.357280/
+
+metadata:
+  uuid: 3088db32-843b-439f-9374-f8c04a82b2ec
+  schema: tvm::2.1
+  version: 1
+  created: 2025-05-23
+  modified: 2025-05-23
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0094 #[Enterprise] Kimsuky, APT43, Black Banshee, Emerald Sleet, TA427, THALLIUM, Velvet Chollima
+    - name: misp::bcaaad6f-0597-4b89-b69b-84a6be2b7bc3 #Kimsuky, Velvet Chollima, Black Banshee, Thallium, Operation Stolen Pencil, G0086, APT43, Emerald Sleet, THALLIUM, Springtail, Sparkling Pisces
+      sighting: |
+        The analysis and the reports linked a cyberespionage North Korean
+        threat actor Kimsuky (Emerald Sleet, APT43), based on the used
+        patterns, activities and observed steps and procedures.
+      references:
+        - https://git.s.cec.eu.int/catch/ec-tide/-/issues/incident/4612
+  killchain: Defense Evasion
+  att&ck:
+    - T1566.002 # Phishing: Spearphishing Link
+    - T1027     # Obfuscated Files or Information
+    - T1204     # User Execution
+  chaining:
+    - relation: sequence::succeeds
+      vector: 1a68b5eb-0112-424d-a21f-88dda0b6b8df # Spearphishing Link
+      description: |
+        North Korean cyberespionage campaign distributes a spear-phishing
+        e-mails which contains a link to download a password-protected
+        file containing a LNK file. In this campaign the threat actor
+        try to lure the victims to download a malicious LNK file on
+        their workstations.  
+  #cve:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Threat actor rely on social engineering techniques for initial access.
+    For example, well customised and legitimate looking company e-mail with
+    administrative document protected with passwords or titled with ongoing
+    meeting or agenda.  
+  targets:
+    - Customer
+    - End-user
+    - Workstations
+  platforms:
+    - Office 365
+    - Github # the archive included a .lnk file, which would download payloads from a GitHub repository
+  severity: Moderate incident
+  leverage:
+    - Infrastructure Compromise
+    - Tampering
+  impact:
+    - Business disruption
+    - Lose Capabilities
+    - Data Breach
+    - Identity Theft
+    - Impairement
+  viability: Likely
+  description: |
+    A malicious .lnk file can be crafted to execute arbitrary code, download
+    malware, or exploit vulnerabilities in the operating system. The threat
+    actors can use social engineering tactics to trick users into downloading
+    and opening these files, which can lead to some of the following threats
+    ref [1], [2]:
+
+    - Malware infection: The .lnk file can download and install malware,
+    such as viruses, Trojans, or ransomware, onto the workstation.
+    - Code execution: The file can execute malicious code, potentially
+    allowing attackers to gain control of the workstation or steal sensitive
+    data.
+    - Exploitation of vulnerabilities: Malicious .lnk files can exploit known
+    vulnerabilities in the operating system or applications, leading to further
+    compromise.
+
+    In one of the observed and reported threat actor cyber-espionage campaigns
+    a North Korean threat actor spreads spear-phishing e-mails containing a link
+    to a password-protected document which contains LNK file.  
+
+    The lure contains a e-mail with a title "Political Advisory Meeting to
+    be held at the EU Delegation on May 14." This was both the e-mail subject
+    and the name of a zip file sent through a Dropbox link. The mail contains
+    a password-protected zip file with included .lnk file in it. Once an end-
+    usr click this file, it will download a payload usually from a GitHub 
+    repository. Further the payload executes and infect the host.   

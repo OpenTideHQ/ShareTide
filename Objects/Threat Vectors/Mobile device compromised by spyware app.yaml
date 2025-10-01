@@ -1,0 +1,87 @@
+name: Mobile device compromised by spyware app
+criticality: High
+references:
+  public:
+    1: https://googleprojectzero.blogspot.com/2023/03/multiple-internet-to-baseband-ote-rce.html
+    2: https://www.kaspersky.com/resource-center/definitions/what-is-zero-click-malware
+    3: https://www.techrepublic.com/article/packaged-zero-day-vulnerabilities-android-attacks/
+    4: https://citizenlab.ca/2023/09/blastpass-nso-group-iphone-zero-click-zero-day-exploit-captured-in-the-wild/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 99c78650-8e19-4756-90fb-2573242577ca
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-09-12
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+  killchain: Delivery
+  att&ck:
+    - T1512
+    - T1582
+    - T1513
+    - T1517
+    - T1429
+    - T1643
+  domains:
+    - Mobile
+  terrain: |
+    Adversaries can abuse iOS or Android devices which are vulnerable
+    to a zero-click or zero-day exploitation, without user intervention.
+  targets:
+    - End-user
+    - Executive
+    - Manager
+    - Mobile phone
+    - Personal Information
+    - Tablet
+  platforms:
+    - Android
+    - iOS
+  severity: Significant incident
+  leverage:
+    - Alter behavior
+    - Information Disclosure
+    - Modify configuration
+    - Modify data
+    - Software installation
+    - Tampering
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Reputational Damages
+  viability: Likely
+  description: |
+    Earlier versions of spyware apps were installed on smartphones through vulnerabilities
+    in commonly used apps, or involving an SMS or iMessage that provides a link to a website. 
+    If clicked, this link delivers malicious software that compromises the device.
+    It can also be installed over a wireless transceiver located near a target,
+    or manually if attacker can steal the phone that has been targeted.  
+
+    Since 2019, attackers have been able to install spyware on smartphones with a missed call on WhatsApp,
+    including delete the record of the missed call, making it impossible for the owner to know anything is amiss.
+    Another way is by simply sending a message to a phone that produces no notification.  
+
+    In the latest versions of spyware does not require the user to do anything. All that is required for a
+    successful spyware attack and installation is having a particular vulnerable app or OS installed on the device,
+    such as vulnerabilities in the iMessage service in iPhones which allows for infection by simply receiving a message.
+    This is known as a zero-click exploit.     
+
+    Once installed, spyware malware can theoretically harvest any data from the device and transmit
+    it back to the attacker. It can steal photos and videos, recordings, location records, communications,
+    web searches, passwords, call logs and social media posts.
+    It also has the capability to activate cameras and microphones for real-time surveillance
+    without the permission or knowledge of the user.  

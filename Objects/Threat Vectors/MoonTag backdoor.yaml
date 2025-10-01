@@ -1,0 +1,114 @@
+name: MoonTag backdoor
+criticality: Medium
+references:
+  public:
+    1: https://www.csoonline.com/article/3483919/apt-groups-increasingly-attacking-cloud-services-to-gain-command-and-control.html
+    2: https://groups.google.com/g/ph4nt0m/c/2J3_1XPeKD8/m/AYPoWudRcTAJ?
+    3: https://www.security.com/threat-intelligence/cloud-espionage-attacks
+
+metadata:
+  uuid: 4110c951-3120-49fb-b54b-3d3aa896296b
+  schema: tvm::2.0
+  version: 1
+  created: 2024-10-16
+  modified: 2024-10-24
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- Sabre Panda, Chinese linked threat actor, there are some links to this threat actor
+  killchain: Exploitation
+  # Exfiltration of data
+  att&ck:
+    - T1219 # Remote Access Software
+    - T1036 # Masquerading, this backdoor disguise as a legitimate Windows processes like svchost.exe to hide its activities
+    - T1574.001 # Hijack Execution Flow: DLL Side-Loading
+  chaining:
+    - relation: sequence::preceeds
+      vector: f3a392f7-3268-4c54-8bfa-8117b784f520 # DLL Execution over Rundll32
+      description: |
+        In the code of the MoonTag backdoor is observed
+        a call function installing dll library used over Rundll32
+
+        //Install this dll as a Service host by svchost.exe, used by RUNDLL32.EXE to call
+        void CALLBACK RundllInstallA(HWND hwnd, HINSTANCE hinst, char *param, int nCmdShow)
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Threat actor uses vulnerable Microsoft Graph APIs
+    to deploy a backdoor.  
+  targets:
+    - Laptop
+    - Other # Google drive
+    - Remote access # remote access tool
+  platforms:
+    - Windows
+  severity: Localised incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Tampering
+  impact:
+    - Data Breach
+    - Impairement
+    - Lose Capabilities
+    - Reputational Damages
+  viability: Likely
+  description: |
+    MoonTag is a new backdoor which appears to be recently uploaded
+    to VirusTotal. The backdoor seems to be in development phase and
+    uses the Microsoft Graph API, which is a set of APIs provided by
+    Microsoft for accessing various services and data ref [1].  
+    
+    It is believed to have been created by a Chinese threat actor,
+    and it uses code samples for Graph API communication that were
+    shared in a Chinese language Google Group.
+
+    The malware code can be found at the Virus Total page - ref [2],
+    although none of the provided codes there appear completed.
+    It seems that several variants of the backdoor have been uploaded
+    to VirusTotal. All of the variants found contain functionality
+    for communicating with the MS Graph API. The malware code shows
+    further that the code uses a technique DLL side-loading in the
+    processes, for example SvcHostDLL ref [2].   
+
+    Examples: 
+
+    - install this dll as a Service host by svchost.exe, used by
+    rundll32.exe to call callback
+    - dll module handle used to get dll path in InstallService
+
+    The malware, which is named “Moon_Tag” by its developer 
+    is based on code published in a Google Group. All of the
+    variants found contain functionality for communicating
+    with the Graph API ref [3].  
+
+    MoonTag samples match a YARA rule named `MAL_APT_9002_SabrePanda`
+    that detects samples from the 9002 RAT malware family used by
+    a Chinese affiliated threat actor. There are no strong links
+    to attribute MoonTag to a specific threat actor, but based on
+    the reports and analytic pages MoonTag backdoor is written by
+    Chinese-speaking threat actor based on the Chinese language
+    used in the Google Group post and the infrastructure used
+    by the attackers ref [3].  
+
+    #### MoonTag backdoor known behavior:
+
+    - Persistence: The service installation ensures the backdoor remains
+    on the system across reboots.
+    - Camouflage: By using legitimate Windows processes like svchost.exe
+    and the netsvcs service group, it tries to blend in with the operating
+    system's normal operations.
+    - Remote Control: The service starts a command-line process (cmd.exe),
+    allowing an attacker to execute arbitrary commands on the target machine,
+    which could lead to further exploitation or system takeover.  
+
+

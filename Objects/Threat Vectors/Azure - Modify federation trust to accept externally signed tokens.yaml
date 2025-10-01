@@ -1,27 +1,22 @@
-name: Modify Azure federation trust to accept externally signed tokens
+name: Azure - Modify federation trust to accept externally signed tokens
 criticality: Emergency
 references:
   public:
     1: https://www.microsoft.com/security/blog/2020/12/28/using-microsoft-365-defender-to-coordinate-protection-against-solorigate/
   #internal:
     #a: 
-  #restricted:
-    #A: 
-  #reports:
-    #-
 
 metadata:
   uuid: 9bb31c65-8abd-48fc-afe3-8aca76109737
-  schema: tvm::2.1
-  tlp: green
-  version: 3
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
   created: 2022-03-06
-  modified: 2022-04-11
-  #author: 
+  modified: 2025-01-01
   organisation:
     uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
     name: EC DIGIT CSOC
-  
+
 threat:
   actors:
     - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM

@@ -1,0 +1,96 @@
+name: Pass the hash attack to elevate privileges
+criticality: High
+references:
+  public:
+    1: https://attack.mitre.org/techniques/T1550/002/
+    2: https://adsecurity.org/?page_id=1821
+    3: https://adsecurity.org/?p=2362
+    4: https://www.sentinelone.com/cybersecurity-101/mimikatz/
+    5: https://tools.thehacker.recipes/mimikatz/modules/sekurlsa/pth
+    6: https://www.fireeye.com/content/dam/fireeye-www/services/pdfs/mandiant-apt1-report.pdf
+    7: https://tools.thehacker.recipes/mimikatz/modules/sekurlsa
+    8: https://attack.mitre.org/software/S0154/
+    9: https://www.tevora.com/threat-blog/about-windows-process-thread-tokens-and-pass-the-hash/
+    10: https://github.com/gentilkiwi/mimikatz/blob/master/mimikatz/modules/sekurlsa/kuhl_m_sekurlsa.c#L975-L987
+    11: https://twitter.com/gentilkiwi/status/1592805645824425984?s=20&t=VyUJnGjfUYV4J21s-rS8ew
+
+metadata:
+  uuid: 4472e2b0-3dca-4d84-aab0-626fcba04fce
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-11-17
+  modified: 2024-05-15
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0006 #[Enterprise] APT1, Comment Crew, Comment Group, Comment Panda
+    - name: misp::1cb7e1cc-d695-42b1-92f4-fd0112a3c9be #APT1, COMMENT PANDA, PLA Unit 61398, Comment Crew, Byzantine Candor, Group 3, TG-8223, Comment Group, Brown Fox, GIF89a, ShadyRAT, G0006
+    - name: att&ck::G0050 #[Enterprise] APT32, APT-C-00, BISMUTH, Canvas Cyclone, OceanLotus, SeaLotus
+    - name: misp::aa29ae56-e54b-47a2-ad16-d3ab0242d5d7 #APT32, OceanLotus Group, Ocean Lotus, OceanLotus, Cobalt Kitty, APT-C-00, SeaLotus, Sea Lotus, APT-32, APT 32, Ocean Buffalo, POND LOACH, TIN WOODLAWN, BISMUTH, ATK17, G0050, Canvas Cyclone
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: att&ck::G0093 #[Enterprise] GALLIUM, Granite Typhoon
+    - name: misp::e400b6c5-77cf-453d-ba0f-44575583ac6c #GALLIUM, Red Dev 4, Alloy Taurus, Granite Typhoon
+    - name: att&ck::G0094 #[Enterprise] Kimsuky, APT43, Black Banshee, Emerald Sleet, TA427, THALLIUM, Velvet Chollima
+    - name: misp::89f005f9-22e9-4c50-9b48-e94c521266e5 #TA406
+  killchain: Privilege Escalation
+  att&ck:
+    - T1550.002
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    Requires an already compromised endpoint.
+
+    Doing pass-the-hash on a Windows system requires specific privilege. 
+    It either requires elevated privileges (by previously running 
+    privilege:debug or by executing Mimikatz as the NT-AUTHORITY\SYSTEM 
+    account). This doesn't apply to pass-the-ticket which uses an official API.
+
+    Pth works on windows computers of every kind, however later versions 
+    natively have some level of defenses/mitigations built in.
+  targets:
+    - Auth token
+    - Control Server
+    - Workstations
+    - End-user
+    - Public-Facing Servers
+    - Server Authentication
+    - Laptop
+    - Desktop
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Information Disclosure
+    - Spoofing
+    - Tampering
+    - Repudiation
+  impact:
+    - Identity Theft
+    - Impairement
+    - Data Breach
+  viability: Very Likely
+  description: |
+     Elevating privileges on Windows to System allows a threat actor (or 
+     sysadmin) to do things that are not possible without SYSTEM/root 
+     privileges.
+     
+     Pass the hash is a method of authenticating as a user, without having 
+     access to the user's cleartext password, by stealing password hashes and 
+     using this password hash to authenticate directly to a resource via a 
+     third party non-Microsoft tool such as Mimikatz. This method bypasses 
+     standard authentication steps that require a cleartext password, moving
+     directly into the portion of the authentication that uses the password 
+     hash.
+     
+     Mimikatz sekurlsa module without the /impersonate option implements the standard
+     pass-the-hash technique, which works by authenticating to a resource, by in the 
+     background spawning a new process in the context of the hash and attacker-
+     desired elements. For examples, see the reference to thehacker.recipes.

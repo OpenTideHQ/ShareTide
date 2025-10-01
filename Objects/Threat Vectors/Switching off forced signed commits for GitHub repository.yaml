@@ -1,0 +1,61 @@
+name: Switching off forced signed commits for GitHub repository
+criticality: High
+references:
+  public:
+    1: https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits
+    2: https://github.com/github/safe-settings
+    3: https://www.gpg4win.org/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: cd1baed8-3ea8-42e1-a27d-9da9ddb2f5b8
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-11-28
+  modified: 2022-11-28
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Defense Evasion
+  att&ck:
+    - T1562
+  domains:
+    - SaaS
+    - Enterprise
+  terrain: |
+    Requires a GitHub organization, either as SaaS or as an on-prem GitHub 
+    instance. Attacker requires admin credentials to change the setting or 
+    an exploit to bypass authentication or similar.
+  targets:
+    - Cloud Portal
+    - Code Repositories
+    - CI/CD Pipelines
+    - Control Server
+  platforms:
+    - Github
+  severity: Localised incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Modify configuration
+  impact:
+    - Impairement
+  viability: Unlikely
+  description: |
+    Development and DevOps teams may turn on signed commits to ensure that an 
+    attacker cannot commit code to a code repository of an organization by 
+    merely succesfully stealing an OAuth token of a developer. With forced 
+    commits, the attacker will be blocked from committing code changes to a
+    repository, essentially limiting the attacker from attaining lateral 
+    movement or similar objectives, unless the attacker turns off the forced 
+    commit policy. 

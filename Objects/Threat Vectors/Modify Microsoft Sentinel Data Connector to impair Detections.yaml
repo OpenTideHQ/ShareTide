@@ -1,0 +1,57 @@
+name: Modify Microsoft Sentinel Data Connector to impair Detections
+criticality: Severe
+references:
+  public:
+    1: https://learn.microsoft.com/en-us/azure/sentinel/connect-data-sources
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 48432b70-77c4-4f5a-9d66-75764c1777c6
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-12-08
+  modified: 2022-12-08
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Defense Evasion
+  att&ck:
+    - T1562.008
+  domains:
+    - Public Cloud
+  terrain: |
+    Requires access to privileged Azure credentials
+  targets:
+    - CI/CD Pipelines
+    - System admin
+  platforms:
+    - Azure
+  severity: Highly significant incident
+  leverage:
+    - Modify configuration
+  impact:
+    - Lose Capabilities
+  viability: Very Unlikely
+  description: |
+    A threat actor may want to disable, remove or update the configuration of
+    Sentinel Connectors to act invisibly in Azure, which would impair the ability
+    of a SOC to receive alerts since it would stop log file ingestion into Azure
+    Sentinel. 
+
+    An attacker can do this either by deploying via API an ARM template, biceps
+    template, or other script/code element that can be used via Azure APIs,
+    using the Azure CLI or directly on the portal itself via a browser.
+
+#Make sure that in the future this TVM is linked to implementation grade TVMs: 
+#each of the method listed above should become its own object, connected to others.
+#This helps with avoiding repetition across models.

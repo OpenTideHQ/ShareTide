@@ -1,0 +1,90 @@
+name: HackBrowserData browser data export
+criticality: High
+references:
+  public:
+    1: https://github.com/moonD4rk/HackBrowserData
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: ba88c4a0-bf3b-46cb-b022-050ae22abce8
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-05
+  modified: 2024-11-05
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #-
+  killchain: Credential Access
+  att&ck:
+    - T1111 #Multi-Factor Authentication Interception
+  chaining:
+    - relation: atomicity::implements
+      vector: b0d6bf74-b204-4a48-9509-4499ed795771 #Pass-the-cookie attack
+      description: |
+        Technique used to steal browser cookies 
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+    - SaaS
+  terrain: |
+     Attacker must compromise a user endpoint and exfiltrate the browser cookies.
+     Cookies can be found on disk, in the process memory of the browser, and in
+     network traffic to remote systems.
+  targets:
+    - Auth token
+    - Cloud Portal
+    - End-user
+    - Identity Services
+  platforms:
+    - EU Login
+    - Office 365
+    - Azure AD
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+    - Impairement
+  viability: Environment dependent
+  description: |
+    HackBrowserData is a command-line tool for decrypting and exporting data
+    (passwords, history, cookies, bookmarks, credit cards, download history,
+    localStorage and extensions) from the browser. 
+
+    It supports the most popular browsers on the market and runs on Windows, macOS and Linux.
+
+    Usage examples:
+
+    ## Automatic scan of the browser on the current computer, 
+       outputting the decryption results in JSON format and compressing as zip.
+
+    PS C:\Users\JohnDoe\Desktop> .\hack-browser-data.exe -b all -f json --dir results --zip
+
+    PS C:\Users\JohnDoe\Desktop> ls -l .\results\
+        Directory: C:\Users\JohnDoe\Desktop\results
+
+    ## Run with custom browser profile folder, using the -p parameter to specify the
+       path of the browser profile folder.
+      
+    PS C:\Users\JohnDoe\Desktop> .\hack-browser-data.exe -b chrome -p "C:\Users\User\AppData\Local\Microsoft\Edge\User Data\Default"
+
+    [NOTICE] [browsingdata.go:59,Output] output to file results/chrome_creditcard.csv success  
+    [NOTICE] [browsingdata.go:59,Output] output to file results/chrome_bookmark.csv success  
+    [NOTICE] [browsingdata.go:59,Output] output to file results/chrome_cookie.csv success  
+    [NOTICE] [browsingdata.go:59,Output] output to file results/chrome_history.csv success  
+    [NOTICE] [browsingdata.go:59,Output] output to file results/chrome_download.csv success  
+    [NOTICE] [browsingdata.go:59,Output] output to file results/chrome_password.csv success  

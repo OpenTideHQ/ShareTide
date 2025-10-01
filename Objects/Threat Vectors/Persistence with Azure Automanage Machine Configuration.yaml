@@ -1,0 +1,62 @@
+name: Persistence with Azure Automanage Machine Configuration
+criticality: Medium
+references:
+  public:
+    1: https://cloudbrothers.info/azure-persistence-azure-policy-guest-configuration/#:~:text=Azure%20Policy%20enables%20administrators%20to,configuration%20feature%20of%20Azure%20Policy.
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 23f6a192-a25d-48b8-a235-7bb55e483682
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-04-28
+  modified: 2023-01-06
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Persistence
+  att&ck:
+    - T1484.001
+  domains:
+    - Public Cloud
+  terrain: |
+    The adversary needs the owner access role on the targeted Azure 
+    Subscription to apply the Azure Policy and grant permissions for
+    the system-managed identities.
+  targets:
+    - Virtual Machines
+  platforms:
+    - Azure
+  severity: Significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Dwelling
+    - Modify privileges
+  impact:
+    - Business disruption
+    - Data Breach
+    - Impairement
+  viability: Likely
+  description: |
+    Azure Policy enables administrators to define, enforce and remediate
+    configuration standards on Azure resources and even on non Azure assets
+    using Azure Arc. One key feature, that was released in 2021, is the
+    guest configuration feature of Azure Policy. Azure Policy Guest 
+    Configuration is now called Azure Automanage Machine Configuration. 
+    
+    Adversaries may use this functionality to gain persistence in an Azure 
+    environment if they have gained the necessary permissions within the 
+    subscription. And since Azure VMs are in many cases directly integrated 
+    in the on-Premises Active Directory it is possible to gain additional 
+    access there.
+

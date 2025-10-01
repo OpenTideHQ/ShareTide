@@ -1,0 +1,69 @@
+name: Illicit VPC peering requests
+criticality: Low
+references:
+  public:
+    1: https://levelup.gitconnected.com/cloud-security-table-top-exercises-629d353c268e
+    2: https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: cf14af27-ea36-4306-9134-8d9ccb69a617
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-11-21
+  modified: 2022-11-21
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Social Engineering
+  att&ck:
+    - T1078.004
+    - T1599
+  domains:
+    - Public Cloud
+    - Networking
+  terrain: |
+    The attacker needs to control an AWS account in order to send a VPC peering request. The AWS account controlled by the attacker may or may not
+    be inside the EC AWS PROD organization.
+  targets:
+    - Network Equipment
+    - System admin
+  platforms:
+    - AWS VPC
+  severity: Moderate incident
+  leverage:
+    - Infrastructure Compromise
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Business disruption
+    - IP Loss
+    - Monetary Loss
+    - Operating costs
+  viability: Likely
+  description: |
+    Threat actors may attempt to gain initial access to EC AWS environments by
+    sending a malicious/illicit VPC peering request to EC VPC administrators.
+    If the VPC administrator approves the request, the adversary would see their 
+    network joined with the target, and be able to pivot there freely.
+
+    VPC peering requests could also be used in the data exfil stage by 
+    a threat actor using this method to send data out of an EC AWS account
+    that the threat actor controls
+
+    Virtual Private Clouds, or VPCs, is a logically isolated portion of 
+    networking that AWS assigns to clients. VPC peering is a feature that allows VPCs
+    living in different accounts to be joined in a common IP space, for example to 
+    allow different services to communicate to each others.
+
+ 

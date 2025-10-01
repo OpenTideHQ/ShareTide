@@ -1,0 +1,135 @@
+name: Malicious profile installed on mobile device
+criticality: High
+references:
+  public:
+    1: https://my-last-and-only.blogspot.com/2013/04/malicious-profiles-sleeping-giant-of.html
+    2: https://www.ifsecglobal.com/cyber-security/apple-ios-vulnerable-hidden-profile-attacks/
+    3: https://www.jamf.com/blog/malicious-profiles-come/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: b8740296-9d34-453b-8127-b5d8659a6138
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-14
+  modified: 2025-04-14
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1456 #Mobile : Drive-By Compromise
+    - T1624 #Mobile : Event Triggered Execution
+    - T1631.001 #Mobile : Ptrace System Calls
+    - T1407 #Mobile : Download New Code at Runtime
+    - T1417 #Mobile : Input Capture
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Mobile
+  terrain: |
+    Adversaries rely on social engineering (e.g., phishing emails/SMS with fake security alerts), 
+    and infrastructure such as spoofed domains, third-party app stores, or MitM tools 
+    to distribute payloads or force installations.
+  targets:
+    - Mobile phone
+    - Tablet
+    - Personal Information
+    - Critical Documents
+  platforms:
+    - Android
+    - iOS
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Modify configuration
+    - Modify privileges
+    - Spoofing
+  impact:
+    - Asset and fraud
+    - Data Breach
+    - Identity Theft
+    - IP Loss
+    - Nuisance
+  viability: Likely
+  description: |
+    A "malicious profile" refers to a configuration file installed on a mobile device 
+    that compromises its security and privacy. These profiles exploit the device's settings 
+    to grant attackers unauthorized control or access to sensitive data, making them 
+    a serious threat vector for mobile devices.
+
+    ### How Malicious Profiles Are Installed
+
+    Attackers use various techniques to deploy malicious profiles on devices:
+
+    1. **Phishing Attacks**: Victims are tricked into clicking links or downloading 
+    files via phishing emails or websites. These links often promise to fix security 
+    issues or provide valuable services, convincing users to install the malicious profile.
+
+    2. **Social Engineering**: Attackers manipulate users into believing the profile 
+    is legitimate, often using fake security alerts or enticing offers.
+
+    3. **Man-in-the-Middle (MitM) Attacks**: Over unsecured Wi-Fi networks, attackers 
+    intercept communications and install malicious profiles by redirecting traffic through 
+    spoofed hotspots.
+
+    4. **Third-Party App Stores**: Android users may unknowingly install malicious apps 
+    containing configuration profiles from unverified sources.
+
+    ### Implications of Malicious Profiles
+
+    Malicious profiles can severely compromise a device's security, privacy, and functionality:
+
+    1. **Persistent Control**: Once installed, these profiles often cannot be removed 
+    manually, allowing attackers long-term control over the device settings.
+
+    2. **Data Interception**:
+      - Profiles may configure devices to route traffic through malicious VPNs or proxy 
+      servers, enabling attackers to intercept and decrypt sensitive information such 
+      as emails, banking credentials, and social media passwords.
+      - Installation of untrusted root certificates allows attackers to bypass TLS/SSL 
+      encryption and impersonate secure websites.
+
+    3. **Surveillance Capabilities**:
+      - Attackers can record conversations, monitor messages, and even capture audio 
+      from the environment using malicious profiles.
+      - Corporate devices are particularly vulnerable as attackers may redirect email 
+      traffic or manipulate enterprise configurations.
+
+    4. **Device Misconfiguration**:
+      - Malicious profiles can alter Wi-Fi settings, enforce insecure passcodes, or 
+      disable security apps, weakening the device’s overall security posture.
+
+    5. **Persistence for Future Attacks**:
+      - By tampering with trust settings (e.g., certificates), attackers ensure that 
+      the device implicitly trusts them for future actions without user intervention.
+
+    ### Examples of Exploits
+
+    - **iOS Devices**:
+      Attackers exploit configuration vulnerabilities by installing untrusted profiles 
+      that intercept secure connections and manipulate user sessions. For example, phishing 
+      campaigns may trick users into downloading profiles that hijack email traffic 
+      or steal credentials.
+
+    - **Android Devices**:
+      Malware such as "Godless" exploits older Android versions by embedding malicious 
+      configuration files within apps downloaded from third-party stores. These files 
+      gain root access and install spyware for complete device takeover.

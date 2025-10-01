@@ -1,0 +1,114 @@
+name: MFA fatigue
+criticality: Medium
+references:
+  public:
+    1: https://www.bleepingcomputer.com/news/microsoft/microsoft-confirms-they-were-hacked-by-lapsus-extortion-group/
+    2: https://www.bleepingcomputer.com/news/security/uber-hacked-internal-systems-breached-and-vulnerability-reports-stolen/
+    3: https://www.beyondtrust.com/blog/entry/midnight-blizzard-and-modern-identity-based-attacks
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 56500aed-5dec-42a8-a275-f1392abac979
+  schema: tvm::2.0
+  version: 1
+  created: 2024-10-21
+  modified: 2024-11-11
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: att&ck::G0094 #[Enterprise] Kimsuky, APT43, Black Banshee, Emerald Sleet, TA427, THALLIUM, Velvet Chollima
+    - name: misp::89f005f9-22e9-4c50-9b48-e94c521266e5 #TA406
+    - name: att&ck::G1004 #[Enterprise] LAPSUS$, DEV-0537, Strawberry Tempest
+    - name: misp::d9e5be22-1a04-4956-af6c-37af02330980 #LAPSUS, LAPSUS$, DEV-0537, SLIPPY SPIDER, Strawberry Tempest
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Credential Access
+  att&ck:
+    - T1111 #Multi-Factor Authentication Interception
+    - T1621 #Multi-Factor Authentication Request Generation
+  chaining:
+    - relation: sequence::succeeds
+      vector: 1a68b5eb-0112-424d-a21f-88dda0b6b8df ##Spearphishing Link
+      description: |
+        Attacker must be able to compromise the username and password of a valid account.
+    - relation: sequence::succeeds
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 ##Spearphishing Attachment
+      description: |
+        Attacker must be able to compromise the username and password of a valid account.
+    - relation: atomicity::implements
+      vector: 4a807ac4-f764-41b1-ae6f-94239041d349 #MFA Bypass Techniques
+      description: |
+        MFA bypass technique
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    Adversaries must be in possession of the credentials of a valid account. 
+  targets:
+    - Auth token
+    - Cloud Portal
+    - End-user
+    - Helpdesk
+    - Identity Services
+    - Mobile phone
+  platforms:
+    - EU Login
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+  viability: Likely
+  description: |
+    MFA fatigue (aka MFA abuse, MFA bombing or MFA spamming) is a popular technique
+    due to its low complexity and high success rate.
+
+    It is a social engineering attack strategy where attackers repeatedly push
+    second-factor authentication requests to the target user email, phone, or registered
+    devices. The goal is to spam users to the point where they are annoyed by the constant 
+    notifications and approve one so it will stop. By doing so, the attacker has effectively 
+    bypassed MFA by tricking the user into approving the login attempt.
+
+    The fact that the attacker can trigger MFA push notifications means they obtained
+    the credentials of the user. This attack is often preceded by other social engineering
+    attack vectors, such as phishing, to gain credentials. Stolen credentials may also
+    be acquired from the dark web or via many other attack vectors.
+
+    Attacker may trigger push notifications throughout the day with the hopes that
+    one of the attempts will coincide with the user login activity, so the user will
+    approve it without suspicion.
+
+    MFA fatigue attack chain unfolds as follows:
+
+    1. User credentials and information are collected.
+    The attack begins with user information already available. The attacker will typically
+    have access to a victim username, password, or recovery credentials. This might be
+    sourced from preliminary attacks (such as phishing or social engineering) or may have
+    been exposed credentials from a larger breach.
+
+    2. Stolen credentials are used to send MFA push notifications.
+    The attackers then use the gained credentials to sign-in to a target account or device
+    secured by push multi-factor authentication. Typically, the attacker will attempt
+    to activate the authenticating application push notifications in quick succession.
+    These push notifications can happen over email, text message, or desktop notification,
+    but are generally pushed to the user authenticated mobile device.
+
+    3. User gets push notifications and becomes fatigued.
+    The user will now rapidly receive push notifications as the attacker attempts to
+    overwhelm them. The attacker goal is for the victim to push “yes” and confirm their
+    identity, allowing the attacker to go further into their account or device.
+    Often, the user may think it is a simple application malfunction or a test,
+    or just want the notifications to end out of annoyance.

@@ -1,0 +1,148 @@
+name: Windows User Account Control (UAC) bypass
+criticality: High
+references:
+  public:
+    1: https://infosecwriteups.com/bypassing-uac-1ba99a173b30
+    2: https://seclists.org/fulldisclosure/2015/Dec/34
+    3: https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/dd835564(v=ws.10)?redirectedfrom=MSDN#BKMK_RegistryKeys
+    4: https://github.com/hfiref0x/UACME
+    5: https://www.elastic.co/security-labs/exploring-windows-uac-bypasses-techniques-and-detection-strategies
+    6: https://ruuucker.github.io/Bypassing-Windows-uac/
+    7: https://github.com/biswajitde/mitre/blob/master/atomics/T1088/T1088.md
+  #internal:
+    #a: 
+
+metadata:
+  uuid: d5add960-1b86-41d4-869a-1defd392c8f9
+  schema: tvm::2.1
+  version: 1
+  created: 2025-02-06
+  modified: 2025-02-07
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, StellarParticle, The Dukes, UNC2452, UNC3524, YTTRIUM
+      sighting: |
+        APT29 has been observed to perform bypassed UAC to elevate
+        privileges and expand access.
+      references:
+        - https://github.com/carbonblack/tau-tools/blob/master/threat_emulation/Invoke-APT29/apt29.ps1
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+      #sighting: |
+      references:
+        - https://github.com/LAPSUS-GROUP/UAC-Bypass # A proof-of-concept shows how Lazarus Grop can use a custom UAC-bypass tool
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group
+  killchain: Defense Evasion
+  att&ck:
+    - T1548.002 # Abuse Elevation Control Mechanism: Bypass User Account Control
+  chaining:
+    - relation: atomicity::implemented
+      vector: 68ab86f6-378d-4371-ad01-6209fb95d57d # WhisperGate wiper
+      description: |
+        WhisperGate wiper is a type of a payload which uses techniques
+        triggering  User Account Control (UAC) dialog box for evelation
+        access privilege purposes.    
+  #cve:
+    #-
+  #misp:
+    #- 
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor uses vulnerabilities in software or applications running on
+    the system to circumvent UAC (User Account Control) protection mechanism.  
+  targets:
+    - End-user
+    - Customer
+    - Laptop
+    - Workstations
+    - Server Authentication
+    - System admin
+    - Other # Windows Registries, a threat actor abuses Winodows registry key values to redirect the execution flow of an elevated program to a controlled command ref [4]
+    - Windows API # Application, TA can use a malicious application to trick the user ref [4]
+  platforms:
+    - Windows
+  severity: Substantial incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Dwelling
+    - Tampering
+    - Software installation
+  impact:
+    - Lose Capabilities
+    - Business disruption
+    - Impairement
+    - Nuisance
+    - Reputational Damages
+  viability: Likely
+  description: |
+    User Account Control (UAC) is a security feature implemented in the Windows 
+    operating system to prevent potentially harmful programs from making changes 
+    to user's computer. The threat actors explore and apply different techniques
+    and ways to bypass this Winsows security mechanism ref [1].      
+
+    For example, some of the used techniques to bypass UAC are:
+
+    ### DLL Hijacking
+    
+    This technique involves placing a malicious Dynamic Link Library (DLL) file
+    in a directory that is part of the system's search path. When the targeted
+    application loads the required DLL, it inadvertently loads the malicious
+    DLL instead, granting the attacker elevated privileges.  
+
+    Some initially prepared payloads, for example a usage of rundll32.exe can
+    load a specifically crafted DLL may auto-elevate COM objects and perform
+    a file operation in a protected directory which would typically require
+    elevated access.  
+
+    ### COM Elevation
+    
+    Component Object Model (COM) is a Microsoft technology used for
+    communication between software components. By exploiting a vulnerability
+    in the way the system handles COM objects, an attacker can elevate their
+    privileges and bypass UAC.  
+
+    ### Windows Registry modification
+
+    A threat actor can change the behavior or the UAC prompt or even completely
+    turn it off. Their goal is privilege escalation ref [2, 3].    
+
+    Example:
+
+    ```
+    [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System]
+        "ConsentPromptBehaviorUser"=dword:00000000 ; Automatically deny elevation requests
+        "EnableInstallerDetection"=dword:00000000
+    ````
+
+    ### Fileless Attacks
+    
+    Fileless attacks, such as PowerShell or Windows Management Instrumentation
+    (WMI) exploits, can be used to execute malicious code in memory, without
+    writing any files to the disk. This allows the attacker to bypass UAC,
+    as it doesn't monitor in-memory activities.
+
+    ### Privilege Escalation Vulnerabilities
+    
+    Some applications may have vulnerabilities that can be exploited to gain
+    elevated privileges. By exploiting these vulnerabilities, an attacker
+    can bypass UAC and execute code with higher privileges.
+
+    For example, the Github readme page for UACMe contains an extensive list of 
+    methods that have been discovered and implemented within UACMe or the process
+    eventvwr.exe can auto-elevate and execute a specified binary or script
+    ref [7].    
+
+    ### Malicious software installation (skip the UAC prompt)
+
+    Another technique to bypass the UAC could be achieved by malicious software
+    injected into a trusted process to gain elevated privileges without prompting
+    a user.

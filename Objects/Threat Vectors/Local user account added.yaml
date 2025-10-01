@@ -1,0 +1,105 @@
+name: Local user account added
+criticality: High
+references:
+  public:
+    1: https://research.splunk.com/endpoint/aae66dc0-74b4-4807-b480-b35f8027abb4/
+    2: https://research.splunk.com/endpoint/f8c325ea-506e-4105-8ccf-da1492e90115/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: e2d8ce6b-f21e-4444-a828-0c6b722a9c93
+  schema: tvm::2.0
+  version: 1
+  created: 2024-12-12
+  modified: 2024-12-13
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #-
+  killchain: Persistence
+  att&ck:
+    - T1136.001 #Create Account: Local Account
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Networking
+  terrain: |
+    Adversary must have existing administrative privileges on a compromised host 
+    within the targeted infrastructure to create or modify local user accounts.
+  targets:
+    - Workstations
+    - Desktop
+    - Laptop
+    - Public-Facing Servers
+    - Production Database
+    - Virtual Machines
+    - Engineering Workstation
+  platforms:
+    - Windows
+    - Linux
+    - macOS
+  severity: Substantial incident
+  leverage:
+    - Elevation of privilege
+    - New Accounts
+    - Modify configuration
+  impact:
+    - Data Breach
+    - Reputational Damages
+    - Identity Theft
+    - Business disruption
+  viability: Likely
+  description: |
+    Threat actors may add or modify local user accounts on compromised systems to 
+    establish persistence, maintain unauthorized access, and potentially 
+    escalate privileges. By leveraging administrative permissions—often obtained 
+    through credential theft, exploitation of vulnerabilities, or lateral movement—
+    adversaries create new user accounts that allow them to re-enter the system 
+    at will, even if initial malware implants or other backdoor mechanisms 
+    are detected and removed.  
+
+    ## Windows
+
+    Adversaries might run commands like :
+    ```bash
+    net user /add [username] [password] 
+    or 
+    net localgroup administrators [username] /add
+    ```
+    
+    To stealthily provision accounts with elevated permissions. 
+    
+    ## Linux or macOS
+    
+    Threat actors may modify :
+    ```bash
+    /etc/passwd
+    or 
+    /etc/shadow
+    ``` 
+    or use commands like `useradd` or `dscl` to create new users.
+    The changes perfomed by using the above commands can be detected by 
+    monitoring certain paths, such as `/usr/sbin/useradd`.  
+    In some cases, attackers may script these actions to occur automatically during 
+    their post-exploitation phase, making detection more challenging.  
+
+    In practice, once these local accounts are established, the attackers can 
+    maintain a foothold within the environment, pivot to other hosts, 
+    exfiltrate data, or stage further attacks. The long-term impact of such 
+    account additions may lead to data breaches, reputation damage, financial 
+    loss and regulatory consequences.  

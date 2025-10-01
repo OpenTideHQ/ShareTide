@@ -1,0 +1,134 @@
+name: Persistence through automation runbooks in Azure
+criticality: High
+references:
+  public:
+    1: https://www.secforce.com/blog/azure-persistence-and-detection/
+    2: https://www.netspi.com/blog/technical-blog/cloud-pentesting/maintaining-azure-persistence-via-automation-accounts/
+    3: https://learn.microsoft.com/en-us/azure/automation/automation-runbook-execution
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 50c7e353-ac1c-48a7-8c98-2515b45f31f4
+  schema: tvm::2.1
+  version: 1
+  created: 2025-05-20
+  modified: 2025-05-21
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Persistence
+  att&ck:
+    - T1098 #Account Manipulation
+    - T1204 #User Execution
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Enterprise
+  terrain: |
+    Adversaries must have compromised credentials or accounts with sufficient permissions 
+    to create or modify Automation Accounts and runbooks. This typically means access 
+    to roles like Owner, Contributor, or Automation Operator within the Azure subscription 
+    or resource group.
+  targets:
+    - Cloud Storage Accounts
+    - Identity Services
+    - Compute Cluster
+    - Public-Facing Servers
+    - Virtual Machines
+    - Serverless
+    - API Endpoints
+    - Cloud Portal
+    - IaaS
+    - Relational Database
+    - NoSQL Database
+    - Server Authentication
+  platforms:
+    - Azure
+    - Azure AD
+    - Windows
+    - Linux
+    - PowerShell 
+  severity: Significant incident
+  leverage:
+     - Spoofing
+     - Tampering
+     - Repudiation
+     - Infrastructure Compromise
+     - Information Disclosure
+     - Elevation of privilege
+     - New Accounts
+     - Modify configuration
+     - Modify privileges
+     - Modify data
+     - Software installation
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Competitive disadvantage
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    Persistence through automation runbooks in Azure is a robust and often-overlooked 
+    technique that allows attackers to maintain privileged access in cloud environments 
+    by leveraging Azure Automation Accounts and their associated runbooks.
+
+    ### Attack Flow and Techniques
+
+    **1. Attack Lifecycle**  
+    - The attacker compromises an Azure account or system and escalates privileges, 
+    often to Global Administrator.
+    - After initial access is revoked or remediated, the attacker uses Automation Accounts 
+    to regain or maintain access to the Azure tenant.
+
+    **2. Runbook Creation and Modification**  
+    - Attackers create a new Automation Account with excessive privileges (such as "User Administrator" or "Subscription Owner") 
+    or leverage an existing one.
+    - A malicious runbook (typically a PowerShell script) is uploaded or an existing runbook is modified. These scripts can:
+      - Create new Azure AD users or service principals with high privileges.
+      - Deploy payloads (e.g., Cobalt Strike beacons) on Azure VMs.
+      - Mimic legitimate processes through naming conventions (e.g., "SplunkDev" for Automation Account, "AzureAutomationMonitor" for runbook).
+
+    **3. Webhook Integration**  
+    - The malicious runbook is linked to a webhook, enabling remote execution via HTTP 
+    POST requests without direct authentication.
+    - This allows attackers to regain access on demand, even after their original accounts 
+    are removed.
+
+    **4. Privilege Retention and Escalation**  
+    - Automation Accounts are configured with password or certificate-based authentication, 
+    providing multiple avenues for re-entry.
+    - Attackers may assign or retain excessive permissions to ensure the malicious runbook 
+    can escalate privileges or create new backdoor accounts.
+
+    **5. Hybrid Runbook Workers**  
+    - Attackers may use Hybrid Runbook Workers, which run outside Azure’s sandbox and 
+    are not subject to the same execution time limits. This allows for more complex 
+    or long-running malicious tasks.
+
+    **6. Backdooring Packages and Runtime Environments**  
+    - Beyond runbooks, attackers can backdoor the packages and runtime environments 
+    (modules and Python packages) that support Automation Accounts. Malicious code can 
+    be embedded in these components, providing even deeper persistence.

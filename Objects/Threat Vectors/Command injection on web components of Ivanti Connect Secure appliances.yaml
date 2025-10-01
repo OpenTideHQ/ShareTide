@@ -1,0 +1,98 @@
+name: Command injection on web components of Ivanti Connect Secure appliances
+criticality: Severe
+references:
+  public:
+    1: https://www.volexity.com/blog/2024/01/10/active-exploitation-of-two-zero-day-vulnerabilities-in-ivanti-connect-secure-vpn/
+    2: https://cert.europa.eu/publications/security-advisories/2024-004/
+    3: https://lolbas-project.github.io/#
+  #restricted:
+    #A:  
+  #reports:
+    #-
+
+metadata:
+  uuid: 4b1c47ee-f45a-4b89-98e7-e943bcd5dd19
+  schema: tvm::2.0
+  tlp: clear
+  version: 3
+  created: 2024-01-15
+  modified: 2024-04-18
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::2dd31182-bae1-48ed-8bb3-805a3df89783 #Gelsemium, 狼毒草
+  killchain: Exploitation
+  att&ck:
+    - T1190 #Exploit Public-Facing Application
+  chaining:
+    - relation: support::synergize
+      vector: 810057c6-cb84-41e4-add4-ae56b52c8ab7 #authentication bypass on Ivanti Connect Secure a...
+      description: |
+        upon successful authentication bypass, attackers attempt to 
+        inject commands
+    - relation: support::enabling
+      vector: 4d6104e3-10d4-4a12-b081-d937df848891 #Web Shell Attacks
+      description: |
+        attacker can drop web shell to add file or replace legit ones
+  cve:
+    - CVE-2024-21887
+    - CVE-2024-21888
+    - CVE-2024-21893
+  domains:
+    - Embedded
+    - Enterprise
+    - Networking
+  terrain: |
+    Attacker need remote access to an Ivanti Connect Secure appliance vulnerable to command injection
+  targets:
+    - Remote access
+    - VPN Client
+  platforms:
+    - Placeholder
+  severity: Highly significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Elevation of privilege
+    - Log tampering
+    - Modify configuration
+    - Tampering
+    - New Accounts
+  impact:
+    - Business disruption
+    - Operating costs
+    - Reputational Damages
+    - Data Breach
+  viability: Almost certain
+  description: |
+    Attackers may manage to inject commands to an Ivanti Connect Secure 
+    appliance (that provide remote VPN access to corporate 
+    infrastructures) either with valid credentials for vulnerable 
+    authenticated endpoints or exploiting a vulnerability to bypass 
+    authentication.  
+
+    These vulnerabilities are identified as CVE-2024-21888 and 
+    CVE-2024-21893. CVE-2024-21893 have been exploited in the wild chained 
+    with CVE-2024-21887 and can lead to remote adversaries to execute 
+    arbitrary commands on targeted gateways.
+
+    In addition to the list of LOLbins see [3], following commands were 
+    used in the ICS attack is the following:
+    - aria2c
+    - at
+    - cat 
+    - check_ssl_cert
+    - crash
+    - crontab
+    - echo
+    - mount
+    - nohup
+    - pidstat
+    - sed
+    - split
+    - sysctl
+    - tcpdump
+    - wireshark
+    - tshark

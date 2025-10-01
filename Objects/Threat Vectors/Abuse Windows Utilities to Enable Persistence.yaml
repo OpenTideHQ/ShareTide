@@ -1,0 +1,102 @@
+name: Abuse Windows Utilities to Enable Persistence
+criticality: High
+#references:
+  #public:
+    #1: 
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 66277f27-d57b-47f8-bc9c-b024c7cd1313
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-06
+  modified: 2024-11-06
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+  killchain: Persistence
+  att&ck:
+    - T1547.001 #Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder
+    - T1218 #System Binary Proxy Execution
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745
+      description: |
+        This TVM is implementing the bigger TVM : Abuse of Windows Utilities
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary must have administrative privileges on Windows systems within 
+    the enterprise network.
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Laptop
+  platforms:
+    - Windows
+    - Active Directory
+    - PowerShell
+  severity: Significant incident
+  leverage:
+    - Modify configuration
+    - Modify data
+    - Tampering
+    - New Accounts
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+    - Operating costs
+  viability: Likely
+  description: |
+    1. Msdeploy.exe\
+    **Description**: The Microsoft Web Deployment Tool used for syncing content
+    and configurations. Threat actors can deploy web shells or 
+    malicious applications to servers.
+
+    Examples:
+
+    ```python
+    msdeploy.exe -verb:sync -source:contentPath=C:\malicious_site -dest:contentPath="Default Web Site"
+    ```
+    This command synchronizes the contents from the local directory C:\malicious_site 
+    to the IIS web application named "Default Web Site". It deploys or updates the web 
+    content of the default website with the files from C:\malicious_site.
+
+    ```python
+    Msdeploy.exe -verb:sync -source:runCommand="cmd /c start malicious.exe" -dest:auto,computerName=target-server
+    ```
+    This command uses Msdeploy.exe to run a command on a remote server (target-server)
+    that starts a malicious executable (malicious.exe), allowing the attacker to maintain
+    persistence and execute code under the guise of a legitimate process.
+
+    2. Shadow.exe\
+    **Description**: A Terminal Services command that monitors or controls 
+    Remote Desktop sessions. Threat actors can hijack sessions 
+    to maintain persistence or spy on users.
+
+    Example:
+
+    ```python
+    shadow.exe 1 /server:target-server
+    ```
+    Using shadow.exe, an attacker can connect to an active RDP session on target-server, 
+    potentially allowing them to observe or control the session without the user's knowledge. 
+    This can be used to capture sensitive information or further compromise the system.

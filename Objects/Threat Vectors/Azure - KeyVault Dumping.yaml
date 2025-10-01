@@ -1,0 +1,140 @@
+name: Azure - KeyVault Dumping
+criticality: High
+references:
+  public:
+    1: https://securitylabs.datadoghq.com/articles/escalating-privileges-to-read-secrets-with-azure-key-vault-access-policies/
+    2: https://microsoft.github.io/Azure-Threat-Research-Matrix/CredentialAccess/AZT604/AZT604-3/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 09aec351-7dfb-4cde-8570-d3c7a36e1241
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-16
+  modified: 2025-09-17
+  tlp: clear
+  #author: 
+  contributors:
+    - jaime.montane-lorenzo@ext.ec.europa.eu
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Credential Access
+  att&ck:
+    - T1555.005 #Credentials from Password Stores: Password Managers
+    - T1078.004 #Valid Accounts: Cloud Accounts
+    - T1098.001 #Account Manipulation: Additional Cloud Credentials
+  chaining:
+    - relation: support::enabled
+      vector: 81338b90-f80c-40cc-8a57-ba97cdf86948 #Azure - Key Vault reconnaissance
+      description: |
+        Adversaries must first compromise user accounts, service principals, or managed 
+        identities that already possess some level of Azure access.
+    - relation: support::synergize
+      vector: bcf3bb96-ed97-4853-98ab-937c2d214f4e #Azure - Key Vault persistence
+      description: |
+        Adversaries must first gain access to an Azure environment, typically through 
+        compromised user accounts, service principals, or managed identities.
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) 
+        granting at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through
+        phishing, password spraying, brute-force attacks, or credentials leaked online.
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+    - relation: support::synergize
+      vector: ce7194f8-2398-4e79-b964-162ca5ee175b #Secrets stored in repository
+      description: |
+        Threat actors are scanning for stored secrets in developer's source code
+        repositories leaked by design or by mistake from the engineering teams. 
+    - relation: support::synergize
+      vector: 37381f28-ad9f-40c3-80f8-d8a82d6ce9a3 #Resource Secret Reveal in Azure
+      description: |
+        Adversaries obtains sufficient privileges (via phishing, misconfigurations,
+        lateral movement, or exploitation of weak access controls).
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud  
+  terrain: |
+    Adversaries must compromise an Azure AD account, through phishing,
+    token theft or different means.
+  targets:
+    - Cloud Storage Accounts
+    - Key Store
+    - Identity Services   
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Elevation of privilege
+    - Tampering
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+  viability: Likely
+  description: |
+    In this threat vector an attacker extracts secrets, certificates, or keys from an 
+    Azure Key Vault to facilitate further attacks or lateral movement within the environment.
+
+    ### Example Attack Scenario
+
+    After compromising an Azure AD account, this account has roles like Key Vault Contributor 
+    on a resource group but lacks direct Key Vault data read access through RBAC. However, 
+    the vault is configured with traditional access policies instead of RBAC, allowing 
+    the attacker to add their own user or service principal to the policy with all permissions. 
+    After updating the policy, the attacker can now dump all secrets, keys, and certificates 
+    stored in Key Vault, including API keys, credentials, and cryptographic material 
+    for critical applications.
+
+    ### Attack Goals and Impact
+
+    The primary goal is to gain **unauthorized access** to highly sensitive material 
+    such as application secrets, encryption keys, database credentials, or signing certificates. 
+    This can lead to:
+    - Complete compromise of applications relying on Key Vault for secure secret storage
+    - Lateral movement by using dumped secrets to authenticate to other Azure resources
+    - Escalation of privileges by harvesting secrets that give broader access within the Azure environment
+    - Undetected persistence if logging is disabled or improperly configured on the Key Vault.
+
+    Business impact can include significant data breaches, loss of integrity for business 
+    processes, and regulatory repercussions due to exposure of protected credentials.
+
+    ### Attack Flow and Methodology
+
+    - The attacker compromises a privileged Azure account or service principal.
+    - They enumerate assigned roles and discover Key Vault Contributor permission on a resource group.
+    - If the targeted Key Vault uses access policies instead of RBAC, the contributor 
+    can add themselves to the vault’s access policy with full access rights.
+    - With the new policy, the attacker calls Key Vault data plane APIs to list and 
+    retrieve all stored keys, certificates, and secrets. For example:
+      - `Microsoft.KeyVault/vaults/secrets/getSecret/action`
+      - `Microsoft.KeyVault/vaults/certificates/read`
+      - `Microsoft.KeyVault/vaults/keys/read`
+    - Extracted credentials are used to access protected resources elsewhere, potentially 
+    chaining this access for lateral movement.
+    - If Key Vault logging is not enabled, this activity may go undetected unless anomalous 
+    pattern detection (such as sudden bulk secret access or policy changes) triggers alerts.

@@ -1,0 +1,166 @@
+name: Azure - Gather Application Information
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Reconnaissance/AZT105/AZT105/
+    2: https://docs.microsoft.com/en-us/graph/migrate-azure-ad-graph-configure-permissions
+  #internal:
+    #a: 
+
+metadata:
+  uuid: fe6827f2-efb4-43b3-9ca3-b7d417111b32
+  schema: tvm::2.1
+  version: 2
+  created: 2025-08-18
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #- jaime.montane-lorenzo@ext.ec.europa.eu
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::f02679fa-5e85-4050-8eb5-c2677d93306f #Volt Typhoon, BRONZE SILHOUETTE, VANGUARD PANDA, UNC3236, Insidious Taurus, VOLTZITE, Dev-0391, Storm-0391
+      sighting: |
+        Volt Typhoon has identified target network security measures as part of pre-compromise reconnaissance.
+      references:
+        - https://www.cisa.gov/sites/default/files/2024-03/aa24-038a_csa_prc_state_sponsored_actors_compromise_us_critical_infrastructure_3.pdf
+    - name: misp::bcaaad6f-0597-4b89-b69b-84a6be2b7bc3 #Kimsuky, Velvet Chollima, Black Banshee, Thallium, Operation Stolen Pencil, G0086, APT43, Emerald Sleet, THALLIUM, Springtail, Sparkling Pisces
+      sighting: |
+        Kimsuky has used LLMs to identify think tanks, government organizations, etc. that have information.
+      references:
+        - https://www.microsoft.com/en-us/security/blog/2024/02/14/staying-ahead-of-threat-actors-in-the-age-of-ai/
+    - name: misp::f512de42-f76b-40d2-9923-59e7dbdfec35 #Sandworm, Quedagh, VOODOO BEAR, TEMP.Noble, IRON VIKING, G0034, ELECTRUM, TeleBots, IRIDIUM, Blue Echidna, FROZENBARENTS, UAC-0113, Seashell Blizzard, UAC-0082, APT44
+      sighting: |
+         Sandworm Team has researched third-party websites to help it craft credible spearphishing emails.
+      references:
+        - https://www.justice.gov/opa/press-release/file/1328521/download
+    - name: att&ck::G1033 #[Enterprise] Star Blizzard, COLDRIVER, Callisto Group, SEABORGIUM, TA446
+      sighting: |
+        Star Blizzard has used open-source research to identify information about victims to use in targeting.
+      references:
+        - https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-341a
+  killchain: Reconnaissance
+  att&ck:
+    - T1078.004 #Valid Accounts: Cloud Accounts
+    - T1110 #Brute Force
+    - T1555 #Credentials from Password Stores
+  chaining:
+    - relation: support::enabled
+      vector: 140907eb-c9fb-4330-9d71-656422388b2b #Azure - Gather Role Information
+      description: |
+        Adversaries need to identify privileged accounts and misconfigured role assignments 
+        that can be exploited for privilege escalation.
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+    - relation: support::enabling
+      vector: ca2751c7-8641-4fb0-a90b-30c5987015dc #Externally controlled Azure credentials added Enterprise app or its SPN
+      description: |
+        A threat actor needs to control highly privileged Azure credentials in order to be able
+        to assign Azure credentials to an Azure Enterprise app or it's service principal.
+    - relation: support::enabling
+      vector: c7e260d8-d391-41eb-be1a-7f276c99b383 #Azure app registration - privilege escalation
+      description: |
+        Adversaries need access to an identity (user account or service principal) with sufficient 
+        permissions to create, modify, or assign roles to app registrations or service principals.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+  terrain: |
+    Adversaries obtain minimal access (often as a standard user or via an external account) 
+    in the target Azure AD tenant, then utilizes API endpoints and tools, such as Azure CLI, 
+    PowerShell modules (e.g., MSOnline, Microsoft.Graph), or custom scripts, to list 
+    all registered applications.
+  targets:
+    - Cloud Storage Accounts
+    - Identity Services
+    - API Endpoints
+    - Cloud Portal
+  platforms:
+    - Azure
+    - Azure AD
+    - Office 365 
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Elevation of privilege
+    - Tampering
+    - Spoofing 
+  impact:
+    - Data Breach
+    - IP Loss
+  viability: Likely
+  description: |
+    This technique involves adversaries collecting data about applications running within Azure, 
+    especially those registered in Azure Active Directory (Azure AD). The goal is to 
+    gain insight into application properties, configurations, exposed endpoints, permission 
+    scopes, and connections, in order to identify potential attack paths or vulnerabilities.
+    
+    ### Example Attack Scenario
+
+    An adversary, during an initial reconnaissance campaign, uses publicly accessible 
+    APIs and Azure Active Directory (AAD) enumeration techniques to gather information 
+    about applications registered within the target's Azure tenant. By leveraging permissions 
+    such as `microsoft.directory/applications/*/read`, the attacker can identify applications, 
+    service principals, their permissions, owners, secrets, and roles. For instance, 
+    an attacker using a compromised regular user account attempts to list all AAD applications 
+    and their configurations. They extract details on app registration, API permissions, 
+    and whether any apps have high privilege assignments, such as access to sensitive 
+    data or elevated directory permissions. This information is used to map potential 
+    targets for privilege escalation or lateral movement.
+
+    ### Attack Goals and Impact
+
+    - **Goals:**
+      - Identify high-value applications and their associated service principals.
+      - Determine application permissions and trust relationships within AAD.
+      - Uncover misconfigurations, excessive privileges, or applications with weak security 
+      controls.
+      - Establish a list of applications for further exploitation, such as app impersonation, 
+      secret harvesting, or abuse of delegated permissions.
+
+    - **Impact:**
+      - Facilitates subsequent privilege escalation or lateral attacks if vulnerable 
+      apps/service principals are identified.
+      - May allow attackers to target apps for unauthorized access to sensitive information 
+      or execution of high-impact operations.
+      - Lays the groundwork for consent phishing attacks or abuse of poorly secured 
+      app registrations.
+      - Increases the risk of data exposure, unauthorized resource manipulation, and 
+      tenant-wide compromises if attackers pivot successfully.
+
+    ### Attack Flow and Methodology
+
+    1. **Data Gathering:**
+      - Executes read operations using permissions like `microsoft.directory/applications/*/read` 
+      to pull application names, identifiers, associated owners, API permissions, and 
+      role assignments.
+      - Enumerates app secrets/certificates and checks for possible excessive API scopes, 
+      such as Application.ReadWrite.All or RoleManagement.ReadWrite.Directory.
+
+    2. **Analysis of Privilege Assignments:**
+      - Evaluates permissions and assignments to locate applications with elevated 
+      rights or direct access to critical resources.
+      - Identifies owners who may be targeted for account compromise or further social 
+      engineering.
+
+    3. **Planning Further Attacks:**
+      - Maps application interrelationships and privilege chains to design next-phase 
+      attacks, such as credential theft, application takeover, or phishing consent requests.
+      - Assesses whether any applications are misconfigured, exposing endpoints or 
+      secrets unintentionally.
+
+    4. **Use of Discovered Data:**
+      - Uses harvested application data to target privilege escalation (e.g., adding 
+      new credentials to an app as seen in advanced API permission abuse scenarios).
+      - May initiate attacks such as impersonation using app secrets or deploying malicious 
+      applications with elevated permissions.

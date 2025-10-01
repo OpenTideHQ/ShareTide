@@ -1,0 +1,98 @@
+name: Disable swapping paging devices
+criticality: High
+#references:
+  #public:
+    #1: 
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 497ccceb-c012-4830-aa61-4a046e7b6ce9
+  schema: tvm::2.0
+  version: 1
+  created: 2025-01-03
+  modified: 2025-01-03
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+  killchain: Defense Evasion
+  att&ck:
+    - T1562.001 #Impair Defenses: Disable or Modify Tools
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    The attacker requires administrative privileges on the target operating system 
+    to modify or disable the system paging or swap settings. 
+    They may also need to leverage local management tools or scripts 
+    to carry out these modifications.
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Server Authentication
+  platforms:
+    - Windows
+    - macOS
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Modify configuration
+    - Denial of Service
+    - Elevation of privilege
+  impact:
+    - Business disruption
+    - Impairement
+    - Reputational Damages
+  viability: Likely
+  description: |
+    Disable Swapping/Paging Devices is a tactic adversaries may employ to impair defenses, 
+    hamper forensic analyses, or disrupt normal system operations. 
+    By turning off, deleting, or misconfiguring the system’s paging file or swap space, 
+    malicious actors can limit the ability of the operating system to manage memory efficiently.  
+
+    ## Evade Detection : Certain security tools or analysis processes rely on paging 
+    and memory snapshots. Disabling the swap or page file can complicate memory captures, 
+    obstructing forensic investigators from retrieving certain artifacts.  
+
+    ## Cause Operational Instability : Without a functioning page file, systems may slow down 
+    or crash once physical RAM is fully consumed. This can be used intentionally to disrupt 
+    business operations or create an opening for other malicious activities 
+    while defenders are distracted.  
+
+    ## Hide Malicious Components : Some malware frameworks attempt to evade detection 
+    by maintaining all malicious code in volatile memory. If system memory is not paged to disk, 
+    there is a slimmer trail of evidence left in permanent storage (e.g., pagefile.sys in Windows).  
+
+    ### Windows 
+    ```powershell
+    wmic computersystem where name="%computername%" set AutomaticManagedPagefile=False
+    wmic pagefileset where name="C:\\pagefile.sys" delete
+    ```
+    This sequence disables the automatic page file management 
+    and removes the page file on the C: drive.
+    
+    ### Linux
+    ```bash
+    swapoff -a
+    sed -i '/swap/d' /etc/fstab
+    ```
+    This one disable all swap spaces and remove swap references from `/etc/fstab`, 
+    ensuring the change persists on reboot.

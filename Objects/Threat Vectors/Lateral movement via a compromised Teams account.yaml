@@ -1,0 +1,122 @@
+name: Lateral movement via a compromised Teams account
+criticality: High
+references:
+  public:
+    1: https://www.csoonline.com/article/575349/researchers-show-ways-to-abuse-microsoft-teams-accounts-for-lateral-movement.html
+    2: https://learn.microsoft.com/en-us/defender-for-identity/understand-lateral-movement-paths
+    3: https://www.linkedin.com/pulse/attackers-leveraging-microsoft-teams-defaults-quick-assist-p1u5c
+  #internal:
+    #a: 
+
+metadata:
+  uuid: cc9003f7-a9e3-4407-a1ca-d514af469787
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-01
+  modified: 2025-04-01
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Lateral Movement
+  att&ck:
+    - T1210 #Exploitation of Remote Services
+    - T1534 #Internal Spearphishing
+    - T1570 #Lateral Tool Transfer
+    - T1563 #Remote Service Session Hijacking
+    - T1550 #Use Alternate Authentication Material
+  chaining:
+    - relation: sequence::succeeds
+      vector: 06c60af1-5fa8-493c-bf9b-6b2e215819f1 #Social engineering attack using Microsoft Teams
+      description: |
+        Adversaries are using compromised Microsoft 365 tenants to create technical
+        support-themed domains and send tech support lures via Microsoft Teams,
+        attempting to trick users of the targeted organizations using social engineering.
+    - relation: support::enabling
+      vector: b663b684-a80f-4570-89b6-2f7faa16fece #Abuse Microsoft Office Applications
+      description: |
+        Can be a factor that allows attackers to use credential theft and lateral mobility 
+        techniques, as Microsoft Office applications can be used to share malicious files 
+        and gain access to Teams accounts.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Adversaries through different means, they need to compromise an account in order 
+    to be able to carry out lateral movement.
+  targets:
+    - Workstations
+    - Personal Information
+    - Critical Documents
+    - Remote access
+    - Virtual Machines
+    - Laptop
+    - End-user
+  platforms:
+    - Windows
+    - Microsoft Teams
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Elevation of privilege
+    - Spoofing
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Impairement
+    - IP Loss
+    - Nuisance
+  viability: Likely
+  description: |
+    Lateral movement refers to attackers exploiting compromised accounts or systems 
+    to navigate through a network and gain access to sensitive resources. In the context 
+    of Microsoft Teams, attackers leverage its collaboration features and integrations 
+    to move laterally within an organization environment. Here are the main techniques 
+    and risks associated with this threat:    
+
+    ### How Attackers Exploit Teams for Lateral Movement
+    1. **Compromised Accounts**  
+      - Attackers gain access to low-privileged Teams accounts through phishing or 
+      credential theft. These accounts are then used to impersonate trusted users and 
+      escalate privileges.
+      - Sensitive credentials stored on shared systems can be exploited for lateral moves.    
+
+    2. **File Sharing Abuse**  
+      - Malicious files (e.g., malware-laden executables or scripts) are distributed 
+      through Teams chats or channels, targeting internal users.  
+      - These files can auto-execute or trick users into running them, enabling attackers 
+      to infect other systems.    
+
+    3. **Federated Trust Exploitation**  
+      - Misconfigured external access settings allow attackers from federated tenants 
+      to infiltrate and move laterally between organizations.    
+
+    4. **Remote Execution Tools**  
+      - Attackers use Teams-integrated tools like Quick Assist or remote desktop protocols 
+      (RDP) to execute commands on other systems, furthering their movement.    
+
+    5. **Credential Theft Techniques**  
+      - Methods like Pass-the-Hash (PtH) or Pass-the-Ticket (PtT) are used to steal 
+      authentication data from compromised systems, enabling attackers to impersonate 
+      users across the network.    
+
+    ### Risks of Lateral Movement via Teams
+    - **Domain Compromise**: Attackers can move towards domain controllers by exploiting 
+    stored credentials or misconfigurations.
+    - **Sensitive Data Access**: Lateral movement enables access to high-value assets 
+    such as financial records, intellectual property, or administrative accounts.
+    - **Stealthy Operations**: Native tools and legitimate credentials make detection 
+    harder, as malicious actions appear normal in audit logs.    

@@ -1,0 +1,79 @@
+name: Scheduled task creation using Azure CloudShell
+criticality: Medium
+references:
+  public:
+    1: https://learn.microsoft.com/en-us/azure/cloud-shell/overview
+    2: https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtasktrigger?view=windowsserver2022-ps
+    3: https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/register-scheduledtask?view=windowsserver2022-ps
+    4: https://www.pdq.com/powershell/register-scheduledtask/
+    5: https://learn.microsoft.com/en-us/azure/batch/jobs-and-tasks
+    6: https://learn.microsoft.com/en-us/azure/cloud-shell/using-cloud-shell-editor
+    7: https://attack.mitre.org/techniques/T1053/005/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 670504aa-cfb8-4d1f-a5ad-16193822085f
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
+  created: 2022-12-12
+  modified: 2022-12-20
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Execution
+  att&ck:
+    - T1053.005
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    A threat actor has gained control over privileges to create scheduled tasks 
+    on a deployed resource using Azure CloudShell either via a browser or the
+    Azure portal.
+  targets:
+    - Control Server
+    - Cloud Portal
+    - Workstations
+    - Desktop
+    - Public-Facing Servers
+    - Web Application Servers
+    - Remote access
+    - Virtual Machines
+  platforms:
+    - Azure
+  severity: Moderate incident
+  leverage:
+    - Dwelling
+    - Elevation of privilege
+    - Tampering
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    Threat actors can use Azure CloudShell, which is accessible via the Azure
+    portal or the browser, to create scheduled tasks.
+
+    The path to the Action parameter of the scheduled task is set in the task.
+    Threat actors can also use the Azure CloudShell editor to edit and
+    visualize in a better format their code before deploying it.
+
+    For example, threat actors use "New-ScheduledTaskTrigger" cmdlet to create
+    a trigger for the new scheduled task and further "New-ScheduledTaskAction"
+    cmdlet to create a specific action for the task. In the end the 
+    "Register-ScheduledTask" cmdlet is used to create the scheduled task. 
+
+    $Trigger = New-ScheduledTaskTrigger -Daily -At <time: hh:mm>
+    $Action = New-ScheduledTaskAction -Execute "PowerShell.exe" -Argument "-File C:\Scripts\My_task_script.ps1"
+    Register-ScheduledTask -TaskName "My Task" -Trigger $Trigger -Action $Action -RunLevel Highest
+
+   

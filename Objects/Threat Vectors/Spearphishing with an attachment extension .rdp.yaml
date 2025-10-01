@@ -1,0 +1,94 @@
+name: Spearphishing with an attachment extension .rdp
+criticality: High
+references:
+  public:
+    1: https://www.cisa.gov/news-events/alerts/2024/10/31/foreign-threat-actor-conducting-large-scale-spear-phishing-campaign-rdp-attachments
+    2: https://www.microsoft.com/en-us/security/blog/2024/10/29/midnight-blizzard-conducts-large-scale-spear-phishing-campaign-using-rdp-files/?msockid=1a6270d8030166642bf964f6024a6789 # Midnight Blizzard threat actor mentioned in this resource
+    3: https://atwork.safeonweb.be/recent-news-tips-and-warning/warning-government-themed-phishing-rdp-attachments
+
+metadata:
+  uuid: 58b98d75-fc63-4662-8908-a2a7f4200902
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-05
+  modified: 2024-11-08
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Delivery
+  att&ck:
+    - T1566.001 #Phishing: Spearphishing Attachment
+    - T1204.002 #User Execution: Malicious File
+    - T1036     #Masquerading
+  chaining:
+    - relation: atomicity::implements
+      vector: dd5d942c-bac4-4000-b9a6-ca4fef6cfb84 # Spearphishing Attachment
+      description: |
+        Spearphishing with an attachment extension .rdp is a sub-category
+        of spearphishing method with attachment.    
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor relies on an email attachment lure.
+    In this case a malicious file is masquerading as a RDP file
+    in an attempt to deceive a victim about their identity and
+    true nature of the file. The spear-phishing attachment provides
+    a threat actor an initial access to the system.      
+  targets:
+    - End-user
+    - Email Platform
+    - Customer
+    - Workstations
+    - Laptop
+    - Remote access
+  platforms:
+    - Windows
+    - AWS # AWS Secure Data Exchange
+  severity: Localised incident
+  leverage:
+    - Dwelling
+    - Tampering
+    - Elevation of privilege
+    - Infrastructure Compromise
+  impact:
+    - Identity Theft # Impersonation
+    - Impairement
+    - Business disruption
+  viability: Likely
+  description: |
+    Spearphishing with an attachment extension .rdp refers to a targeted
+    cyberattack where a malicious actor sends an email containing a file
+    with the file extension .RDP (Remote Desktop Protocol) to a specific
+    individual or organization. The attacker may send an attachment to
+    the end-users directly or by impersonating companies, institutions
+    or particular individuals, sending the lure on behalf of them
+    ref [1, 2].       
+    
+    On October 22, 2024, the National Cyber Security Centers (NCSC) of two
+    EU countries, as well as governmental organizations [3] reported that
+    a spear-phishing campaign with .RDP attachment are impersonating their
+    entities.      
+
+    The emails were highly targeted, using social engineering lures relating
+    to Microsoft, Amazon Web Services (AWS), and the concept of Zero Trust.
+    The emails contained a Remote Desktop Protocol (RDP) configuration file
+    signed with a LetsEncrypt certificate. RDP configuration (.RDP) files
+    summarize automatic settings and resource mappings that are established
+    when a successful connection to an RDP server occurs ref [1].       
+    
+    This allows the adversary to potentially deploy additional payloads,
+    execute local reconnaissance activities, and to redirect targeted users
+    to credential harvesting sites.  
+    
+
+

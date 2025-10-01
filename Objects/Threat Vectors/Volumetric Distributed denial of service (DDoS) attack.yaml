@@ -1,0 +1,71 @@
+name: Volumetric Distributed denial of service (DDoS) attack
+criticality: Emergency
+references:
+  public:
+    1: https://en.wikipedia.org/wiki/Denial-of-service_attack
+    2: https://www.netscout.com/what-is-ddos/volumetric-attacks
+    3: https://www.scmagazine.com/brief/threat-intelligence/iranian-websites-impacted-by-pro-ukraine-ddos-attacks
+    4: https://securityaffairs.com/53777/hacking/european-commission-eu.html
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 78e05130-58a9-49cd-9039-3d7f9ac0bcb5
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
+  created: 2022-11-23
+  modified: 2023-01-23
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+  killchain: Impact
+  att&ck:
+    - T1498
+  domains:
+    - Enterprise
+    - Networking
+    - Private Cloud
+    - Public Cloud
+    - SaaS
+  terrain: |
+    Anything with Internet connectivity.
+  targets:
+    - API Endpoints
+    - Serverless
+    - Control Server
+    - Web Application Servers
+    - Public-Facing Servers
+  platforms:
+    - AWS
+    - Windows
+    - Linux
+    - Azure
+    - Sysdig Backend
+    - OVHcloud
+    - Office 365
+    - Kubernetes
+  severity: Significant incident
+  leverage:
+    - Denial of Service
+  impact:
+    - Business disruption
+    - Operating costs
+    - Reputational Damages
+  viability: Almost certain
+  description: |
+    Threat actors may wish to cause business disruption, media/public attention,
+    or to use the pretense of business disruption to disguise other activities. 
+    Any DDoS attack should always be followed up with other DFIR activities to 
+    determine if the attack was meant to distract from something else. DDoS can 
+    distract by pulling attention away, or even by spooling out log files so 
+    that relevant entries are overwritten.

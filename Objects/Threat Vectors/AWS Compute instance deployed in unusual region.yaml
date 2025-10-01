@@ -1,0 +1,65 @@
+name: AWS Compute instance deployed in unusual region 
+criticality: Medium
+references:
+  public:
+    1: https://levelup.gitconnected.com/cloud-security-table-top-exercises-629d353c268e
+    2: https://www.techradar.com/news/upgraded-crypto-mining-malware-now-steals-aws-credentials
+    3: https://cybersecurityworldconference.com/2022/01/13/threat-actors-abuse-public-cloud-services-to-spread-multiple-rats/
+    4: https://sysdig.com/blog/teamtnt-aws-credentials/
+    5: https://lantern.splunk.com/Security/Use_Cases/Threat_Hunting/Detecting_suspicious_new_instances_in_your_AWS_EC2_environment
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 1040ebd2-4659-4844-9238-95fa69a7e63c
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-12-12
+  modified: 2022-12-12
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+    
+threat:
+  actors:
+    - name: att&ck::G0139 #[Enterprise] TeamTNT
+    - name: misp::27de6a09-844b-4dcb-9ff9-7292aad826ba #TeamTNT, Adept Libra
+  killchain: Impact
+  att&ck:
+    - T1496
+  domains:
+    - Public Cloud
+  terrain: |
+    Attacker needs to control credentials required to deploy an EC2 instance,
+    or to deploy a compute resource of a type that runs on EC2.
+  targets:
+    - IaaS
+  platforms:
+    - AWS EC2
+    - AWS ECS
+    - AWS EKS
+  severity: Localised incident
+  leverage:
+    - Software installation
+    - Infrastructure Compromise
+  impact:
+    - Operating costs
+    - Asset and fraud
+    - Legal and regulatory
+  viability: Likely
+  description: |
+    Certain threat actors will try to launch AWS compute instances 
+    (EC2, EKS, ECS) instances to achieve their objectives
+    
+    One of the main vectors currently is to monetize access to 
+    privileged AWS credentials by deploying new compute instances of various types 
+    to mine cryptocurrencies. To hide their deployed instances, a threat actor 
+    may deploying the resources into unused regions, where they may go 
+    unnoticed.
+
+    Additionally threat actor may launch compute instances to act as staging 
+    platforms for serving malware for other campaigns.
+
+    It is expected that threat actors will potentially use compute instances 
+    for other purposes than the 2 listed above.

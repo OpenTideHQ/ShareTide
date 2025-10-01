@@ -1,0 +1,69 @@
+name: Malicious container image deployed
+criticality: High
+references:
+  public:
+    1: https://blog.aquasec.com/supply-chain-threats-using-container-images
+    2: https://github.com/cncf/tag-security/blob/main/supply-chain-security/supply-chain-security-paper/CNCF_SSCP_v1.pdf
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 8934c19a-954b-4dce-8081-0a6acca599f6
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-07-04
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Delivery
+  att&ck:
+    - T1525
+    - T1204.003
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    The adversary need to be able to inject malicious code into
+    container image which will be deployed in target environment. 
+    This can be achieved by putting malicious image into public 
+    registry and tricking developer into using it, getting access
+    into internal CI/CD pipeline, uploading modified image into 
+    internal registry or running the image directly 
+    on compromised host. 
+  targets:
+    - CI/CD Pipelines
+    - Code Repositories
+    - Software Containers
+    - Microservices
+  platforms:
+    - AWS
+    - Azure
+    - Docker Engine
+    - Kubernetes
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Software installation
+  impact:
+    - Data Breach
+    - Business disruption
+    - Operating costs
+  viability: Likely
+  description: |
+    Threat actors plant malicious code into container images which 
+    execute in target environment. This vector is used to perform 
+    cryptominning activities and as a persistence technique.

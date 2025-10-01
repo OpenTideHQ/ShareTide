@@ -1,0 +1,92 @@
+name: Deletion of Windows Scheduled Task XML file
+criticality: Medium
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2022/04/12/tarrask-malware-uses-scheduled-tasks-for-defense-evasion/
+    2: https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/ove-item?view=powershell-7.3
+    3: https://www.geeksforgeeks.org/rm-command-linux-examples/
+    4: https://www.lifewire.com/delete-command-2625859
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 3c4d13c9-d40f-4f97-b8fa-607b6f7ad263
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-12-20
+  modified: 2022-12-20
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+  killchain: Execution
+  att&ck:
+    - T1053.005
+    - T1564
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    An adversary has gained control over a Windows endpoint and has privileges
+    to delete scheduled task XML file.
+  targets:
+    - Workstations
+    - Desktop
+    - Laptop
+    - Control Server
+    - Public-Facing Servers
+    - Web Application Servers
+  platforms:
+    - Windows
+    - Azure
+    - AWS
+  severity: Moderate incident
+  leverage:
+    - Tampering
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    When a scheduled task is created, different artifacts related to the task
+    are generated and stored in a XML file. This XML file contains all of the
+    information about the task, including the name, triggers, actions, and
+    other settings. In the xml code in the section "Actions" is stored a path
+    to the running task, for example “C:\Windows\System32\task.exe”. Threat
+    actors may delete the corresponding XML file to a scheduled task to hide
+    their activities on the system. Threat actors can delete the XML file
+    manually from C:\Windows\System32\Tasks folder or by using CMD or other
+    CLId/shells, bash, or PowerShell scripts.
+
+    Example for deletion of XML file with bash commands:
+
+    cd /mnt/c/Windows/System32/Tasks
+    rm taskname.xml
+
+    Example for deletion of XML file with PowerShell commands:
+
+    cd C:\Windows\System32\Tasks
+    Remove-Item taskname.xml
+
+    In cloud infrastructures threat actors are using command-line interface
+    (CLI) like CloudShell in Azure. 
+
+    Example: 
+
+    Navigate to the path where the XML file is stored and delete the file with
+    the command "del":
+
+    cd C:\Windows\System32\Tasks
+    del taskname.xml
+
+    Deleting the XML file will only remove the task from the Task Scheduler.
+    It will not uninstall any programs or delete any files that were associated
+    with the task.

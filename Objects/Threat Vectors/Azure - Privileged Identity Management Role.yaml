@@ -1,0 +1,145 @@
+name: Azure - Privileged Identity Management Role
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/PrivilegeEscalation/AZT401/AZT401/
+    2: https://www.elastic.co/guide/en/security/current/azure-privilege-identity-management-role-modified.html
+    3: https://research.splunk.com/cloud/952e80d0-e343-439b-83f4-808c3e6fbf2e/
+  #internal:
+    #a: 
+metadata:
+  uuid: fa381d6e-92cd-4c96-a340-24df7b21e2b7
+  schema: tvm::2.1
+  version: 3
+  created: 2025-08-20
+  modified: 2025-09-08
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G1015 #[Mobile] Scattered Spider, Octo Tempest, Roasted 0ktapus, Storm-0875
+      sighting: |
+        Scattered Spider used IAM manipulation to gain persistence and to assume or elevate privileges.
+      references:
+        - https://www.crowdstrike.com/blog/analysis-of-intrusion-campaign-targeting-telecom-and-bpo-companies/
+        - https://www.microsoft.com/en-us/security/blog/2023/10/25/octo-tempest-crosses-boundaries-to-facilitate-extortion-encryption-and-destruction/
+    - name: misp::d9e5be22-1a04-4956-af6c-37af02330980 #LAPSUS, LAPSUS$, DEV-0537, SLIPPY SPIDER, Strawberry Tempest
+      sighting: |
+        LAPSUS$ has added the global admin role to accounts they have created in the targeted organization's cloud instances.
+      references:
+        - https://www.microsoft.com/security/blog/2022/03/22/dev-0537-criminal-actor-targeting-organizations-for-data-exfiltration-and-destruction/
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29, Group 100, COZY BEAR, The Dukes, Minidionis, SeaDuke, YTTRIUM, IRON HEMLOCK, Grizzly Steppe, G0016, ATK7, Cloaked Ursa, TA421, Blue Kitsune, ITG11, BlueBravo, Nobelium, UAC-0029
+      sighting: |
+         APT29 granted company administrator privileges to a newly created service principle.
+      references:
+        - https://www.crowdstrike.com/blog/observations-from-the-stellarparticle-campaign/    
+  killchain: Privilege Escalation
+  att&ck:
+    - T1078 #Valid Accounts
+    - T1548 #Abuse Elevation Control Mechanism
+    - T1543 #Create or Modify System Process
+    - T1098 #Account Manipulation
+  chaining:
+    - relation: sequence::succeeds
+      vector: 140907eb-c9fb-4330-9d71-656422388b2b #Azure - Gather Role Information
+      description: |
+        Adversaries need to identify privileged accounts and misconfigured role
+        assignments that can be exploited for privilege escalation.
+    - relation: sequence::succeeds
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        An adversary may obtain information and data within a resource.
+    - relation: sequence::preceeds
+      vector: f1dc4341-eb45-4d07-8075-b1a6b227cc76 #Cloud IAM role assumption
+      description: |
+        Adversaries will have already compromised some cloud credentials.
+    - relation: sequence::preceeds
+      vector: 670504aa-cfb8-4d1f-a5ad-16193822085f #Scheduled task creation using Azure CloudShell
+      description: |
+        A threat actor has gained control over privileges to create scheduled tasks 
+        on a deployed resource using Azure CloudShell either via a browser or the
+        Azure portal.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud   
+  terrain: |
+    Adversaries exploit Azure Privileged Identity Management (PIM) roles by compromising 
+    accounts eligible for privileged activation or by abusing misconfigured PIM policies.
+  targets:
+    - Identity Services
+    - API Endpoints
+    - Cloud Portal
+    - Virtual Machines
+    - IaaS
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Elevation of privilege
+    - Information Disclosure
+    - Modify configuration
+    - Modify privileges
+  impact:
+    - Data Breach
+    - IP Loss
+  viability: Likely
+  description: |
+    The threat vector describes the risk that an adversary may escalate privileges by 
+    abusing Privileged Identity Management (PIM) assignments or role activation features 
+    within Azure Active Directory. PIM is designed to provide just-in-time and approval-based 
+    access to highly privileged roles (e.g., Global Administrator, Owner), instead of 
+    permanent assignment. However, if misconfigured or insufficiently monitored, PIM 
+    itself can become an avenue for privilege escalation attacks.
+
+    ### Example Attack Scenario
+
+    An attacker gains access to a regular Azure AD user account that is configured as 
+    eligible for privileged role activation (such as Global Administrator) through PIM. 
+    The attacker then activates the privileged role via Azure AD PIM, immediately acquiring 
+    elevated permissions. This could be done by interacting with Azure Graph API endpoints 
+    to trigger role eligibility schedules and activations, such as:
+
+    - `GET https://graph.microsoft.com/beta/roleManagement/directory/roleEligibilitySchedules/{id}`
+    - `GET https://management.azure.com/{scope}/providers/Microsoft.Authorization/roleEligibilityScheduleRequests/{roleEligibilityScheduleRequestName}?api-version=2020-10-01`
+
+    The attacker uses the newly gained privileges to:
+    - Add themselves or an accomplice as a permanent or eligible member for other privileged roles.
+    - Carry out further attacks with escalated access.[1]
+
+    ### Attack Goals and Impact
+
+    The main goals of abusing a PIM role assignment include:
+    - **Persistence:** Staying undetected with elevated privileges for longer periods.
+    - **Privilege Escalation:** Obtaining admin-level access across Azure AD and resources.
+    - **Manipulation and Control:** Modifying security controls, configurations, or resource 
+    access to facilitate lateral movement, data theft, or additional attacks.[3][1]
+    - **Data Breach and Resource Manipulation:** Exfiltration of sensitive data or disruption 
+    of critical services.
+
+    The impact can include unauthorized administrative actions, permanent backdoors 
+    via modified role assignments, data breaches, and complete compromise of the Azure environment.[4][3][1]
+
+    ### Attack Flow and Methodology
+
+    1. **Reconnaissance:** Identify eligible users or accounts for PIM role activation 
+    in Azure AD or resources.
+    2. **Initial Access:** Gain credentials for a user account eligible for PIM role activation.
+    3. **Activation:** Use Azure AD PIM to activate the privileged role temporarily 
+    or request permanent assignment, triggering privileges using documented APIs and management endpoints.
+    4. **Escalation and Manipulation:** Once privileges are obtained:
+        - Add or change eligible members in PIM.
+        - Modify resource permissions (via `RoleManagement.ReadWrite.Directory`).
+        - Abuse elevated access, e.g., create, delete, or alter resources and audit logs.
+    5. **Persistence:** Maintain administrative access by adding themselves as eligible 
+    members or scheduling future eligibility.
+    6. **Detection Evasion:** Exploit gaps in logging or monitoring or tamper with audit 
+    logs if possible.

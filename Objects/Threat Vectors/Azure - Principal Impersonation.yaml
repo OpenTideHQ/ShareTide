@@ -1,0 +1,124 @@
+name: Azure - Principal Impersonation
+criticality: High
+references:
+  public:
+    1: https://securitylabs.datadoghq.com/articles/i-spy-escalating-to-entra-id-global-admin/
+    2: https://pushsecurity.com/blog/identity-attacks-in-the-wild/
+    3: https://labs.withsecure.com/publications/performing-and-preventing-attacks-on-azure-cloud-environments-through-azure-devops
+  #internal:
+    #a: 
+
+metadata:
+  uuid: bb2501d5-99c7-44a6-ac5a-9510102d6611
+  schema: tvm::2.1
+  version: 2
+  created: 2025-08-25
+  modified: 2025-09-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29, Group 100, COZY BEAR, The Dukes, Minidionis, SeaDuke, YTTRIUM, IRON HEMLOCK, Grizzly Steppe, G0016, ATK7, Cloaked Ursa, TA421, Blue Kitsune, ITG11, BlueBravo, Nobelium, UAC-0029
+      sighting: |
+        APT29 added credentials to OAuth Applications and Service Principals.
+      references:
+        - https://www.crowdstrike.com/blog/observations-from-the-stellarparticle-campaign/
+  killchain: Privilege Escalation
+  att&ck:
+    - T1098.001 #Account Manipulation: Additional Cloud Credentials
+    - T1078.004 #Valid Accounts: Cloud Accounts
+    - T1548 #Abuse Elevation Control Mechanism
+  chaining:
+    - relation: sequence::preceeds
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 ##Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online. 
+    - relation: sequence::preceeds
+      vector: fe6827f2-efb4-43b3-9ca3-b7d417111b32 ##Azure - Gather Application Information
+      description: |
+        Adversaries obtain minimal access (often as a standard user or via an external account) 
+        in the target Azure AD tenant, then utilizes API endpoints and tools, such as Azure CLI, 
+        PowerShell modules (e.g., MSOnline, Microsoft.Graph), or custom scripts, to list 
+        all registered applications.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud   
+  terrain: |
+    Adversaries gains access via phishing, credential stuffing, or exploiting misconfigurations 
+    allowing access to an account with application management permissions or to a pipeline 
+    that exposes service principal credentials.
+  targets:
+    - Cloud Storage Accounts
+    - Identity Services
+    - Cloud Portal
+    - Virtual Machines
+    - IaaS
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Elevation of privilege
+    - Information Disclosure 
+  impact:
+    - Data Breach
+    - IP Loss
+  viability: Likely
+  description: |
+    This threat vector in Azure environments is a critical form of privilege escalation, 
+    where attackers abuse service principals or managed identities to elevate access 
+    within cloud resources. 
+
+    ## Example Attack Scenario
+
+    A common scenario involves an attacker gaining access to a compromised Azure DevOps 
+    pipeline, often through stolen credentials or tokens. From there, the attacker exfiltrates 
+    Service Principal credentials (which act as privileged identities for applications), 
+    and leverages those credentials to authenticate to the Azure environment. With control 
+    over a service principal assigned privileged roles (such as Cloud Application Administrator 
+    or those with Application.ReadWrite.All permissions), the attacker can perform high-impact 
+    actions, such as adding new federated domains, registering malicious applications, 
+    or even forging authentication tokens to impersonate any user—potentially those 
+    with Global Administrator rights.
+
+    ## Attack Goals and Impact
+
+    The primary goals of **Principal Impersonation** attacks include:
+    - Gaining **persistent, high-level access** to cloud resources and administrative controls.
+    - Bypassing access controls, enabling attackers to assume **any privileged or sensitive 
+    identity** within the Azure Active Directory tenant.
+    - **Exfiltration of data** from storage accounts or databases, creation of new virtual 
+    machines for malicious purposes, and the registration of attacker-controlled applications 
+    for ongoing access.
+    - Achieving **domain-wide impact** by forging authentication tokens or manipulating 
+    directory federation, ultimately resulting in complete tenant takeover or escalation 
+    to Global Administrator.
+
+    ## Attack Flow and Methodology
+
+    The flow typically unfolds in these stages:
+
+    1. **Credential Theft/Manipulation**: Attacker exfiltrates, creates, or adds credentials 
+    (secret keys, certificates) to a service principal or managed identity.
+    2. **Impersonation**: Using the compromised identity, the attacker authenticates 
+    as the service principal and leverages assigned privileged roles or permissions 
+    to perform sensitive operations (e.g., managing federated domains, creating backdoor 
+    accounts, modifying authentication policies).
+    3. **Privilege Escalation**: Attacker forges tokens or utilizes elevated permissions 
+    to impersonate higher-privilege users or global administrators, potentially by exploiting 
+    federated SSO or Azure AD application registration features.
+    4. **Persistence and Impact**: Additional malicious applications are registered, 
+    new backdoor credentials are planted, and attacker actions may persist until discovered 
+    and remediated.

@@ -1,0 +1,138 @@
+name: Change the audit policy to disable Windows event logging
+criticality: Medium
+references:
+  public:
+    1: https://superuser.com/questions/1516725/how-to-disable-windows-10-system-log
+    2: https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-audit-policy-change
+    3: https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/basic-audit-policy-change
+    4: https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/auditpol-set
+    5: https://www.tenforums.com/performance-maintenance/170885-disable-auditing-successful-events.html
+    6: https://morgantechspace.com/2013/10/auditpol-command-examples-to-change.html
+    7: https://social.technet.microsoft.com/Forums/en-US/6268624d-b424-42b1-b5ff-b6261a18eade/how-to-permanently-disable-auditing-in-windows-10
+    8: https://superuser.com/questions/1059822/change-audit-policy-through-the-registry
+    9: https://stackoverflow.com/questions/67974297/using-powershell-to-get-the-audit-policy-security-setting-value
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 36694031-a3d8-474e-b0e6-f44ba94c2a22
+  schema: tvm::2.0
+  tlp: clear
+  version: 3
+  created: 2023-01-05
+  modified: 2023-01-06
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+    - name: att&ck::G0027 #[Enterprise] Threat Group-3390, APT27, BRONZE UNION, Earth Smilodon, Emissary Panda, Iron Tiger, LuckyMouse, TG-3390
+    - name: misp::834e0acd-d92a-4e38-bb14-dc4159d7cb32 #APT27, GreedyTaotie, TG-3390, EMISSARY PANDA, TEMP.Hippo, Red Phoenix, Budworm, Group 35, ZipToken, Iron Tiger, BRONZE UNION, Lucky Mouse, G0027, Iron Taurus, Earth Smilodon
+  killchain: Defense Evasion
+  att&ck:
+    - T1562.002
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    A threat actor has gained control over a Windows endpoint and has
+    privileges to disable event logging by making changes to the Windows audit
+    policy.
+  targets:
+    - Workstations
+    - Desktop
+    - Laptop
+    - Input/Output Server
+    - Public-Facing Servers
+    - Server Logs
+    - Web Application Servers
+    - Control Server
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Log tampering
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    A threat actor may change an audit policy setting with the purpose of
+    disabling Event logging for specific entries. Usually the threat actor will
+    disable specific audit policy entries, but other scenarios can be imagined.
+
+    For example, they can change the audit policy settings manually, with
+    PowerShell or other scripts, through the registries or by using
+    Command-line interface.
+
+    Examples: 
+
+    Command-prompt (cmd) interface:
+
+    auditpol /set /category:"Account Logon" /success:disable /failure:disable
+    
+    Where /success or /failure are parameters used for disabling of successful
+    or failed events.
+
+    auditpol /Set /Category:* /success:disable
+
+    Where the parameter /Category is used to delete only specific category, set of
+    categories or all of them as shown in the example with wildcard (*) character.
+
+    auditpol /clear /y
+    auditpol /remove /allusers
+
+    The both commands are used to clear the audit policy settings
+
+    PowerShell commands to modify Audit policies:
+
+    auditpol /get /category:*
+    or auditpol /list/category
+    PS ~> $AuditPolicyReader::GetClassicAuditPolicy()
+
+    Example for a PowerShell script that change the audit policy to audit
+    successful logon events on the local computer. A threat actor can modify
+    the $GPO and $SecuritySettingsPath variables to target a different GPO or
+    security setting, also can modify $AuditSettingName and $AuditSettingValue
+    variables to change the audit policy to a different setting or value.
+
+    Import-Module GroupPolicy
+    $GPO = "LocalGPO"
+    $SecuritySettingsPath = "Computer Configuration\Windows Settings\Security Settings"
+    $AuditSettingName = "Audit Logon Events"
+    
+    # Set the value for the security setting.
+    # The values are:
+    # 0 = Success and Failure
+    # 1 = Success
+    # 2 = Failure
+
+    $AuditSettingValue = 1
+    $SecuritySettings = Get-GPRegistryValue -Name $GPO -Key $SecuritySettingsPath | Select-Object -ExpandProperty Values
+    $AuditSetting = $SecuritySettings | Where-Object { $_.Name -eq $AuditSettingName }
+    $AuditSetting.Value = $AuditSettingValue
+    Set-GPRegistryValue -Name $GPO -Key $SecuritySettingsPath -Value $SecuritySettings
+    gpupdate /force
+
+
+    For advanced policies, threat actors can use /r to get a csv-formatted table:
+
+    auditpol /get /category:'Account Logon' /r | ConvertFrom-Csv | 
+    Format-Table 'Policy Target',Subcategory,'Inclusion Setting'
+
+    Manual change: 
+
+    If the service secpol.msc is running, then a threat actor can navigate to
+    Security Settings\Local Policies\Audit Policy to modify the basic policy
+    settings or navigate to Security Settings\Advanced Audit Policy
+    Configuration to modify advanced policy settings.
+
+

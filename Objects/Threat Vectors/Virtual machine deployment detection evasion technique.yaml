@@ -1,0 +1,113 @@
+name: Virtual machine deployment detection evasion technique
+criticality: Medium
+references:
+  public:
+    1: https://news.sophos.com/en-us/2025/05/20/a-familiar-playbook-with-a-twist-3am-ransomware-actors-dropped-virtual-machine-with-vishing-and-quick-assist
+    2: https://www.bleepingcomputer.com/news/security/3am-ransomware-uses-spoofed-it-calls-email-bombing-to-breach-networks/
+    3: https://www.intrinsec.com/wp-content/uploads/2024/01/TLP-CLEAR-2024-01-09-ThreeAM-EN-Information-report.pdf
+    4: https://www.security.com/threat-intelligence/3am-ransomware-lockbit
+    5: https://www.ransomlook.io/group/3am
+
+metadata:
+  uuid: 60bd6a35-3a71-47c2-8110-4562fb40976c
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-02
+  modified: 2025-07-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+ #actors:
+    #- name: 3AM Ransomware Group threat actor group. 
+      #sighting: |
+        # 3AM ransomware group used IT support impersonation via spoofed
+        # phone calls to gain initial access to an organization. 
+      #references:
+        #- https://git.s.cec.eu.int/catch/ec-tide/-/issues/incident/4623 # Retro-search page, CERT-EU 
+  killchain: Defense Evasion
+  att&ck:
+    - T1497 # Virtualisation/Sandbox Evasion
+  chaining:
+    - relation: sequence::succeeds
+      vector: c4456134-df7b-4969-b5ff-a24794996890 # Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access
+      description: |
+        Threat actors are flooding initially a specific user within
+        an organisation with unsolicited emails and/or messages and
+        manage to gain unauthorised access to the host. The threat
+        actors then use this initial access for other actions as
+        deployment of a virtual machine to maintain their
+        persistence and to evade the security detections
+        mechanisms.   
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor needs an initial privileged access
+    to already compromised host system.  
+  targets:
+    - End-user
+    - Workstations
+    - Customer
+    - Virtual Machines
+    - Virtual Machines Host
+  platforms:
+    - Windows
+    - macOS
+    - Linux
+  severity: Moderate incident
+  leverage:
+    - Infrastructure Compromise
+    - Elevation of privilege
+    - Information Disclosure
+    - Software installation
+    - Tampering
+  impact:
+    - Impairement
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+    - Nuisance
+  viability: Likely
+  description: |
+    A threat actor can use virtualisation platforms and utilities
+    to compromise an environment. For example, an installed virtual
+    machine can be used for an entry point to the rest of the
+    environment or as an entry point for reconnaissance and
+    pivoting to the system host and further potentially to
+    other systems in the environment.  
+
+    The goal is to establish persistence on the victim's system. 
+    Once inside, the threat actor deploy's virtual machine using
+    any virtualisation technology, which may contain a backdoor, allowing
+    them to maintain a covert presence on the network in days, weeks or
+    even longer ref [1].     
+    
+    ### Possible platforms for virtualisation used for detection evasion
+
+    A threat actor can deploy a virtual machine using one of the virtualisation
+    platforms below:
+
+    - Hyper-V
+    - EXS/ESXi (VMware virtualisation)
+    - QEMU virtualisation
+    - Virtual box
+
+    Once deployed, the virtual machine may contain a backdoor or another
+    type of a malware (example: QDoor backdoor). This technique allows
+    a threat actor to maintain a covert channel on the network for unnoticed
+    period of time. During this period, they can escalate privileges, move
+    laterally across the environment, and exfiltrate valuable or sensitive
+    organisational data using data-exfiltration tools. For example, such
+    data-exfiltration tool can be `GoodSync` tool ref [1], [2].      
+    

@@ -1,0 +1,178 @@
+name: access to management plane of security, network, or endpoint management appliances
+criticality: Severe
+references:
+  public:
+    1: https://www.mandiant.com/resources/blog/fortinet-malware-ecosystem
+    2: https://forums.ivanti.com/s/article/CVE-2023-35078-Remote-unauthenticated-API-access-vulnerability?language=en_US
+    3: https://www.bleepingcomputer.com/news/security/ivanti-patches-mobileiron-zero-day-bug-exploited-in-attacks/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 63ab0120-28bc-4081-8184-c45d68b144b2
+  schema: tvm::2.0
+  tlp: clear
+  version: 3
+  created: 2023-05-19
+  modified: 2023-08-10
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0047 #[Enterprise] Gamaredon Group, ACTINIUM, Aqua Blizzard, Armageddon, DEV-0157, IRON TILDEN, Primitive Bear, Shuckworm
+    - name: misp::1a77e156-76bc-43f5-bdd7-bd67f30fbbbb #Gamaredon Group, ACTINIUM, DEV-0157, Blue Otso, BlueAlpha, G0047, IRON TILDEN, PRIMITIVE BEAR, Shuckworm, Trident Ursa, UAC-0010, Winterflounder, Aqua Blizzard, Actinium
+    - name: att&ck::G0129 #[Enterprise] Mustang Panda, BRONZE PRESIDENT, RedDelta, TA416
+    - name: misp::fceed509-938e-4f9e-acd4-76e6c28dc6f1 #RedDelta
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+    - name: att&ck::G0027 #[Enterprise] Threat Group-3390, APT27, BRONZE UNION, Earth Smilodon, Emissary Panda, Iron Tiger, LuckyMouse, TG-3390
+    - name: misp::834e0acd-d92a-4e38-bb14-dc4159d7cb32 #APT27, GreedyTaotie, TG-3390, EMISSARY PANDA, TEMP.Hippo, Red Phoenix, Budworm, Group 35, ZipToken, Iron Tiger, BRONZE UNION, Lucky Mouse, G0027, Iron Taurus, Earth Smilodon
+    - name: att&ck::G0093 #[Enterprise] GALLIUM, Granite Typhoon
+    - name: misp::e400b6c5-77cf-453d-ba0f-44575583ac6c #GALLIUM, Red Dev 4, Alloy Taurus, Granite Typhoon
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+  killchain: Defense Evasion
+  att&ck:
+    - T1027
+    - T1068
+    - T1070
+    - T1070.003
+    - T1070.004
+    - T1078
+    - T1140
+    - T1202
+    - T1222
+    - T1497
+    - T1497.001
+
+  domains:
+    - Embedded
+    - Enterprise
+    - Networking
+
+  terrain: |
+    The attackers need a way to reach to the appliance from Internet. 
+    Either 
+    - Direct network connectivity for example appliances manageable 
+    behind a reverse proxy e.g. Ivanti Endpoint Manager Mobile.
+    - Indirect network connectivity to the devices. 
+    This is the case for network appliances like firewall, VPN, etc. 
+    Those appliances are inline to process network traffic 
+    therefore packets or requests might be crafted to access the 
+    apliance itself.
+    And then attackers need a way to get access on the managment plane 
+    of the appliance. Quite often, this is enabled by
+    - a Zero-day or unpatched vulnerability.
+    - or compromised valid credentials and poor controls on the 
+    management plane of the devices (no restriction on administrative 
+    actions from Internet-facing interface)
+  
+  targets:
+    - Firewall
+    - IDS
+    - Network Equipment
+    - Public-Facing Servers
+    - Router or switch
+    - Virtual Machines Host
+    - Other    
+  
+  platforms:
+    - Linux
+    - Windows
+    - Network Router
+    - VMWare
+
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Log tampering
+    - Modify configuration
+    - Modify privileges
+    - New Accounts
+    - Software installation
+    - Tampering
+  
+  impact:
+    - Business disruption
+    - Data Breach
+    - Lose Capabilities
+    - Operating costs
+
+  viability: Likely
+  description: |
+    ### overall description
+    Cyber espionage threat actors continue to target technologies that do not 
+    support endpoint detection and response (EDR) solutions such as firewalls, 
+    IoT devices, hypervisors, VPN technologies (e.g. Fortinet, SonicWall, 
+    Pulse Secure, and others) or endpoint management solutions like 
+    Endpoint Manager Mobile (EPMM).  
+
+    Those targets are often delivered as appliances (bundle of hardware and 
+    software) and most of the time they do not have full-fleshed OS features 
+    and come with limited command line interfaces.  
+
+    Best practice is to have out-of-band (OoB) management from a central 
+    management console (dedicated network segment).  
+
+    Network seggregation, identity and access management for this OoB segment 
+    has to be strictly configured and monitoring in place to detect any unusual
+    source, account or actions performed.  
+
+    This can be a challenging objective as it depends on the level of verbosity
+    of aufit logs (if any).  
+
+    If configuration is loose or management access is inadvertly allowed 
+    from other interfaces, attackers may use valid accounts to access the 
+    management plane of the device.  
+
+    Moreover those devices are most of the time by definition inline of 
+    network flows coming from Internet. Attacker may obtain a Zero-day 
+    vulnerability resulting in access to command line interface of the 
+    device from the Internet-facing interfaces or privileged access 
+    (adminitrator).
+
+    ### examples of specific attacks
+    #### attack against Fortinet Fortigate firewall
+    The attack against Fortigate is an illustration of the latter.  
+    The following appliances have been in scope:
+      - FortiGate: FortiGate units are network firewall devices which allow 
+      for the control and monitoring of network traffic passing through the
+      devices.
+      - FortiManager: The FortiManager acts as a centralized management
+      platform for managing Fortinet devices.
+      - FortiAnalyzer: The FortiAnalyzer acts as a centralized log management 
+      solution for Fortinet devices as well as a reporting platform.
+
+    The following steps generally describe the actions the threat actor took:
+      - Utilized a directory traversal zero-day (CVE-2022-41328) exploit to 
+      write files to FortiGate firewall disks outside of the normal bounds 
+      allowed with shell access.
+      - Maintained persistent access with Super Administrator privileges within
+       FortiGate Firewalls through ICMP port knocking 
+      - Circumvented firewall rules active on FortiManager devices with a 
+      passive traffic redirection utility, enabling continued connections to 
+      persistent backdoors with Super Administrator privileges
+      - Established persistence on FortiManager and FortiAnalyzer devices 
+      through a custom API endpoint created within the device
+      - Disabled OpenSSL 1.1.0 digital signature verification of system files
+       through targeted corruption of boot files 
+    
+    #### attack against Ivanti Endpoint Manager Mobile (EPMM) 
+    "An authentication bypass vulnerability in Ivanti EPMM allows unauthorized 
+    users to access restricted functionality or resources of the application 
+    without proper authentication,"  
+
+    A "trusted source" informed Ivanti that CVE-2023-35078 was exploited in 
+    attacks against a limited number of customers.  

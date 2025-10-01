@@ -1,0 +1,135 @@
+name: Azure - Unmanaged Scripting
+criticality: High
+references:
+  public:
+    1: https://orca.security/resources/blog/azure-shared-key-authorization-exploitation/
+    2: https://microsoft.github.io/Azure-Threat-Research-Matrix/PrivilegeEscalation/AZT404/AZT404-3/
+    3: https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/blob/main/ServicePrincipals-ADO.md
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 0815bc77-169d-4320-aa32-770cf062509a
+  schema: tvm::2.1
+  version: 1
+  created: 2025-09-02
+  modified: 2025-09-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29, Group 100, COZY BEAR, The Dukes, Minidionis, SeaDuke, YTTRIUM, IRON HEMLOCK, Grizzly Steppe, G0016, ATK7, Cloaked Ursa, TA421, Blue Kitsune, ITG11, BlueBravo, Nobelium, UAC-0029
+      sighting: |
+        APT29 has used Azure Run Command and Azure Admin-on-Behalf-of (AOBO) to execute code on virtual machines.
+      references:
+        - https://www.microsoft.com/security/blog/2021/10/25/nobelium-targeting-delegated-administrative-privileges-to-facilitate-broader-attacks/
+  killchain: Execution
+  att&ck:
+    - T1059 #Command and Scripting Interpreter
+    - T1078 #Valid Accounts
+    - T1204 #User Execution
+  chaining:
+    - relation: sequence::succeeds
+      vector: 140907eb-c9fb-4330-9d71-656422388b2b #Azure - Gather Role Information
+      description: |
+        Adversaries need to identify privileged accounts and misconfigured role 
+        assignments that can be exploited for privilege escalation.
+    - relation: sequence::succeeds
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys)
+        granting at least Reader access to the target Azure tenant.
+    - relation: sequence::succeeds
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through
+        phishing, password spraying, brute-force attacks, or credentials leaked online.
+    - relation: sequence::preceeds
+      vector: 61ddc240-e5a6-4ca8-ae77-6b471b498913 #Code execution via custom script extensions in Azure
+      description: |
+        Adversaries must have an Azure role that grants the ability to write or deploy 
+        custom script extensions on virtual machines.
+    - relation: sequence::preceeds
+      vector: 23f6a192-a25d-48b8-a235-7bb55e483682 #Persistence w/ Azure Automanage Machine Configuration
+      description: |
+        The adversary needs the owner access role on the targeted Azure subscription to apply
+        the Azure Policy and grant permissions for the system-managed identities.
+    - relation: sequence::preceeds
+      vector: b954303c-0ad0-4dc0-b5ca-492c3de9cd53 #Collecting sensitive information via custom script extensions
+      description: |
+        Attackers need to gain access to an Azure account with the Virtual Machine Contributor 
+        role (or equivalent) can use custom script extensions to execute arbitrary code 
+        as SYSTEM or root on VMs.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud   
+  terrain: |
+    Adversaries obtains valid credentials, permissions, or exploits a 
+    vulnerability to gain access to the Azure portal or a relevant
+    scripting service.
+  targets:
+    - Cloud Storage Accounts
+    - Function-as-a-Service
+    - Serverless
+  platforms:
+    - Azure
+    - Azure AD  
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Modify configuration
+    - Modify privileges   
+  impact:
+    - Data Breach
+    - Reputational Damages   
+  viability: Likely
+  description: |
+    Adversaries can use Azure function apps, automation accounts, or other scriptable 
+    cloud resources, to execute malicious code or operations.
+
+    ## Example Attack Scenario
+
+    An attacker gains access to credentials or a compromised user account with permissions 
+    to create or modify Azure Function Applications. The attacker then uploads a malicious 
+    script (PowerShell, Python, etc.) into a Function App that is linked to production 
+    resources. Upon execution, this script can perform unauthorized actions—such as 
+    exfiltrating data, creating new users, or altering configurations—using the inherent 
+    privileges of the Function App. This does not require direct access to virtual machines 
+    or servers, but abuses the cloud-native scripting capabilities.
+
+    ## Attack Goals and Impact
+
+    - **Privilege Escalation**: By abusing scripting environments, an attacker may use 
+    a compromised identity to escalate their access rights, gaining broader or administrative 
+    control over Azure resources.
+    - **Data Exfiltration**: Malicious scripts can be designed to access sensitive information 
+    like secrets, credentials, or customer data and move it off the platform.
+    - **Persistence and Lateral Movement**: Attackers can establish persistence by deploying 
+    scripts that create new accounts, tokens, or credentials, or by moving laterally 
+    to other services and resources in the cloud environment.
+    - **Service Disruption**: Unmanaged scripts may also be used to delete, modify, 
+    or take resources offline, impacting business continuity.
+
+    ## Attack Flow and Methodology
+
+    1. **Deployment of Malicious Script**: The attacker uploads and executes a script 
+    in an unmanaged environment (such as Azure Functions, Automation Accounts, or pipelines) 
+    using operational permissions like "Microsoft.Web/sites/functions/write".
+    2. **Execution of Malicious Actions**: The script leverages privileged roles to 
+    perform sensitive operations (like reading secrets, writing corrupted configurations, 
+    or creating service identities).
+    3. **Evade Detection**: The attacker may implement techniques to hide their activities, 
+    such as using legitimate accounts, storing scripts in hard-to-monitor locations, 
+    or obfuscating code logic.
+    4. **Persistence, Lateral Movement, or Exfiltration**: The attacker continues their 
+    campaign, using the script to create new credentials, pivot to additional resources 
+    or exfiltrate sensitive data.

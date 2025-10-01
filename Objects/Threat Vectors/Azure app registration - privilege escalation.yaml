@@ -1,0 +1,124 @@
+name: Azure app registration - privilege escalation
+criticality: High
+references:
+  public:
+    1: https://laythchebbi.com/privilege-escalation-using-azure-service-principal/
+    2: https://www.pimwiddershoven.nl/entry/privilege-escalation-azure-app-registration-microsoft-graph/
+    3: https://www.secura.com/blog/compromising-azure-cloud-through-sensitive-api-permissions
+  #internal:
+    #a: 
+
+metadata:
+  uuid: c7e260d8-d391-41eb-be1a-7f276c99b383
+  schema: tvm::2.1
+  version: 3
+  created: 2025-05-23
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Privilege Escalation
+  att&ck:
+    - T1098 #Account Manipulation
+    - T1068 #Exploitation for Privilege Escalation
+  chaining:
+    - relation: support::enabled
+      vector: bb2501d5-99c7-44a6-ac5a-9510102d6611 #Azure - Principal Impersonation
+      description: |
+        Adversaries gains access via phishing, credential stuffing, or exploiting misconfigurations 
+        allowing access to an account with application management permissions or to a pipeline 
+        that exposes service principal credentials.
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online.  
+    - relation: support::enabled
+      vector: fe6827f2-efb4-43b3-9ca3-b7d417111b32 #Azure - Gather Application Information
+      description: |
+        Adversaries obtain minimal access (often as a standard user or via an external account) 
+        in the target Azure AD tenant, then utilizes API endpoints and tools, such as Azure CLI, 
+        PowerShell modules (e.g., MSOnline, Microsoft.Graph), or custom scripts, to list 
+        all registered applications.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud   
+  terrain: |
+    Adversaries need access to an identity (user account or service principal) with 
+    sufficient permissions to create, modify, or assign roles to app registrations or 
+    service principals.
+  targets:
+    - Cloud Storage Accounts
+    - Identity Services
+    - Public-Facing Servers
+    - API Endpoints
+    - Cloud Portal
+    - Serverless
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Spoofing
+    - Tampering
+    - Information Disclosure 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Lose Capabilities 
+  viability: Very Likely
+  description: |
+    Azure app registration privilege escalation is a significant threat vector where 
+    attackers exploit misconfigured or compromised application registrations to gain 
+    elevated access in Azure environments. This occurs when attackers leverage excessive 
+    permissions associated with service principals or app registrations to bypass role-based 
+    access controls (RBAC).
+
+    ### Key Attack Vectors  
+    **1. Service Principal Ownership Abuse**  
+    Owners of Azure applications can modify service principal permissions. For example, 
+    a user with **Reader** role but ownership of an application could execute commands like:  
+    ```bash
+    az role assignment create --assignee "[email protected]" --role "Owner" --scope "/subscriptions/Production"
+    ```
+    This grants **Owner** privileges, enabling resource creation/deletion and further 
+    role assignments.  
+
+    **2. Dangerous API Permissions**  
+    App registrations with high-privilege Microsoft Graph API permissions pose critical risks:  
+    - **AppRoleAssignment.ReadWrite.All**: Allows granting admin consent and assigning 
+    roles like **RoleManagement.ReadWrite.Directory** (enables Global Admin escalation).  
+    - **Directory.ReadWrite.All**: Permits modifying Azure AD group memberships.  
+    - **User.ReadWrite.All**: Enables password resets and profile modifications.  
+
+    **3. Phishing-Driven Attacks**  
+    Attackers with a compromised standard user account can:  
+    1. Register an app with "Accounts in any organizational directory" and phishing redirect URIs.  
+    2. Configure high-risk Graph API permissions (e.g., *Mail.Read*, *User.Read.All*).  
+    3. Send phishing links to victims, capturing access tokens via a malicious OAuth server.  
+
+    ### Exploitation Workflow  
+    - **Step 1**: Compromise a low-privileged account.  
+    - **Step 2**: Create or modify an app registration to include dangerous permissions.  
+    - **Step 3**: Use the app’s client ID/secret to authenticate and execute privileged 
+    operations (e.g., adding users to admin groups).  
+    - **Step 4**: Escalate to **Global Admin** via *RoleManagement.ReadWrite.Directory*.  

@@ -1,0 +1,95 @@
+name: Paragon Spyware
+criticality: High
+references:
+  public:
+    1: https://www.bleepingcomputer.com/news/security/whatsapp-patched-zero-day-flaw-used-in-paragon-spyware-attacks/
+    2: https://www.schneier.com/blog/archives/2025/03/report-on-paragon-spyware.html
+    3: https://www.ynetnews.com/business/article/ryc4uibikl
+    4: https://citizenlab.ca/2025/03/a-first-look-at-paragons-proliferating-spyware-operations/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: e1741a76-3df1-430a-8dda-5c6bc9c3e1dd
+  schema: tvm::2.1
+  version: 1
+  created: 2025-03-26
+  modified: 2025-03-26
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Persistence
+  att&ck:
+    - T1430 #Mobile : Location Tracking
+    - T1636.003 #Mobile : Contact List
+    - T1189 #Drive-by Compromise
+    - T1513 #Mobile : Screen Capture
+    - T1633 #Mobile : Virtualization/Sandbox Evasion
+    - T1068 #Exploitation for Privilege Escalation
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Mobile
+  terrain: |
+    Attackers add targets to a WhatsApp group and send a PDF file. When the device automatically 
+    processes the PDF, it exploits a vulnerability to load the Graphite spyware
+  targets:
+    - Mobile phone
+    - Personal Information
+    - Tablet
+    - Identity Services
+  platforms:
+    - iOS
+    - Android
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Information Disclosure
+    - Software installation
+  impact:
+    - Competitive disadvantage
+    - Data Breach
+    - IP Loss
+    - Identity Theft
+  viability: Likely
+  description: |
+    Paragon Spyware, also known as Graphite, is a sophisticated surveillance tool developed 
+    by Paragon Solutions, an Israeli company founded in 2019. This spyware is designed to infiltrate 
+    encrypted messaging apps such as WhatsApp, Signal, Facebook Messenger, and Gmail, allowing 
+    law enforcement and intelligence agencies to intercept private communications.    
+
+    ## Key Features    
+
+    - **Zero-Click Exploit**: Graphite uses a "zero-click" method, meaning it can infect 
+    a device without any action from the target.
+    - **WhatsApp Vulnerability**: The spyware exploits a vulnerability in WhatsApp, 
+    using a malicious PDF file to gain access to the device.
+    - **Data Extraction**: Once installed, Graphite can extract stored files, photos, 
+    and monitor communications across various platforms.
+    - **Cloud Upload**: The extracted data is uploaded to a cloud server, leaving no 
+    traces on the infected device.
+    - **Sandbox Escape**: The spyware can escape the Android sandbox to compromise other 
+    apps on the targeted devices.    
+
+    ## Recent Developments    
+
+    In January 2025, WhatsApp patched a zero-day vulnerability that was being exploited 
+    by Paragon Spyware. The company notified approximately 90 Android users from over 
+    20 countries who were targeted, including journalists and activists.

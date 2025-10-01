@@ -1,0 +1,84 @@
+name: Malicious kernel module
+criticality: High
+references:
+  public:
+    1: https://www.tenable.com/audits/items/CIS_Rocky_Linux_8_v1.0.0_L2_Server.audit:f8ad5ed0d2bf2cf013b2f74b7a9fc2b9
+    2: https://redcanary.com/threat-detection-report/techniques/kernel-modules-and-extensions/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 83343a35-daa0-41a2-ae09-6876b3ef9c11
+  schema: tvm::2.0
+  version: 1
+  created: 2024-12-03
+  modified: 2024-12-03
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0010 #[Enterprise] Turla, BELUGASTURGEON, Group 88, IRON HUNTER, Krypton, Secret Blizzard, Snake, Venomous Bear, Waterbug, WhiteBear
+    - name: misp::fa80877c-f509-4daf-8b62-20aba1635f68 #Turla, Snake, VENOMOUS Bear, Group 88, Waterbug, WRAITH, Uroburos, Pfinet, TAG_0530, KRYPTON, Hippo Team, Pacifier APT, Popeye, SIG23, IRON HUNTER, MAKERSMARK, ATK13, G0010, ITG12, Blue Python, SUMMIT, UNC4210, Secret Blizzard, UAC-0144, UAC-0024, UAC-0003
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0096 #[Enterprise] APT41, BARIUM, Brass Typhoon, Wicked Panda
+    - name: misp::9c124874-042d-48cd-b72b-ccdc51ecbbd6 #APT41, G0096, TA415, Blackfly, Grayfly, LEAD, BARIUM, WICKED SPIDER, WICKED PANDA, BRONZE ATLAS, BRONZE EXPORT, Red Kelpie, G0044, Earth Baku, Amoeba, HOODOO, Brass Typhoon, Winnti, Double Dragon, TG-2633
+    - name: att&ck::G0020 #[Enterprise] Equation
+    - name: misp::7036fb3d-86b7-4d9c-bc66-1e1ead8b7840 #Equation Group, Tilded Team, EQGRP, G0020
+  killchain: Persistence
+  att&ck:
+    - T1547.006 #Boot or Logon Autostart Execution: Kernel Modules and Extensions
+    - T1014 #Rootkit
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Adversary must have root-level access to the Linux system to modify kernel 
+    parameters or load malicious kernel modules.
+  targets:
+    - Workstations
+    - Public-Facing Servers
+    - Virtual Machines
+  platforms:
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Alter behavior
+    - Modify configuration
+    - Tampering
+    - Software installation
+  impact:
+    - Impairement
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+  viability: Environment dependent
+  description: |
+    Adversaries may attempt to modify Linux kernel parameters or load/unload kernel 
+    modules to alter system behavior, hide malicious activities, or install rootkits. 
+    By operating at the kernel level, attackers can gain persistent and stealthy 
+    control over a system, intercepting system calls, hiding processes, files, 
+    or network connections.  
+
+    For example, an attacker with root access might execute insmod malicious_module.ko 
+    to load a malicious kernel module that conceals their presence and activities. 
+    Kernel rootkits like Adore-ng or Suterusu are examples of tools used for such purposes. 
+    These rootkits can hide network connections, processes, and files, effectively 
+    masking the adversary's footprint on the system.
+    

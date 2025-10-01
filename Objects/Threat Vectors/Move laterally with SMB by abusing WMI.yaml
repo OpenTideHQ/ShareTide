@@ -1,0 +1,105 @@
+name: Move laterally with SMB by abusing WMI 
+criticality: High
+references:
+  public:
+    1: https://attack.mitre.org/techniques/T1047/
+    2: https://essay.utwente.nl/71415/1/Ullah_MA_EWI.pdf
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: f33a693b-04cd-476e-9067-9deab561e55a
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2023-08-17
+  modified: 2025-01-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0050 #[Enterprise] APT32, APT-C-00, BISMUTH, Canvas Cyclone, OceanLotus, SeaLotus
+    - name: misp::aa29ae56-e54b-47a2-ad16-d3ab0242d5d7 #APT32, OceanLotus Group, Ocean Lotus, OceanLotus, Cobalt Kitty, APT-C-00, SeaLotus, Sea Lotus, APT-32, APT 32, Ocean Buffalo, POND LOACH, TIN WOODLAWN, BISMUTH, ATK17, G0050, Canvas Cyclone
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0108 #[Enterprise] Blue Mockingbird
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: att&ck::G0080 #[Enterprise] Cobalt Group, Cobalt Gang, Cobalt Spider, GOLD KINGSWOOD
+    - name: misp::01967480-c49b-4d4a-a7fa-aef0eaf535fe #Cobalt, Cobalt Group, Cobalt Gang, GOLD KINGSWOOD, COBALT SPIDER, G0080, Mule Libra
+    - name: att&ck::G0037 #[Enterprise] FIN6, Camouflage Tempest, ITG08, Magecart Group 6, Skeleton Spider, TAAL
+    - name: misp::647894f6-1723-4cba-aba4-0ef0966d5302 #FIN6, SKELETON SPIDER, ITG08, MageCart Group 6, White Giant, GOLD FRANKLIN, ATK88, G0037, Camouflage Tempest, TA4557
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0093 #[Enterprise] GALLIUM, Granite Typhoon
+    - name: misp::e400b6c5-77cf-453d-ba0f-44575583ac6c #GALLIUM, Red Dev 4, Alloy Taurus, Granite Typhoon
+    - name: att&ck::G0047 #[Enterprise] Gamaredon Group, ACTINIUM, Aqua Blizzard, Armageddon, DEV-0157, IRON TILDEN, Primitive Bear, Shuckworm
+    - name: misp::1a77e156-76bc-43f5-bdd7-bd67f30fbbbb #Gamaredon Group, ACTINIUM, DEV-0157, Blue Otso, BlueAlpha, G0047, IRON TILDEN, PRIMITIVE BEAR, Shuckworm, Trident Ursa, UAC-0010, Winterflounder, Aqua Blizzard, Actinium
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0065 #[Enterprise] Leviathan, APT40, BRONZE MOHAWK, Gadolinium, Gingham Typhoon, Kryptonite Panda, MUDCARP, TEMP.Jumper, TEMP.Periscope
+    - name: misp::5b4b6980-3bc7-11e8-84d6-879aaac37dd9 #APT40, TEMP.Periscope, TEMP.Jumper, Leviathan, BRONZE MOHAWK, GADOLINIUM, KRYPTONITE PANDA, G0065, ATK29, TA423, Red Ladon, ITG09, MUDCARP, ISLANDDREAMS, Gingham Typhoon
+    - name: att&ck::G0059 #[Enterprise] Magic Hound, APT35, COBALT ILLUSION, Charming Kitten, ITG18, Mint Sandstorm, Newscaster, Phosphorus, TA453
+    - name: misp::c1d44f44-425e-48fd-b78b-84b988da8bc3 #TA453
+    - name: att&ck::G0045 #[Enterprise] menuPass, APT10, BRONZE RIVERSIDE, CVNX, Cicada, HOGFISH, POTASSIUM, Red Apollo, Stone Panda
+    - name: misp::56b37b05-72e7-4a89-ba8a-61ce45269a8c #APT10, STONE PANDA, Menupass Team, happyyongzi, POTASSIUM, Red Apollo, CVNX, HOGFISH, Cloud Hopper, BRONZE RIVERSIDE, ATK41, G0045, Granite Taurus, TA429, Cicada
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+    - name: att&ck::G0129 #[Enterprise] Mustang Panda, BRONZE PRESIDENT, RedDelta, TA416
+    - name: misp::fceed509-938e-4f9e-acd4-76e6c28dc6f1 #RedDelta
+    - name: att&ck::G0013 #[Enterprise] APT30
+    - name: misp::d3881afe-f781-4c53-9f68-33487a119a59 #APT30, G0013
+    - name: att&ck::G0049 #[Enterprise] OilRig, APT34, COBALT GYPSY, EUROPIUM, Evasive Serpens, Hazel Sandstorm, Helix Kitten, IRN2, ITG13
+    - name: misp::42be2a84-5a5c-4c6d-9864-3f09d75bb0ba #OilRig, Twisted Kitten, Cobalt Gypsy, Crambus, Helix Kitten, APT 34, APT34, IRN2, ATK40, G0049, Evasive Serpens, Hazel Sandstorm, EUROPIUM, TA452, Earth Simnavaz
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+  killchain: Lateral Movement
+  att&ck:
+    - T1570
+    - T1047
+  domains:
+    - Enterprise
+  terrain: |
+      It is a built-in tool developped by Microsoft and belonging to Sysinternal command-line tools. It should be installed
+      However SMB is a native protocol that do not require any installation.
+  targets:
+    - Control Server
+    - Desktop
+    - End-user
+    - Laptop
+    - Remote access
+    - Virtual Machines
+    - Workstations
+  platforms:
+    - Windows
+  severity: Highly significant incident
+  leverage:
+    - Alter behavior
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+    - Asset and fraud
+  viability: Likely
+  description: |
+    Windows management instrumentation (WMI) is a tool that is implemented as service to locally
+    and remotely manages data, operations and configuring settings on windows operating systems.
+    WMI allows the administrator to see how the Operating system operates, what are its configurations
+    and properties and to automatically collect a systems hardware and software data. It is supporting other
+    scripting languages like Windows Script Host, VBScript, and PowerShell. WMI can be interacted
+    locally and remotely. WMI is a powerful tool which allows the threat actor to install backdoor, 
+    code execution as well as do lateral movement.
+    As the threat actor has the valid credentials (password or hashes) they can specify malicious events to
+    happen for example every time the victim restarts the computer run the executable that is present
+    in the specified directory.
+
+    Payload loaded may allow the threat actor to make a separate call to the Remote Procedure Call (RPC) 
+    on the victim machine, which is running over the SMB protocol.
+    The named pipe is then used to move laterally with the protocol.

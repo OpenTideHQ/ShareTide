@@ -1,0 +1,126 @@
+name: Azure - Storage container reconnaissance
+criticality: High
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2021/04/08/threat-matrix-for-storage/
+    2: https://learn.microsoft.com/en-us/azure/defender-for-cloud/alerts-azure-storage
+    3: https://www.microsoft.com/en-us/security/blog/2023/09/07/cloud-storage-security-whats-new-in-the-threat-matrix/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 2d7ed070-e5c5-4796-b150-ea1d02ed1785
+  schema: tvm::2.1
+  version: 3
+  created: 2025-05-27
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Reconnaissance
+  att&ck:
+    - T1530 #Data from Cloud Storage
+    - T1087.004 #Account Discovery: Cloud Account
+    - T1046 #Network Service Discovery
+  chaining:
+    - relation: support::enabled
+      vector: 53f4e2f0-7d11-4629-bb26-905993a589db #Azure storage account reconnaissance
+      description: |
+        Adversaries need to scan and discover publicly accessible storage containers by 
+        guessing or enumerating storage account and container names.
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online. 
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) granting 
+        at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Adversaries need to enumerate and discover publicly accessible or misconfigured 
+    Azure storage containers by scanning for storage account names and container names, 
+    often using automated tools or scripts, to identify open containers that may expose 
+    sensitive data.
+  targets:
+    - Cloud Storage Accounts
+    - Public-Facing Servers
+    - API Endpoints
+    - Cloud Portal
+  platforms:
+    - Azure
+    - Azure AD
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Spoofing 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Business disruption 
+  viability: Likely
+  description: |
+    Azure storage container reconnaissance is a threat vector involving adversaries 
+    actively or passively gathering information about Azure Storage accounts and their 
+    containers to identify potential targets for further exploitation. This reconnaissance 
+    phase is critical for attackers to map the attack surface, discover misconfigurations, 
+    and locate storage resources that may be exposed or contain sensitive data.
+
+    ## Key Techniques Used in Azure Storage Container Reconnaissance
+
+    - **Storage Account Discovery**: Attackers enumerate Azure Storage account names 
+    to find active accounts. Techniques include:
+      - Using search engine dorks (e.g., `site:*.blob.core.windows.net`)
+      - Brute-force enumeration of account names
+      - Leveraging public scanning tools such as Microburst and BlobHunter
+      - Crawling for storage endpoints referenced in public websites or code repositories
+
+    - **Public Container Discovery**: Once a storage account is identified, attackers 
+    enumerate container names within that account. They attempt to:
+      - List container names by guessing or brute-forcing
+      - Use scripts or automated tools to scan for containers with public or misconfigured access
+
+    - **DNS/Passive DNS Enumeration**: Attackers query DNS records or use passive DNS 
+    databases to identify valid Azure Storage account names in the wild. This can reveal 
+    storage endpoints that may not be directly linked from public sources.
+
+    - **Victim-Owned Website Analysis**: Attackers analyze a target’s own websites for 
+    references or direct links to Azure Storage containers, which can reveal storage 
+    account URLs and access patterns.
+
+    ## Tools and Methods
+
+    - **Automated Scanning Tools**: Tools like Microburst and BlobHunter automate the 
+    process of discovering storage accounts and containers by scanning for open or misconfigured 
+    resources.
+    - **Scripting and Brute-Force**: Custom scripts may be used to guess container names 
+    or enumerate access permissions.
+    - **Search Engine Indexing**: Attackers use indexed URLs from search engines to 
+    find publicly accessible containers.

@@ -1,0 +1,129 @@
+name: Code execution via custom script extensions in Azure
+criticality: High
+references:
+  public:
+    1: https://www.netspi.com/blog/technical-blog/cloud-pentesting/attacking-azure-with-custom-script-extensions/
+    2: https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/custom-script-windows
+    3: https://blog.pwnedlabs.io/diving-deep-into-azure-vm-attack-vectors
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 61ddc240-e5a6-4ca8-ae77-6b471b498913
+  schema: tvm::2.1
+  version: 3
+  created: 2025-05-15
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Execution
+  att&ck:
+    - T1555 #Credentials from Password Stores
+    - T1190 #Exploit Public-Facing Application
+    - T1204 #User Execution
+  chaining:
+    - relation: support::enabled
+      vector: 140907eb-c9fb-4330-9d71-656422388b2b #Azure - Gather Role Information
+      description: |
+        Adversaries need to identify privileged accounts and misconfigured role assignments 
+        that can be exploited for privilege escalation.
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online. 
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Enterprise
+  terrain: |
+    Adversaries must have an Azure role that grants the ability to write or deploy custom 
+    script extensions on virtual machines.
+  targets:
+    - Virtual Machines
+    - Cloud Storage Accounts
+    - Compute Cluster
+    - Public-Facing Servers
+    - Serverless
+    - API Endpoints
+    - Cloud Portal
+    - IaaS
+    - Server Authentication
+    - Server Backup
+    - Server Logs
+  platforms:
+    - Azure
+    - Windows
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Tampering
+    - Spoofing 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Lose Capabilities
+    - Business disruption
+  viability: Very Likely
+  description: |
+    The Azure Custom Script Extension (CSE) is designed to automate post-deployment 
+    tasks on virtual machines (VMs) by downloading and executing scripts provided by 
+    users. While this is intended for legitimate configuration and management, it introduces 
+    a powerful threat vector: attackers with sufficient Azure permissions can leverage 
+    CSE to execute arbitrary code as SYSTEM (Windows) or root (Linux) on any accessible VM.
+
+    ### How Attackers Exploit This Vector
+
+    - **Privilege Abuse**: If an attacker compromises an account with the *Virtual Machine 
+    Contributor* role or any role that grants `Microsoft.Compute/virtualMachines/extensions/write` 
+    permissions, they can deploy or update custom script extensions on target VMs.
+    - **Arbitrary Code Execution**: The attacker can specify any script (PowerShell, Bash, etc.) 
+    to be downloaded from a remote location (such as a malicious website or public repository) 
+    and executed with the highest local privileges on the VM.
+    - **Bypassing Network Controls**: Because CSE operates through the Azure control 
+    plane, it does not require direct network access to the VM. Scripts can be executed 
+    even if RDP or SSH ports are closed, bypassing traditional network-based restrictions.
+    - **Persistence and Lateral Movement**: Attackers can use CSE to establish persistence 
+    (e.g., by installing backdoors), harvest credentials, or pivot to other resources 
+    within the environment.
+    - **Stealth**: Since CSE operations are part of normal Azure VM management workflows, 
+    malicious activity may blend in with legitimate administrative actions.
+
+    ### Example Attack Scenario
+    - An attacker uploads a malicious script to a public storage location.
+    - Using compromised credentials with the necessary Azure permissions, the attacker 
+    configures the CSE on a target VM to download and execute the script.
+    - The script runs as SYSTEM/root, granting full control over the VM, and can perform 
+    actions such as installing malware, mining cryptocurrency, exfiltrating data, or 
+    creating new privileged accounts.
+
+    ### Real-World Impact
+    - **Observed Cases**: There have been documented incidents where attackers used 
+    the CSE to deploy cryptocurrency miners across multiple customer environments by 
+    referencing a malicious script hosted on a public GitHub repository.
+    - **Scope of Access**: This technique is not limited to individual VMs; it can be 
+    used on VM scale sets and Azure ARC-managed resources, amplifying the potential impact.
+    - **No Network Barriers**: The attack is effective regardless of the VM’s network 
+    security group settings or firewall rules, as it leverages the Azure management plane.

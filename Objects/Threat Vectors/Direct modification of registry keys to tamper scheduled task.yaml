@@ -1,0 +1,160 @@
+name: Direct modification of registry keys to tamper scheduled task
+criticality: Medium
+references:
+  public:
+    1: https://cybersecuritynews.com/hackers-modifying-registry-keys
+    2: https://ipurple.team/2024/01/03/scheduled-task-tampering
+    3: https://cyberbuff.github.io/TheAtomicPlaybook/tactics/execution/T1053.005.html
+    4: https://github.com/netero1010/GhostTask
+  #internal:
+    #a: 
+
+metadata:
+  uuid: efe13bd7-c621-423b-b226-9b536766a252
+  schema: tvm::2.1
+  version: 1
+  created: 2025-05-22
+  modified: 2025-06-02
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+      sighting: |
+        The HAFNIUM threat actor is using a method to tamper scheduled
+        tasks in order to establish persistence via modification of
+        registry keys in their malware called `Tarrask`. The benefit
+        of using registry keys is that enables the threat actor to
+        create stealthy scheduled tasks for persistence by avoiding
+        to utilize traditional execution methods.
+      references:
+        - https://ipurple.team/2024/01/03/scheduled-task-tampering
+
+    - name: att&ck::G0007 #[Mobile] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+      sighting: |
+        APT28 threat actor Russian affiliated group is observed to
+        create a schedule task named “Settings\ServiceDispatch” by
+        using `RegisterTaskDefinition`. This activity is a modification
+        in the Windows registry which leads to a change of behavior of
+        a particular scheduled task (in this case a creation of a new task).
+      references:
+        - https://blog.sekoia.io/double-tap-campaign-russia-nexus-apt-possibly-related-to-apt28-conducts-cyber-espionage-on-central-asia-and-kazakhstan-diplomatic-relations
+
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz"
+      sighting: |
+        Lazarus group use a technique `Registry modification`
+        to ensure their malware persist even after a system reboot.
+        For example, a scheduled task creation can be considered as
+        an anomalous behavior as `Reg.exe` is rarely executed by
+        the scheduled task utility.  
+      references:
+        - https://thesecmaster.com/blog/lazarus-group
+        - https://labs.withsecure.com/publications/catching-lazarus-threat-intelligence-to-real-detection-logic-part-two
+  killchain: Persistence
+  att&ck:
+    - T1112     # Modify Registry
+    - T1543     # Create or Modify System Process, creating or modifying scheduled tasks can be used to execute malicious code or maintain persistence
+    - T1543.003 # Create or Modify System Process: Windows Service
+    - T1053.005 # Scheduled Task/Job: Scheduled Task, ref [3]
+  chaining:
+    - relation: atomicity::implements
+      vector: 5e66f826-4c4b-4357-b9c5-2f40da207f34 # Scheduled tasks to maintain persistence in registry
+      description: |
+        Direct access and modification of the Windows registry
+        can tamper or create a new scheduled task. Threat actors
+        use this technique usually to hide their activities and
+        to establish persistent to the system.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor needs an Admin Windows System level to a target
+    endpoint in order to perform direct modification of the registries.
+  targets:
+    - End-user
+    - Workstations
+    - Other # Windows registries
+  platforms:
+    - Windows
+  severity: Moderate incident
+  leverage:
+    - Infrastructure Compromise
+    - Tampering
+    - Modify configuration
+  impact:
+    - Business disruption
+    - Impairement
+    - Lose Capabilities
+    - Operating costs
+  viability: Likely
+  description: |
+    Direct modification of registry keys to tamper with scheduled tasks
+    involves altering the Windows Registry to manipulate or disable scheduled
+    tasks. 
+
+    Scheduled tasks are stored in the Windows Registry, and modifying these
+    registry keys can allow an attacker to:
+
+    - Disable or modify existing tasks: by changing the registry keys
+    associated with a scheduled task, an attacker can prevent the task from
+    running or alter its behavior.
+    - Create new malicious tasks: An attacker can add new registry keys
+    to create a malicious scheduled task that runs without the user's
+    knowledge.
+    - Elevate privileges: modifying registry keys can allow an attacker
+    to escalate privileges, enabling them to execute tasks with higher
+    privileges.
+
+    The registry keys which involved in scheduled tasks could be:
+
+    ```
+    HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache
+
+    ```
+    This key contains subkeys for each scheduled task, including:
+
+    - Tasks: Stores information about each task, such as the task name,
+    description, and execution settings.
+    - Boot: Stores information about tasks that run at boot time.
+    - Logon: Stores information about tasks that run at logon time.
+
+    ### Modifying registry keys to tamper with scheduled tasks
+
+    To modify registry keys and tamper with scheduled tasks, an attacker
+    would typically follow these steps:
+
+      - Access the Registry Editor: The attacker would need to access the
+      Windows Registry Editor (Regedit.exe) with administrative privileges.
+      - Navigate to the scheduled task registry key. 
+      The attacker would navigate to the registry key:
+      `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache key`.
+      - Identify the target task: The attacker would identify the subkey
+      associated with the scheduled task they want to modify or disable.
+      - Modify the registry key: The attacker would modify the registry
+      key to change the task's behavior, such as changing the execution
+      settings or disabling the task.  
+
+    ### Examples of registry key modifications
+
+    Some examples of registry key modifications that can tamper
+    with scheduled tasks include:
+
+    - Disabling a task: Setting the Enabled value to 0 in the task's subkey.
+    - Changing the task's execution settings: Modifying the Actions or Triggers
+    values in the task's subkey.
+    - Creating a new malicious task: Adding a new subkey with malicious
+    settings, such as executing a malicious executable.  

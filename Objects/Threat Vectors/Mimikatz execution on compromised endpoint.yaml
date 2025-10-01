@@ -1,0 +1,159 @@
+name: Mimikatz execution on compromised endpoint
+criticality: Emergency
+references:
+  public:
+    1: https://posts.specterops.io/on-detection-tactical-to-functional-37ddcd75234b
+    2: https://www.sentinelone.com/cybersecurity-101/mimikatz/
+    3: https://github.com/gentilkiwi/mimikatz
+    4: https://github.com/PowerShellMafia/PowerSploit/blob/master/Exfiltration/Invoke-Mimikatz.ps1
+    5: https://adsecurity.org/?tag=detect-invoke-mimikatz
+    6: https://www.digitalforensics.com/blog/articles/detecting-mimikatz/
+    7: https://www.sans.org/white-papers/36780/
+    8: https://medium.com/@levurge/detecting-mimikatz-with-sysmon-f6a96669747e
+    9: https://adsecurity.org/?p=1729
+    10: https://sra.io/blog/detecting-in-memory-mimikatz/
+    11: https://github.com/Th1ru-M/Threat-Hunting/blob/master/Mimikatz%20Detection
+    12: https://blog.didierstevens.com/2017/10/08/quickpost-mimikatz-dcsync-detection/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 7351e2ca-e198-427c-9cfa-202df36f6e2a
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-08-05
+  modified: 2022-11-11
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0102 #[Enterprise] Wizard Spider, DEV-0193, FIN12, GOLD BLACKBURN, Grim Spider, ITG23, Periwinkle Tempest, TEMP.MixMaster, UNC1878
+    - name: misp::3c2bb7d7-a085-4594-adc7-4a20cf724abb #UNC1878
+    - name: att&ck::G0096 #[Enterprise] APT41, BARIUM, Brass Typhoon, Wicked Panda
+    - name: misp::9c124874-042d-48cd-b72b-ccdc51ecbbd6 #APT41, G0096, TA415, Blackfly, Grayfly, LEAD, BARIUM, WICKED SPIDER, WICKED PANDA, BRONZE ATLAS, BRONZE EXPORT, Red Kelpie, G0044, Earth Baku, Amoeba, HOODOO, Brass Typhoon, Winnti, Double Dragon, TG-2633
+    - name: att&ck::G0094 #[Enterprise] Kimsuky, APT43, Black Banshee, Emerald Sleet, TA427, THALLIUM, Velvet Chollima
+    - name: misp::89f005f9-22e9-4c50-9b48-e94c521266e5 #TA406
+    - name: att&ck::G0027 #[Enterprise] Threat Group-3390, APT27, BRONZE UNION, Earth Smilodon, Emissary Panda, Iron Tiger, LuckyMouse, TG-3390
+    - name: misp::834e0acd-d92a-4e38-bb14-dc4159d7cb32 #APT27, GreedyTaotie, TG-3390, EMISSARY PANDA, TEMP.Hippo, Red Phoenix, Budworm, Group 35, ZipToken, Iron Tiger, BRONZE UNION, Lucky Mouse, G0027, Iron Taurus, Earth Smilodon
+    - name: att&ck::G0080 #[Enterprise] Cobalt Group, Cobalt Gang, Cobalt Spider, GOLD KINGSWOOD
+    - name: misp::01967480-c49b-4d4a-a7fa-aef0eaf535fe #Cobalt, Cobalt Group, Cobalt Gang, GOLD KINGSWOOD, COBALT SPIDER, G0080, Mule Libra
+    - name: att&ck::G0045 #[Enterprise] menuPass, APT10, BRONZE RIVERSIDE, CVNX, Cicada, HOGFISH, POTASSIUM, Red Apollo, Stone Panda
+    - name: misp::56b37b05-72e7-4a89-ba8a-61ce45269a8c #APT10, STONE PANDA, Menupass Team, happyyongzi, POTASSIUM, Red Apollo, CVNX, HOGFISH, Cloud Hopper, BRONZE RIVERSIDE, ATK41, G0045, Granite Taurus, TA429, Cicada
+    - name: att&ck::G0035 #[Enterprise] Dragonfly, BROMINE, Berserk Bear, Crouching Yeti, DYMALLOY, Energetic Bear, Ghost Blizzard, IRON LIBERTY, TEMP.Isotope, TG-4192
+    - name: misp::64d6559c-6d5c-4585-bbf9-c17868f763ee #ENERGETIC BEAR, BERSERK BEAR, ALLANITE, CASTLE, DYMALLOY, TG-4192, Dragonfly, Crouching Yeti, Group 24, Havex, Koala Team, IRON LIBERTY, G0035, ATK6, ITG15, BROMINE, Blue Kraken, Ghost Blizzard
+    - name: att&ck::G0107 #[Enterprise] Whitefly
+    - name: misp::943f490e-ac7f-40fe-b6f3-33e2623649d2 #Whitefly
+    - name: att&ck::G0131 #[Enterprise] Tonto Team, BRONZE HUNTLEY, CactusPete, Earth Akhlut, Karma Panda
+    - name: misp::0ab7c8de-fc23-4793-99aa-7ee336199e26 #Tonto Team, CactusPete, KARMA PANDA, BRONZE HUNTLEY, COPPER, Red Beifang, G0131, PLA Unit 65017, Earth Akhlut, TAG-74
+    - name: att&ck::G0114 #[Enterprise] Chimera
+    - name: att&ck::G0052 #[Enterprise] CopyKittens
+    - name: misp::8cca9a1d-66e4-4bc4-ad49-95f759f4c1ae #CopyKittens, Slayer Kitten, G0052
+    - name: att&ck::G0059 #[Enterprise] Magic Hound, APT35, COBALT ILLUSION, Charming Kitten, ITG18, Mint Sandstorm, Newscaster, Phosphorus, TA453
+    - name: misp::c1d44f44-425e-48fd-b78b-84b988da8bc3 #TA453
+    - name: att&ck::G0082 #[Enterprise] APT38, BeagleBoyz, Bluenoroff, COPERNICIUM, NICKEL GLADSTONE, Sapphire Sleet, Stardust Chollima
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz
+    - name: att&ck::G0093 #[Enterprise] GALLIUM, Granite Typhoon
+    - name: misp::e400b6c5-77cf-453d-ba0f-44575583ac6c #GALLIUM, Red Dev 4, Alloy Taurus, Granite Typhoon
+    - name: att&ck::G0087 #[Enterprise] APT39, Chafer, ITG07, Remix Kitten
+    - name: misp::c2c64bd3-a325-446f-91a8-b4c0f173a30b #APT39, Chafer, REMIX KITTEN, COBALT HICKMAN, G0087, Radio Serpens, TA454, ITG07
+    - name: att&ck::G0013 #[Enterprise] APT30
+    - name: misp::d3881afe-f781-4c53-9f68-33487a119a59 #APT30, G0013
+    - name: att&ck::G0108 #[Enterprise] Blue Mockingbird
+    - name: att&ck::G0135 #[Enterprise] BackdoorDiplomacy
+    - name: misp::6472be4d-c186-4c86-b3b7-7dc1b4d3a3d8 #BackdoorDiplomacy, BackDip, CloudComputating, Quarian
+    - name: att&ck::G0006 #[Enterprise] APT1, Comment Crew, Comment Group, Comment Panda
+    - name: misp::1cb7e1cc-d695-42b1-92f4-fd0112a3c9be #APT1, COMMENT PANDA, PLA Unit 61398, Comment Crew, Byzantine Candor, Group 3, TG-8223, Comment Group, Brown Fox, GIF89a, ShadyRAT, G0006
+    - name: misp::8bcd855f-a4c1-453a-bede-ff36582f4f40 #APT20, VIOLIN PANDA, TH3Bug, Crawling Taurus
+    - name: att&ck::G0050 #[Enterprise] APT32, APT-C-00, BISMUTH, Canvas Cyclone, OceanLotus, SeaLotus
+    - name: misp::aa29ae56-e54b-47a2-ad16-d3ab0242d5d7 #APT32, OceanLotus Group, Ocean Lotus, OceanLotus, Cobalt Kitty, APT-C-00, SeaLotus, Sea Lotus, APT-32, APT 32, Ocean Buffalo, POND LOACH, TIN WOODLAWN, BISMUTH, ATK17, G0050, Canvas Cyclone
+    - name: att&ck::G0037 #[Enterprise] FIN6, Camouflage Tempest, ITG08, Magecart Group 6, Skeleton Spider, TAAL
+    - name: misp::647894f6-1723-4cba-aba4-0ef0966d5302 #FIN6, SKELETON SPIDER, ITG08, MageCart Group 6, White Giant, GOLD FRANKLIN, ATK88, G0037, Camouflage Tempest, TA4557
+    - name: att&ck::G0004 #[Enterprise] Ke3chang, APT15, GREF, Mirage, NICKEL, Nylon Typhoon, Playful Dragon, RoyalAPT, Vixen Panda
+    - name: misp::3501fbf2-098f-47e7-be6a-6b0ff5742ce8 #APT15, VIXEN PANDA, Ke3Chang, Playful Dragon, Metushy, Lurid, Social Network Team, Royal APT, BRONZE PALACE, BRONZE DAVENPORT, BRONZE IDLEWOOD, NICKEL, G0004, Red Vulture, Nylon Typhoon, Mirage
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+    - name: att&ck::G0092 #[Enterprise] TA505, CHIMBORAZO, Hive0065, Spandex Tempest
+    - name: misp::03c80674-35f8-4fe0-be2b-226ed0fcd69f #TA505, SectorJ04, SectorJ04 Group, GRACEFUL SPIDER, GOLD TAHOE, Dudear, G0092, ATK103, Hive0065, CHIMBORAZO, Spandex Tempest
+    - name: att&ck::G0010 #[Enterprise] Turla, BELUGASTURGEON, Group 88, IRON HUNTER, Krypton, Secret Blizzard, Snake, Venomous Bear, Waterbug, WhiteBear
+    - name: misp::fa80877c-f509-4daf-8b62-20aba1635f68 #Turla, Snake, VENOMOUS Bear, Group 88, Waterbug, WRAITH, Uroburos, Pfinet, TAG_0530, KRYPTON, Hippo Team, Pacifier APT, Popeye, SIG23, IRON HUNTER, MAKERSMARK, ATK13, G0010, ITG12, Blue Python, SUMMIT, UNC4210, Secret Blizzard, UAC-0144, UAC-0024, UAC-0003
+    - name: att&ck::G0088 #[Enterprise] TEMP.Veles, XENOTIME
+    - name: misp::90abfc42-91c6-11e9-89b1-af58de8f7ec2 #TEMP.Veles, Xenotime, G0088, ATK91
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+    - name: att&ck::G0007 #[Enterprise] APT28, FROZENLAKE, Fancy Bear, Forest Blizzard, Group 74, IRON TWILIGHT, Pawn Storm, SNAKEMACKEREL, STRONTIUM, Sednit, Sofacy, Swallowtail, TG-4127, Threat Group-4127, Tsar Team
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+    - name: att&ck::G0049 #[Enterprise] OilRig, APT34, COBALT GYPSY, EUROPIUM, Evasive Serpens, Hazel Sandstorm, Helix Kitten, IRN2, ITG13
+    - name: misp::42be2a84-5a5c-4c6d-9864-3f09d75bb0ba #OilRig, Twisted Kitten, Cobalt Gypsy, Crambus, Helix Kitten, APT 34, APT34, IRN2, ATK40, G0049, Evasive Serpens, Hazel Sandstorm, EUROPIUM, TA452, Earth Simnavaz
+    - name: att&ck::G0034 #[Enterprise] Sandworm Team, APT44, BlackEnergy (Group), ELECTRUM, FROZENBARENTS, IRIDIUM, IRON VIKING, Quedagh, Seashell Blizzard, Telebots, Voodoo Bear
+    - name: misp::d52ca4c4-d214-11e8-8d29-c3e7cb78acce #GreyEnergy
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+    - name: att&ck::G0060 #[Enterprise] BRONZE BUTLER, REDBALDKNIGHT, Tick
+    - name: misp::add6554a-815a-4ac3-9b22-9337b9661ab8 #Tick, Nian, BRONZE BUTLER, REDBALDKNIGHT, STALKER PANDA, G0060, Stalker Taurus, PLA Unit 61419
+    - name: att&ck::G0011 #[Enterprise] PittyTiger
+    - name: misp::4d37813c-b8e9-4e58-a758-03168d8aa189 #APT24, PITTY PANDA, G0011, Temp.Pittytiger
+    - name: misp::11e17436-6ede-4733-8547-4ce0254ea19e #Cutting Kitten, ITsecTeam
+    - name: att&ck::G0077 #[Enterprise] Leafminer, Raspite
+    - name: misp::2c8994ba-367c-46f6-bfb0-390c8760dd9e #RASPITE, LeafMiner, Raspite
+    - name: att&ck::G0064 #[Enterprise] APT33, Elfin, HOLMIUM, Peach Sandstorm
+    - name: misp::4f69ec6d-cb6b-42af-b8e2-920a2aa4be10 #APT33, APT 33, Elfin, MAGNALLIUM, Refined Kitten, HOLMIUM, COBALT TRINITY, G0064, ATK35, Peach Sandstorm, TA451
+  killchain: Credential Access
+  att&ck:
+    - T1134.005
+    - T1098
+    - T1547.005
+    - T1555.003
+    - T1555.004
+    - T1003.001
+    - T1003.002
+    - T1003.004
+    - T1003.006
+    - T1207
+    - T1558.001
+    - T1558.002
+    - T1552.004
+    - T1550.002
+    - T1550.003
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    Mimikatz is used on a Windows endpoint where a threat actor has 
+    gained a foothold to elevate privileges and move laterally
+  targets:
+    - API Endpoints
+    - Control Server
+    - Desktop
+    - Workstations
+    - Engineering Workstation
+    - Laptop
+    - Identity Services
+    - Key Store
+  platforms:
+    - Active Directory
+    - Azure
+    - Windows
+  severity: Highly significant incident
+  leverage:
+    - Elevation of privilege
+    - Dwelling
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Software installation
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Operating costs
+    - Reputational Damages
+    - IP Loss
+  viability: Unlikely
+  description: |
+    Mimikatz is a very versatile tool that comes with a lot of 
+    options and capabilities. Detection of known Atomic IOCs of 
+    the mimikatz tool itself or the atomic IOCs of invoke-mimikatz 
+    powershell scripts, is very important, as it both signals a 
+    compromised endpoint, plus shows a noisy threat actor trying 
+    to EoP and move laterally. 

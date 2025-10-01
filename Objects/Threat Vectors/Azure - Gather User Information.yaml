@@ -1,0 +1,170 @@
+name: Azure - Gather User Information
+criticality: High
+references:
+  public:
+    1: https://microsoft.github.io/Azure-Threat-Research-Matrix/Reconnaissance/Reconnaissance/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 2900d389-3098-49d3-8166-5b2612d03576
+  schema: tvm::2.1
+  version: 2
+  created: 2025-08-12
+  modified: 2025-09-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::5b4ee3ea-eee3-4c8e-8323-85ae32658754 #APT28, Pawn Storm, FANCY BEAR, Sednit, SNAKEMACKEREL, Tsar Team, TG-4127, STRONTIUM, Swallowtail, IRON TWILIGHT, Group 74, SIG40, Grizzly Steppe, G0007, ATK5, Fighting Ursa, ITG05, Blue Athena, TA422, T-APT-12, APT-C-20, UAC-0028, FROZENLAKE, Sofacy, Forest Blizzard, BlueDelta, Fancy Bear, GruesomeLarch
+      sighting: |
+        APT28 has used large language models (LLMs) to gather information about satellite capabilities.
+      references:
+        - https://www.microsoft.com/en-us/security/blog/2024/02/14/staying-ahead-of-threat-actors-in-the-age-of-ai/
+    - name: misp::bcaaad6f-0597-4b89-b69b-84a6be2b7bc3 #Kimsuky, Velvet Chollima, Black Banshee, Thallium, Operation Stolen Pencil, G0086, APT43, Emerald Sleet, THALLIUM, Springtail, Sparkling Pisces
+      sighting: |
+        Kimsuky has collected victim organization information including but not limited to organization hierarchy, functions, press releases, and others.
+      references:
+        - https://web.archive.org/web/20220328121326/https://boho.or.kr/filedownload.do?attach_file_seq=2695&attach_file_id=EpF2695.pdf
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group, Operation DarkSeoul, Dark Seoul, Hidden Cobra, Hastati Group, Andariel, Unit 121, Bureau 121, NewRomanic Cyber Army Team, Bluenoroff, Subgroup: Bluenoroff, Group 77, Labyrinth Chollima, Operation Troy, Operation GhostSecret, Operation AppleJeus, APT38, APT 38, Stardust Chollima, Whois Hacking Team, Zinc, Appleworm, Nickel Academy, APT-C-26, NICKEL GLADSTONE, COVELLITE, ATK3, G0032, ATK117, G0082, Citrine Sleet, DEV-0139, DEV-1222, Diamond Sleet, ZINC, Sapphire Sleet, COPERNICIUM, TA404, Lazarus group, BeagleBoyz, Moonstone Sleet"
+      sighting: |
+        Lazarus Group has studied publicly available information about a targeted organization to tailor spearphishing efforts against specific departments and/or individuals.
+      references:
+        - https://securelist.com/lazarus-threatneedle/100803/
+    - name: att&ck::G1036 #[Enterprise] Moonstone Sleet, Storm-1789
+      sighting: |
+        Moonstone Sleet has gathered information on victim organizations through email and social media interaction.
+      references:
+        - https://www.microsoft.com/en-us/security/blog/2024/05/28/moonstone-sleet-emerges-as-new-north-korean-threat-actor-with-new-bag-of-tricks/
+    - name: att&ck::G1017 #[Enterprise] Volt Typhoon, BRONZE SILHOUETTE, DEV-0391, Insidious Taurus, UNC3236, Vanguard Panda, Voltzite
+      sighting: |
+        Volt Typhoon has conducted extensive reconnaissance pre-compromise to gain information about the targeted organization.
+      references:
+        - https://www.cisa.gov/sites/default/files/2024-03/aa24-038a_csa_prc_state_sponsored_actors_compromise_us_critical_infrastructure_3.pdf
+  killchain: Reconnaissance
+  att&ck:
+    - T1589 #Gather Victim Identity Information
+    - T1087 #Account Discovery
+    - T1078.004 #Valid Accounts: Cloud Accounts
+  chaining:
+    - relation: sequence::succeeds
+      vector: 58b98d75-fc63-4662-8908-a2a7f4200902 #Spearphishing w/ attachment extension .rdp
+      description: |
+        An adversary may obtain information about a User within Azure AD.
+        Details may include email addresses, first/last names, job information, addresses, and assigned roles.
+    - relation: sequence::succeeds
+      vector: 0cdaee96-8595-4f3f-ba07-758b8be9d359 #Social engineering w/o attachment or URL
+      description: |
+        An adversary may obtain information about a User within Azure AD.
+        Details may include email addresses, first/last names, job information, addresses, and assigned roles.
+    - relation: sequence::succeeds
+      vector: 06c60af1-5fa8-493c-bf9b-6b2e215819f1 #Social engineering attack using Microsoft Teams
+      description: |
+        An adversary may obtain information about a User within Azure AD.
+        Details may include email addresses, first/last names, job information, addresses, and assigned roles.        
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+    - Enterprise
+    - SaaS 
+  terrain: |
+    Adversaries use publicly accessible endpoints, misconfigured applications, or phishing 
+    emails to harvest user names, email addresses, job titles, and group memberships.
+  targets:
+    - Identity Services
+    - Cloud Storage Accounts
+    - Key Store
+    - Workstations
+    - Public-Facing Servers
+    - Virtual Machines
+    - Serverless
+    - Email Platform
+    - API Endpoints
+    - Cloud Portal
+    - SAML-Joined Applications
+    - Software Development Tools
+    - Code Repositories
+    - CI/CD Pipelines
+    - Server Authentication
+  platforms:
+    - Azure
+    - Azure AD
+    - Office 365 
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Spoofing
+    - Tampering
+    - Elevation of privilege
+    - Modify configuration
+    - Modify privileges
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Business disruption 
+  viability: Likely
+  description: |
+    This technique describes how adversaries obtain information about user accounts 
+    in Azure Active Directory (AAD), which can be leveraged for further attack planning 
+    and targeting within a cloud environment.
+
+    ### Example Attack Scenario
+
+    An attacker with limited or no access to an Azure environment targets an organization 
+    using Azure Active Directory. After they obtain information, attackers then cross-references 
+    this information with social media profiles and other public data, building a list 
+    of high-value users and their roles. Armed with these details, the attacker crafts 
+    targeted phishing campaigns or searches for weak credentials and misconfigurations 
+    with those accounts. For example, the attacker might use an Azure API such as `Get-AzureADUser` 
+    to enumerate users if they have a valid credential, or scrape corporate websites 
+    for employee contact details, inferring Azure AD presence.
+
+    ### Attack Goals and Impact
+
+    - **Primary Goal:** To obtain as much information about users as possible—especially 
+    privileged or high-value accounts—without alerting defenders.
+    - **Impact:**
+      - Enables targeted social engineering, phishing attacks, and credential stuffing.
+      - Helps attackers identify privilege relationships, which aids in lateral movement 
+      planning and privilege escalation.
+      - Reveals organizational structure, making subsequent attacks more precise and effective.
+      - May lead to sensitive data exposure (including personal information if the account 
+      is later compromised).
+
+    ### Attack Flow and Methodology
+
+    1. **Discovery & Enumeration:**
+      - Attacker passively searches public sources (corporate sites, LinkedIn) for names, 
+      roles, group memberships.
+      - If attacker obtains a valid account/credential (through phishing or prior compromise), 
+      they may use Azure AD enumeration APIs (`Get-AzureADUser`, etc.) to list all 
+      users, roles, and privileges.
+
+    2. **Data Aggregation:**
+      - Combine enumerated internal data (user lists, group memberships) with external 
+      information (social media, breached databases).
+      - Map relationships and find which users have critical access, such as global 
+      administrators, application owners, or service principal managers.
+
+    3. **Analysis & Targeting:**
+      - Identify users who are most likely susceptible to social engineering (frequently contacted staff, IT helpdesk).
+      - Prioritize accounts for further compromise attempts based on access level.
+
+    4. **Preparation for Further Attack Phases:**
+      - Use gathered user information to launch credential stuffing, spear phishing, 
+      consent phishing, or authentication token theft attacks.
+      - Attempt further reconnaissance focused on those high-value targets, such as 
+      checking group assignment, roles, and recent activity.

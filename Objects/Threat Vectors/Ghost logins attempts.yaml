@@ -1,0 +1,88 @@
+name: Ghost logins attempts
+criticality: High
+references:
+  public:
+    1: https://www.savvy.security/saas-security-glossary/what-are-ghost-logins/
+    2: https://pushsecurity.com/blog/identity-attacks-in-the-wild/#id-snowflake-june-2024
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 6e988fa7-69c9-4aef-897c-a34fa5066dac
+  schema: tvm::2.0
+  version: 1
+  created: 2024-11-06
+  modified: 2024-11-11
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #-
+  killchain: Credential Access
+  att&ck:
+    - T1556 #Modify Authentication Process
+    - T1078.003 #Valid Accounts: Local Accounts
+  chaining:
+    - relation: atomicity::implements
+      vector: 4a807ac4-f764-41b1-ae6f-94239041d349 #MFA Bypass Techniques
+      description: |
+        MFA bypass technique
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - SaaS
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Application with SSO login requiring MFA, with legacy authentication (local login) not disabled. 
+  targets:
+    - SAML-Joined Applications
+    - Server Authentication
+  platforms:
+    - Azure
+    - Office 365
+  severity: Moderate incident
+  leverage:
+    - Elevation of privilege
+    - Spoofing
+  impact:
+    - Identity Theft
+    - Impairement
+  viability: Environment dependent
+  description: |
+    Ghost logins is a technique that exploits the fact that SaaS user accounts
+    often enable multiple simultaneous logins using different sign-in methods. 
+
+    Ghost logins can be used for both the initial access and persistence stages of
+    a cyber attack, doubling up as a defense evasion technique because of low login
+    method visibility.
+
+    For initial access, the technique exploits the fact that local and SSO logins
+    can exist simultaneously. Given that many apps are self-adopted by users, it is
+    likely that many users will default to a local username and password login at 
+    this stage. If the app is later adopted companywide and brought into SSO,
+    the original local login will continue to exist unless explicitly disabled or deleted.
+
+    Because MFA is applied at the app and IdP level independently, it is possible to
+    end up with an SSO login that requires MFA (via the IdP login), but a local
+    login that does not. This creates an easy target identity for attackers to look for.
+
+    When combined with other identity vulnerabilities such as weak, breached, and/or
+    reused passwords, attackers can easily automate ghost login discovery and
+    exploitation at scale.  
+
+    Ghost logins can also be created after an attacker has established access to an app.
+    For example, if a social login is used to access an account, an adversary may be 
+    able to configure a separate username/password login, or even connect a second
+    social account that the adversary controls.
+
+    If the account has sufficient privileges, it may also be possible to set up or
+    change the SAML login settings to inject a malicious URL, for example to an
+    attacker controlled tenant.

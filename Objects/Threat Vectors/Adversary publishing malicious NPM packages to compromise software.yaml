@@ -1,0 +1,101 @@
+name: Adversary publishing malicious NPM packages to compromise software
+criticality: Low
+references:
+  public:
+    1: https://www.bleepingcomputer.com/news/security/infostealer-campaign-compromises-10-npm-packages-targets-devs/
+    2: https://github.blog/security/vulnerability-research/security-alert-social-engineering-campaign-targets-technology-industry-employees/#indicators
+    3: https://www.sonatype.com/blog/multiple-crypto-packages-hijacked-turned-into-info-stealers
+    4: https://www.reversinglabs.com/blog/malicious-npm-patch-delivers-reverse-shell
+    5: https://www.crowdstrike.com/en-us/blog/crowdstrike-customers-protected-from-compromised-npm-package-in-supply-chain-attack/
+    6: https://thehackernews.com/2025/04/malicious-npm-package-targets-atomic.html
+
+metadata:
+  uuid: d24f2b4a-80fc-4ee7-9293-3f6e9e3bbbe4
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-09
+  modified: 2025-04-24
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+     - name: misp::825abfd9-7238-4438-a9e7-c08791f4df4e #TraderTraitor (The threat actor is Jade Sleet or also known as TraderTraitor), ref [1]
+       sighting: |
+        With a high confidence this campaign is associated with a group operating
+        in support of North Korean objectives, known as Jade Sleet or also known
+        as TraderTraitor. Jade Sleet mostly targets users associated with
+        cryptocurrency and other blockchain-related organizations,
+        but also targets vendors used by those firms.
+       references:
+        - https://github.blog/security/vulnerability-research/security-alert-social-engineering-campaign-targets-technology-industry-employees/#indicators
+
+     - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group
+       sighting: |
+        Various threat actor profiles, ranging from low-profile cybercriminals
+        to advanced state-sponsored groups like North Korea's Lazarus cluster,
+        have leveraged malicious npm packages to compromise software supply
+        chains. 
+       references:
+        - https://git.s.cec.eu.int/catch/ec-tide/-/issues/incident/4325
+  killchain: Exploitation
+  att&ck:
+    - T1195     # Supply Chain Compromise
+    - T1082     # System Information Discovery
+    - T1546.016 # Event Triggered Execution: Installer Packages, related TTP
+    - T1036     # Masquerading , ref [6]
+  chaining:
+    - relation: atomicity::implements
+      vector: b6887f4b-eeae-462c-a2ac-7454efb5eabc # Legitimate software dependency injected with malicious code
+      description: |
+        Threat actors use a technique to mimic legitimate software
+        packages in order to mislead the developers in downloading
+        and infecting their systems.   
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Industrial
+    - Mobile
+  terrain: |
+    Adversary publishing malicious NPM packages to compromise software.   
+  targets:
+    - End-user
+    - Developer
+    - Laptop
+    - Customer
+    - Other # Crypto-mining
+    - API Endpoints # API keys
+  platforms:
+    - Windows
+    - Linux
+    - macOS
+  severity: Moderate incident
+  leverage:
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Tampering
+  impact:
+    - Identity Theft
+    - Impairement
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    Threat actors use a technique which includes updating of NPM packages
+    with malicious code to deceive a developer or an end-user to download
+    and install them. This attack vector is used to steal profile and
+    system data from the developer's systems.    
+
+    In one of the threat actor's campaigns was observed that multiple
+    cryptocurrency-related packages are targeted, and the popular
+    country-currency-map package was downloaded thousands of times
+    a week. The malicious code is found in two heavily obfuscated
+    scripts, "/scripts/launch.js" and "/scripts/diagnostic-report.js,"
+    which execute upon the package installation ref [1].    
+
+    The threat actor steals the device's environment variables and sends
+    them to a remote host. The threat actor's groups are targeting environment
+    variables as they can contain API keys, database credentials, cloud
+    credentials, and encryption keys, which can be used for further attacks.

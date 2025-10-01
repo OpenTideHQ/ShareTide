@@ -1,0 +1,64 @@
+name: Web Path Traversal Attack
+criticality: High
+references:
+  public:
+    1: https://owasp.org/www-community/attacks/Path_Traversal
+    2: https://portswigger.net/web-security/file-path-traversal
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: b330d3a8-1783-4210-9fec-11e6ecfe135e
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-09-01
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- 
+  killchain: Discovery
+  att&ck:
+    - T1083
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+    - Networking
+  terrain: |
+    A web application vulnerable to path traversal, i.e. which does not
+    sanitize user inputs sufficiently and with unsufficient resource access
+    policy.
+  targets:
+    - Web Application Servers
+  platforms:
+    - Windows
+    - Linux
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Modify configuration
+    - Modify data
+  impact:
+    - Data Breach
+    - IP Loss
+    - Identity Theft
+  viability: Likely
+  description: |
+    Directory traversal (also known as file path traversal) is a web security
+    vulnerability that allows an attacker to read arbitrary files on the server
+    that is running an application. 
+
+    By manipulating variables that reference files with “dot-dot-slash (../)”
+    sequences and its variations or by using absolute file paths, it may be
+    possible to access arbitrary files and directories stored on file system
+    including application source code or configuration and critical system files.
+

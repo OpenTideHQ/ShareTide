@@ -1,0 +1,154 @@
+name: Use Windows utilities to manipulate a local account or group
+criticality: Medium
+references:
+  public:
+    1: https://www.manageengine.com/products/eventlog/cyber-security/account-manipulation.html
+    2: https://d3fend.mitre.org/offensive-technique/attack/T1098/
+  #internal:
+    #a: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 596d294a-9aa8-41b2-9507-5c9d605de6b4
+  schema: tvm::2.1
+  version: 3
+  created: 2024-11-06
+  modified: 2025-02-10
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::bdf4fe4f-af8a-495f-a719-cf175cecda1f #WIZARD SPIDER
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group
+      #sighting: |
+        #Type Here
+      #references:
+        #-
+  killchain: Execution
+  att&ck:
+    - T1546 #Event Triggered Execution
+    - T1562.001 #Impair Defenses: Disable or Modify Tools
+    - T1078.003 #Valid Accounts: Local Accounts
+    - T1136.001 #Create Account: Local Account
+    - T1087.001 #Account Discovery: Local Account
+    - T1098.007 #Account Manipulation: Additional Local or Domain Groups
+  chaining:
+    - relation: atomicity::implements
+      vector: d5039f2c-9fcc-4ba3-ad6a-da8c891ba745
+      description: |
+        This TVM is implementing the bigger TVM : Abuse of Windows Utilities
+    - relation: sequence::preceeds
+      vector: e3d7cb59-7aca-4c3d-b488-48c785930b6d # PowerShell usage for credential manipulation
+      description: |
+        PowerShell cmdlets and functions can be used to list and manipulate
+        current user account (example Get-Credential).
+    - relation: sequence::preceeds
+      vector: 06523ed4-7881-4466-9ac5-f8417e972d13 # Using a Windows command prompt for credential manipulation
+      description: | 
+        A threat actor can use command prompt (CMD) utility to create,
+        modify, delete or read a local user account. 
+    - relation: sequence::preceeds
+      vector: 66277f27-d57b-47f8-bc9c-b024c7cd1313 # Abuse Windows utilities to enable persistence
+      description: |
+        A threat actor can abuse drop a web shell on Windows or
+        to exploit native Windows tools and applications for
+        malicious purposes (example: Microsoft Web Deployment
+        tool, Windows Terminal Service, WMIC command-line tool
+        and others).
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+  terrain: |
+    Threat actors must have access to a Windows system with sufficient privileges 
+    to execute administrative utilities.
+  targets:
+    - Workstations
+    - Laptop
+    - Directory
+    - Customer
+    - End-user
+    - Code Repositories
+    - Other # Powershell or other scripts
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Modify configuration
+    - New Accounts
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Dwelling
+    - Tampering
+  impact:
+    - Data Breach
+    - Reputational Damages
+    - Business disruption
+    - Operating costs
+  viability: Likely
+  description: |
+    Local account manipulation involves creating, modifying, or exploiting local 
+    user accounts on a computer system, typically for malicious purposes. Local 
+    accounts are user accounts stored and managed locally on a specific computer 
+    device.
+
+    ### Utilities Related to Local Account Manipulation:
+
+    #### 1. net.exe
+    **Description**: A command-line utility used for network administration tasks, 
+    including managing user accounts and network shares. Threat actors can use 
+    it to create new user accounts and add them to privileged groups.
+
+    Example:
+
+    ```bash
+    net user attacker P@ssw0rd! /add
+    net localgroup administrators attacker /add
+    ```
+    This sequence creates a new user named "attacker" and adds them to the local 
+    administrators group, granting full system access.
+
+    #### PowerShell Cmdlets
+    ##### New-LocalUser 
+    The New-LocalUser cmdlet is used to create a new local 
+    user account on a Windows machine.
+    `New-LocalUser -Name "username" -Password (ConvertTo-SecureString "P@ssw0rd!"
+     -AsPlainText -Force) -Description "Description" -FullName "Full Name"`
+  
+    Parameters:
+    -Name: Specifies the name of the new local user.
+    -Password: Assigns a password to the new user account. The password must be 
+    provided as a **secure string.**
+    -Description: (Optional) Adds a description for the user account.
+    -FullName: (Optional) Provides the full name of the user.
+    
+    ##### Add-LocalGroupMember
+    The Add-LocalGroupMember cmdlet adds a user to a local group, which can be 
+    used to grant the user additional privileges.
+    `Add-LocalGroupMember -Group "Administrators" -Member "username"`
+    
+    Parameters:
+    -Group: Specifies the local group to which the user will be added.
+    -Member: Specifies the user account to add to the group.
+    
+    
+    #### Changing a Local Password
+    Using net.exe: The net.exe utility can be used to change a user's 
+    password.  
+
+    `net user username newpassword``
+   
+    Using PowerShell: PowerShell can also be used to change a 
+    local user's password.  
+
+    ```
+    $user = [ADSI]("WinNT://./username,user")
+    $user.SetPassword("NewP@ssw0rd!")

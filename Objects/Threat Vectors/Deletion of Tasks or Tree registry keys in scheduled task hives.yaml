@@ -1,0 +1,99 @@
+name: Deletion of Tasks or Tree registry keys in scheduled task hives
+criticality: Medium
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2022/04/12/tarrask-malware-uses-scheduled-tasks-for-defense-evasion/
+    2: https://superuser.com/questions/1213206/delete-all-scheduled-tasks-with-registry-file
+    3: https://stackoverflow.com/questions/2913816/how-to-find-the-location-of-the-scheduled-tasks-folder
+    4: https://support.microsoft.com/en-us/topic/how-to-add-modify-or-delete-registry-subkeys-and-values-by-using-a-reg-file-9c7f37cf-a5e9-e1cd-c4fa-2a26218a1a23
+    5: https://answers.microsoft.com/en-us/windows/forum/all/periodically-delete-registry-keys-with-task/d726ee36-7698-4bc2-b980-fff0ecd77211
+    6: https://learn.microsoft.com/en-us/powershell/dsc/reference/psdscresources/resources/registry/ovekey?view=dsc-2.0
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: d2ca077d-6ec6-4442-bdc5-b1822e9f4ae8
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
+  created: 2022-12-19
+  modified: 2022-12-20
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0125 #[Enterprise] HAFNIUM, Operation Exchange Marauder, Silk Typhoon
+    - name: misp::4f05d6c1-3fc1-4567-91cd-dd4637cc38b5 #HAFNIUM, ATK233, G0125, Operation Exchange Marauder, Red Dev 13, Silk Typhoon
+  killchain: Execution
+  att&ck:
+    - T1053.005
+    - T1564
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    Threat actor is using already compromised Windows endpoint and has the required 
+    privileges to delete registry keys. 
+  targets:
+    - Control Server
+    - Remote access
+    - Workstations
+    - Desktop
+    - Web Application Servers
+    - Public-Facing Servers
+  platforms:
+    - Windows
+    - Azure
+  severity: Moderate incident
+  leverage:
+    - Tampering
+  impact:
+    - Impairement
+  viability: Likely
+  description: |
+    Threat actors are using deletion of tree registry keys to remove
+    information related to their activities, for example created previously
+    scheduled tasks. For the deletion of tree registry keys, the threat actors
+    are using reg command in command-line utility with a parameter delete,
+    PowerShell commands or scripts or manually delete the registry keys from
+    Registry Editor (regedit). In Azure cloud infrastructure threat actors use
+    Azure CloudShell to delete registry keys.
+
+    Example for registry keys created upon creation of a new scheduled task:
+
+    HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\TASK_NAME
+    HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tasks\{GUID}
+
+    The registy keys above can be deleted using the "reg delete" command. The 
+    "reg delete" command deletes the specified registry key and all of its 
+    subkeys.
+
+    reg delete "HKEY_LOCAL_MACHINE\Registry_Key" /f
+
+    Examples for deleting registry keys with PowerShell commands:
+
+    Remove-Item -Path HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\TASK_NAME -Force -Verbose
+
+    or
+
+    Get-Item Remove-Item -Path HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\TaskCache\Tree\TASK_NAME | Remove-Item -Force -Verbose
+
+    Where Get-Item command retrieves the Key name and then Remove-Item uses the
+    result from Get and deletes the key registry.
+
+    To delete registry keys using Azure CloudShell threat actors are using
+    Remove-ItemProperty cmdlet in Windows PowerShell or the rm command in Bash.
+
+    Examples:
+
+    Remove-ItemProperty -Path "HKLM:\Software\MyKey" -Name "MyValue"
+
+    rm "HKLM:\Software\MyKey"
+
+

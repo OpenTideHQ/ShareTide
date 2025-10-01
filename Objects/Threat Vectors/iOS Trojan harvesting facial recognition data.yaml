@@ -1,0 +1,84 @@
+name: iOS Trojan harvesting facial recognition data
+criticality: High
+references:
+  public:
+    1: https://www.group-ib.com/blog/goldfactory-ios-trojan/
+
+metadata:
+  uuid: 9e93dc4d-486b-43b7-aab7-d3a336a6a72e
+  schema: tvm::2.0
+  version: 1
+  created: 2024-07-19
+  modified: 2024-07-30
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- GoldFactory (not in our scope)
+  killchain: Execution
+  att&ck:
+    - T1566.001 #Phishing: Spearphishing Attachment
+    - T1566.002 #Phishing: Spearphishing Link
+    - T1078 #Valid Accounts
+    - T1404 #Mobile : Exploitation for Privilege Escalation
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #Type Here
+  #cve:
+    #-
+  domains:
+    - Mobile
+  terrain: |
+    Adversaries must have a well-crafted phishing or smishing campaign that impersonates 
+    government authorities and popular messaging applications to trick victims into 
+    downloading and installing the malicious MDM profile.
+  targets:
+    - Personal Information
+    - Identity Services
+    - Mobile phone
+    - Tablet
+  platforms:
+    - Android
+    - iOS
+  severity: Significant incident
+  leverage:
+    - Alter behavior
+    - Dwelling
+    - Elevation of privilege
+    - Software installation
+    - Spoofing
+  impact:
+    - Identity Theft
+    - IP Loss
+    - Reputational Damages
+  viability: Likely
+  description: |
+    The GoldPickaxe Malware Analysis provides an in-depth look at the capabilities of 
+    a new iOS Trojan named GoldPickaxe.iOS, which is part of a broader suite of malware 
+    developed by the Chinese-speaking cybercriminal group codenamed GoldFactory.  
+
+    GoldPickaxe.iOS is capable of collecting sensitive data, including facial recognition 
+    data, identity documents, and SMS messages. The Android version, GoldPickaxe.Android, 
+    shares similar functionalities. The malware exploits AI-driven face-swapping services 
+    to create deepfakes, enabling unauthorized access to victims' banking accounts, 
+    a novel technique in cyber theft.  
+
+    The initial distribution methods for GoldPickaxe.iOS include:
+
+    - Apple's TestFlight platform, where they trick users to download a TestFlight
+      app from hxxps://testflight.apple[.]com/join/<ID>.
+
+    - Use of social engineering to install a Mobile Device Management (MDM) profile on
+      user devices, granting them full control. At any time only one MDM profile can
+      be active, but to have several MDM profiles installed in the device is possible.  
+
+    The infection chain involves several steps, including receiving a link that leads 
+    to a fraudulent website, being prompted to install an MDM profile, and granting 
+    the adversaries control over the device. Once installed, the malware can perform
+    various malicious activities, including tracking, remote wiping, and installing
+    additional apps without the user's consent.  

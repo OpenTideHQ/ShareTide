@@ -1,0 +1,116 @@
+name: Azure - Storage account reconnaissance
+criticality: High
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2021/04/08/threat-matrix-for-storage/
+    2: https://www.microsoft.com/en-us/security/blog/2023/09/07/cloud-storage-security-whats-new-in-the-threat-matrix/
+    3: https://www.bdosecurity.de/en-gb/insights/security-column/cloud-hacking-the-azure-cyber-kill-chain-part-1
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 53f4e2f0-7d11-4629-bb26-905993a589db
+  schema: tvm::2.1
+  version: 3
+  created: 2025-05-28
+  modified: 2025-09-08
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1530 #Data from Cloud Storage
+    - T1078.004 #Valid Accounts: Cloud Accounts
+  chaining:
+    - relation: support::enabled
+      vector: 41f57a57-1ed6-407e-bb70-a0f6ab52af10 #Azure storage Blobs Reconnaissance
+      description: |
+        Adversaries must have knowledge about the strucuture of Azure Blob Storage and naming 
+        conventions, and basic enumeration tools or scripts to carry out reconnaissance, 
+        especially when misconfigurations or public access are present.
+    - relation: support::enabled
+      vector: 2743bf18-3b86-4721-bf3e-153dcda0b149 #Azure - Valid Credentials
+      description: |
+        Adversaries obtain the username and password of an AzureAD user either through phishing, 
+        password spraying, brute-force attacks, or credentials leaked online. 
+    - relation: support::enabled
+      vector: b1593e0b-1b3b-462d-9ab6-21d1c136469d #Azure - Gather Resource Data
+      description: |
+        The attacker obtains credentials (via phishing, password spray, leaked keys) granting 
+        at least Reader access to the target Azure tenant.
+    - relation: support::enabled
+      vector: 53063205-4404-4e6d-a2f5-d566c6085d96 #Data collection using SharpHound, SoapHound, Bloodhound & Azurehound
+      description: |
+        Attackers need to establish an initial presence within the target environment, in 
+        order to gather sufficient permissions to execute the data collection tools.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Adversaries need to scan and discover publicly accessible storage containers by 
+    guessing or enumerating storage account and container names.
+  targets:
+    - Cloud Storage Accounts
+    - API Endpoints
+    - Serverless
+    - Web Application Servers
+  platforms:
+    - Azure
+    - Azure AD
+    - Blob Storage
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+    - Elevation of privilege
+    - Tampering
+    - Denial of Service 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Business disruption 
+  viability: Likely
+  description: |
+    Azure storage account reconnaissance refers to the initial phase of cyberattacks 
+    where adversaries gather information about target storage accounts to identify vulnerabilities 
+    and plan subsequent attacks. This threat vector is critical as it enables attackers 
+    to map out potential entry points and weak configurations in cloud storage environments.
+
+    ### Techniques and Methods  
+    **Storage account discovery**:  
+    - Attackers use methods like DNS reconnaissance (e.g., searching `*.blob.core.windows.net` subdomains) 
+    and brute-forcing account names to identify active Azure storage accounts.  
+    - Publicly available tools such as **Microburst** and **BlobHunter** automate the 
+    enumeration of storage accounts and containers.  
+
+    **Public container/blob enumeration**:  
+    - Adversaries exploit misconfigured public access settings (e.g., containers set to "container" or "blob" access levels) 
+    to list and access sensitive data without authentication.  
+    - Techniques include analyzing DNS records, web page source code, and cloud metadata 
+    for storage account URLs.  
+
+    ### Attack Implications  
+    Successful reconnaissance can lead to:  
+    1. **Data exposure**: Identification of publicly accessible containers with sensitive data.  
+    2. **Lateral movement**: Discovery of storage accounts linked to higher-privileged 
+    resources (e.g., Azure Functions) for token theft and privilege escalation.  
+    3. **Malware distribution**: Mapping storage accounts used for hosting malicious 
+    content via features like static websites.  

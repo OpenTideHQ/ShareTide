@@ -1,0 +1,109 @@
+name: Abuse of 'Always-on VPN' feature on mobile device
+criticality: High
+references:
+  public:
+    1: https://media.defcon.org/DEF%20CON%2031/DEF%20CON%2031%20presentations/Maxime%20Clementz%20-%20Defeating%20VPN%20Always-On.pdf
+    2: https://celestix.com/docs/security-considerations-for-always-on-vpn-deployments/
+    3: https://www.bleepingcomputer.com/news/google/android-leaks-some-traffic-even-when-always-on-vpn-is-enabled/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 80329dfd-eb12-49da-9f20-565758b55eab
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-23
+  modified: 2025-04-23
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Persistence
+  att&ck:
+    - T1133 #External Remote Services
+    - T1078 #Valid Accounts
+    - T1195 #Supply Chain Compromise
+    - T1199 #Trusted Relationship
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Mobile
+  terrain: |
+    Adversaries must obtain valid user or device credentials, or compromise authentication 
+    certificates used for VPN access. This could be achieved through phishing, credential 
+    theft, or exploiting weak authentication practices.
+  targets:
+    - Mobile phone
+    - Tablet
+    - VPN Client
+    - Personal Information
+  platforms:
+    - iOS
+    - Android
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Information Disclosure
+    - Spoofing
+  impact:
+    - Competitive disadvantage
+    - Data Breach
+    - Identity Theft
+    - IP Loss
+  viability: Likely
+  description: |
+    The "Always-on VPN" feature on mobile devices is designed to ensure that all network 
+    traffic is routed through a VPN tunnel, providing continuous privacy and security. 
+    However, this feature can introduce specific threat vectors if abused or improperly implemented.
+
+    ### Key Threat Vectors and Risks
+
+    - **Malicious VPN Apps and Abuse of Permissions**  
+      Many VPN apps, especially on Android, have been found to abuse the permissions 
+      granted by the VPN service. Malicious or poorly designed VPN apps can:
+      - Harvest sensitive user data (such as SMS history and contact lists).
+      - Inject code or malware into network traffic.
+      - Route user traffic through untrusted third-party servers.
+      - Intercept sensitive information, including banking and social network credentials.
+      
+    The "Always-on VPN" feature, if enabled with a malicious app, ensures that *all* 
+    device traffic is exposed to the app, amplifying the potential for abuse and data exfiltration.
+
+    - **Traffic Leakage Despite 'Always-on VPN'**  
+      On Android, even with "Always-on VPN" and the "Block connections without VPN" 
+      (VPN Lockdown) feature enabled, some traffic can leak outside the VPN tunnel. 
+      This leakage occurs particularly when:
+      - The device connects to a new WiFi network and performs connectivity checks 
+      (such as checking for captive portals).
+      - The leaked data can include source IP addresses, DNS lookups, HTTPS, and NTP traffic.
+      
+    This is a design choice in Android, and such leaks may expose user information or 
+    device identifiers to local networks or attackers, undermining the privacy guarantees 
+    of the VPN.
+
+    - **Split Tunneling and Unintended Bypasses**  
+      Some VPN apps or device configurations allow for split tunneling, where only certain 
+      traffic goes through the VPN. If misconfigured, sensitive data may bypass the VPN, 
+      exposing it to interception on insecure networks.
+
+    - **Device Compromise and Credential Theft**  
+      If a device with Always-on VPN is compromised (e.g., stolen or infected with malware), 
+      attackers could potentially exploit the persistent VPN connection to maintain 
+      access to internal networks or exfiltrate data. While certificate revocation and 
+      account disabling can mitigate this, there is a window of risk before such actions are taken.
+      

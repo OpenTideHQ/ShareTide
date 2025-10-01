@@ -1,0 +1,102 @@
+name: CrackMapExec (CME) on endpoints or being downloaded
+criticality: High
+references:
+  public:
+    1: https://twitter.com/mpgn_x64/status/1584863925744521216
+    2: https://github.com/Porchetta-Industries/CrackMapExec
+    3: https://ptestmethod.readthedocs.io/en/latest/cme.html
+    4: https://bond-o.medium.com/crackmapexec-basics-839ef6180940
+    5: https://www.trustedsec.com/tools/crackmapexec/
+    6: https://github.com/maaaaz/CrackMapExecWin
+    7: https://wiki.porchetta.industries/
+    8: https://attack.mitre.org/software/S0488/
+    9: https://byt3bl33d3r.github.io/getting-the-goods-with-crackmapexec-part-1.html
+    10: https://wiki.porchetta.industries/news-2022/major-release-for-crackmapexec
+    11: https://www.n00py.io/2017/10/detecting-crackmapexec-cme-with-bro-sysmon-and-powershell-logs/
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 79357f02-6868-4bf5-9f21-1cfd6ab03056
+  schema: tvm::2.0
+  tlp: clear
+  version: 2
+  created: 2022-10-27
+  modified: 2022-10-28
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0035 #[Enterprise] Dragonfly, BROMINE, Berserk Bear, Crouching Yeti, DYMALLOY, Energetic Bear, Ghost Blizzard, IRON LIBERTY, TEMP.Isotope, TG-4192
+    - name: misp::64d6559c-6d5c-4585-bbf9-c17868f763ee #ENERGETIC BEAR, BERSERK BEAR, ALLANITE, CASTLE, DYMALLOY, TG-4192, Dragonfly, Crouching Yeti, Group 24, Havex, Koala Team, IRON LIBERTY, G0035, ATK6, ITG15, BROMINE, Blue Kraken, Ghost Blizzard
+    - name: att&ck::G0087 #[Enterprise] APT39, Chafer, ITG07, Remix Kitten
+    - name: misp::c2c64bd3-a325-446f-91a8-b4c0f173a30b #APT39, Chafer, REMIX KITTEN, COBALT HICKMAN, G0087, Radio Serpens, TA454, ITG07
+    - name: att&ck::G0069 #[Enterprise] MuddyWater, Earth Vetala, MERCURY, Mango Sandstorm, Seedworm, Static Kitten, TA450, TEMP.Zagros
+    - name: misp::a29af069-03c3-4534-b78b-7d1a77ea085b #MuddyWater, TEMP.Zagros, Static Kitten, Seedworm, MERCURY, COBALT ULSTER, G0069, ATK51, Boggy Serpens, Mango Sandstorm, TA450, Earth Vetala
+    - name: att&ck::G0046 #[Enterprise] FIN7, Carbon Spider, ELBRUS, GOLD NIAGARA, ITG14, Sangria Tempest
+    - name: misp::00220228-a5a4-4032-a30d-826bb55aa3fb #FIN7, CARBON SPIDER, GOLD NIAGARA, Calcium, ATK32, G0046, G0008, Coreid, Carbanak, Sangria Tempest, ELBRUS, Carbon Spider, JokerStash
+  killchain: Credential Access
+  att&ck:
+    - T1003.002
+    - T1003.003
+    - T1003.004
+    - T1016
+    - T1018
+    - T1049
+    - T1047
+    - T1053.002
+    - T1059.001
+    - T1069.002
+    - T1082
+    - T1083
+    - T1087.002
+    - T1110.001
+    - T1110.003
+    - T1112
+    - T1135 
+    - T1201
+    - T1550.002
+
+  domains:
+    - Enterprise
+    - Public Cloud
+  terrain: |
+    CrackMapExec is used by threat actors on compromised endpoints to for
+    credential access or a number of other techniques. CrackMapExec (CME)
+    is a swiss army knife type of tool.
+  targets:
+    - Virtual Machines
+    - Workstations
+  platforms:
+    - Windows
+    - Linux
+  severity: Moderate incident
+  leverage:
+    - Modify privileges
+    - Elevation of privilege
+    - Dwelling
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Modify configuration
+    - Spoofing
+    - Tampering
+  impact:
+    - Impairement
+    - Business disruption
+    - Competitive disadvantage
+    - Data Breach
+    - Reputational Damages
+    - Legal and regulatory
+    - Monetary Loss
+    - Nuisance
+  viability: Likely
+  description: |
+    CrackMapExec is a post-compromise tool that contains a number of
+    modules and functionalities that allow red teams, pentesters and
+    threat actors to perform post-compromise actions. Detecting
+    both the presence of the tool itself, plus the usage of the tool
+    is an important baseline security detection.
+
+  

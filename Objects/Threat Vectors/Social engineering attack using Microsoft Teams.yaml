@@ -1,0 +1,94 @@
+name: Social engineering attack using Microsoft Teams
+criticality: Medium
+references:
+  public:
+    1: https://www.microsoft.com/en-us/security/blog/2023/08/02/midnight-blizzard-conducts-targeted-social-engineering-over-microsoft-teams/
+    2: https://github.com/Octoberfest7/TeamsPhisher
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 06c60af1-5fa8-493c-bf9b-6b2e215819f1
+  schema: tvm::2.0
+  tlp: clear
+  version: 4
+  created: 2023-08-07
+  modified: 2025-10-01
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::2ee5ed7a-c4d0-40be-a837-20817474a15b #UNC2452, DarkHalo, StellarParticle, NOBELIUM, Solar Phoenix, Midnight Blizzard
+  killchain: Delivery
+  att&ck:
+    - T1199
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    Attacker has compromised a valid Microsoft 365 tenant to host the lures, and valid
+    valid credentials in targeted M365 tenant too.
+    Targeted organizations must use an app like Microsoft Authenticator as second
+    factor (app taking the code received after successful authentication granted by 
+    the victim, the user, in previous step).
+  targets:
+    - End-user    
+  platforms:
+    - Microsoft Teams
+  severity: Moderate incident
+  leverage:
+    - Information Disclosure
+  impact:
+    - Identity Theft
+    - Data Breach
+  viability: Environment dependent
+  description: |
+    Adversaries are using compromised Microsoft 365 tenants to create technical
+    support-themed domains and send tech support lures via Microsoft Teams, 
+    attempting to trick users of the targeted organizations using social engineering.    
+
+    They aim to manipulate users into granting approval for multifactor authentication
+    (MFA) prompts, ultimately aiming to steal their credentials.    
+
+    #### Attack phases    
+
+    **Preparation phase**    
+
+    Attackers compromise an Azure tenant, rename it and add a new onmicrosoft[.]com
+    subdomain. It will use security-themed or product name-themed keywords to create
+    a new subdomain, such as teamsprotection.onmicrosoft[.]com 
+    Add a new user associated with that domain from which the attacker will send the
+    outbound message to the target tenant.    
+
+    **Social engineering phase**    
+    
+    Attackers send a Teams chat message to the target from the compromised external user
+    masquerading as a technical support or security team; if the targeted user accepts
+    the message request, attackers send a Microsoft Teams message to convince the target
+    to enter a code into the Microsoft Authenticator app on his/her mobile device.
+    If the targeted user enters the code into the Authenticator app, the attacker is
+    granted a token to authenticate as the targeted user.    
+
+    **Post-compromise phase**    
+    
+    Involves information theft from the compromised Microsoft 365 tenant, and in some 
+    cases, adding a device to the organisation as a managed device through Microsoft
+    Entra ID (formerly Azure Active Directory), likely an attempt to circumvent conditional
+    access policies configured to restrict access to specific resources to managed devices only.    
+
+    #### Additional Tactics: Microsoft Teams Vishing    
+
+    ### Microsoft Teams Vishing    
+
+    - Attackers initiate contact via Microsoft Teams within 15-30 minutes of the email bombing.
+    - They pose as IT support personnel or "Help Desk Managers".
+    - Adversary-controlled Office 365 accounts are used, often with display names mimicking 
+    legitimate IT staff.
+    - Profile pictures and backgrounds are crafted to appear authentic.
+    - Attackers exploit the victim's state of confusion and urgency caused by the email bombing.    

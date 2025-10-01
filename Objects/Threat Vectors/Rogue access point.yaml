@@ -1,0 +1,109 @@
+name: Rogue access point
+criticality: High
+references:
+  public:
+    1: https://www.verimatrix.com/cybersecurity/knowledge-base/rogue-access-points-what-they-are-and-how-to-stop-them/
+    2: https://www.accessagility.com/rogue-wifi-wireless-access-point-ap
+    3: https://zimperium.com/glossary/rogue-access-point/
+    4: https://jumpcloud.com/it-index/what-is-a-rogue-access-point
+  #internal:
+    #a: 
+
+metadata:
+  uuid: bdb9fd43-a9f9-4026-84a5-0b52d3b0243b
+  schema: tvm::2.1
+  version: 1
+  created: 2025-04-24
+  modified: 2025-04-24
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Collection
+  att&ck:
+    - T0860 #Industrial : Wireless Compromise
+    - T1422.002 #Mobile : Wi-Fi Discovery
+    - T1638 #Mobile : Adversary-in-the-Middle
+    - T1557.004 #Adversary-in-the-Middle: Evil Twin
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Mobile
+    - Enterprise
+  terrain: |
+    Adversaries must be within range of the target network to deploy or broadcast their 
+    rogue AP. This could mean physical access to the premises (to connect a device to 
+    the wired network) or being close enough to broadcast a Wi-Fi signal that clients 
+    can detect and join.
+  targets:
+    - Laptop
+    - Mobile phone
+    - Tablet
+    - Router or switch
+    - Personal Information
+    - Critical Documents
+  platforms:
+    - macOS
+    - Windows
+    - Linux
+    - Android
+    - iOS
+  severity: Significant incident
+  leverage:
+    - Dwelling
+    - Information Disclosure
+    - Spoofing
+    - Tampering
+  impact:
+    - Competitive disadvantage
+    - Data Breach
+    - Identity Theft
+    - IP Loss
+    - Reputational Damages
+  viability: Likely
+  description: |
+    A rogue access point (AP) is any wireless access point connected to a network without 
+    explicit authorization from network administrators. These unauthorized devices 
+    can be set up deliberately by attackers or unintentionally by employees, and they 
+    bypass the security controls and configurations established by IT teams, exposing 
+    the network to significant risks.
+
+    ### How Rogue Access Points Work
+
+    - **Impersonation:** Rogue APs may mimic legitimate networks by copying the Service 
+    Set Identifier (SSID), tricking users into connecting to them.
+    - **Open Access:** Many operate without passwords or encryption, making them easy 
+    for devices to discover and connect to, but extremely vulnerable.
+    - **Traffic Interception:** Once connected, attackers can intercept all data transmitted, 
+    including credentials and confidential information, using packet sniffing tools.
+    - **Attack Platform:** They serve as a launchpad for further attacks such as man-in-the-middle (MitM), 
+    malware distribution, phishing, and ransomware deployment.
+
+    ### Risks and Threats
+
+    - **Data Interception & Theft:** Sensitive information, such as login credentials, 
+    financial data, and confidential documents, can be captured.
+    - **Man-in-the-Middle Attacks:** Attackers can intercept, modify, or inject data 
+    into communications, hijack sessions, and steal credentials.
+    - **Malware Distribution:** Rogue APs can be used to distribute malware or ransomware 
+    to connected devices.
+    - **Credential Theft:** Users may unknowingly submit credentials to attackers.
+    - **Network Disruption:** Rogue APs can interfere with legitimate network operations, 
+    causing downtime and instability.
+    - **Regulatory Compliance Violations:** Industries with strict data regulations 
+    (e.g., healthcare, finance) risk non-compliance and potential fines if rogue APs are present.

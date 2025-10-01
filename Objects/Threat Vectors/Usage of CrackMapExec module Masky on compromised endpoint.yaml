@@ -1,0 +1,84 @@
+name: Usage of CrackMapExec module Masky on compromised endpoint 
+criticality: High
+references:
+  public:
+    1: https://z4ksec.github.io/posts/masky-release-v0.0.3/#detection-vectors
+    2: https://twitter.com/mpgn_x64/status/1584863925744521216
+    3: https://github.com/Porchetta-Industries/CrackMapExec
+    4: https://github.com/maaaaz/CrackMapExecWin
+    5: https://wiki.porchetta.industries/
+    6: https://attack.mitre.org/software/S0488/
+  #internal:
+    #a: 
+  #restricted:
+    #A: 
+  #reports:
+    #-
+
+metadata:
+  uuid: 9d4658ad-d4d5-4f3c-990f-bb486edd47f4
+  schema: tvm::2.0
+  tlp: clear
+  version: 1
+  created: 2022-10-28
+  modified: 2022-10-28
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+   #- Unknown
+  killchain: Credential Access
+  att&ck:
+   - T1003
+  terrain: On a compromised Windows or Linux variant endpoint, Masky can be used
+   to collect the NT hash for all connected users
+  domains:
+   - Enterprise
+   - Public Cloud
+  targets:
+   - Virtual Machines
+   - Workstations
+  platforms:
+   - Windows
+   - Linux
+  severity: Moderate incident
+  leverage:
+   - Elevation of privilege
+   - Spoofing
+  impact:
+   - Impairement
+   - Business disruption
+   - Competitive disadvantage
+   - Data Breach
+   - Reputational Damages
+   - Legal and regulatory
+   - Monetary Loss
+   - Nuisance
+  viability: Likely
+  description: |
+   CrackMapExec is a post-compromise tool that contains a number of
+   modules and functionalities that allow red teams, pentesters and
+   threat actors to perform post-compromise actions. Detecting
+   both the presence of the tool itself, plus the usage of the tool
+   is an important baseline security detection.
+ 
+   Masky is a python library providing an alternative way to remotely
+   dump domain users’ credentials thanks to an ADCS. A 
+   command line tool has been built on top of this library in order to
+   easily harvest PFX, NT hashes and TGT on a larger 
+   scope.
+ 
+   This tool does not exploit any new vulnerability and does not work by
+   dumping the LSASS process memory. Indeed, it 
+   only takes advantage of legitimate Windows and Active Directory features
+   (token impersonation, certificate 
+   authentication via kerberos and NT hashes retrieval via PKINIT).
+ 
+   Masky is a new module, which in certain ways is less noisy than
+   dumping LSASS, but if AD CS CAs have auditing enabled, will be
+   very noisy and detectable.
+
+
+  

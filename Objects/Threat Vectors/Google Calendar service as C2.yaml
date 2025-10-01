@@ -1,0 +1,148 @@
+name: Google Calendar service as C2
+criticality: Medium
+references:
+  public:
+    1: https://cloud.google.com/blog/topics/threat-intelligence/apt41-innovative-tactics?hl=en
+    2: https://thehackernews.com/2025/05/chinese-apt41-exploits-google-calendar.html
+    3: https://www.cybersecuritydive.com/news/china-hackers-google-calendar-events-research/749290
+    4: https://github.com/MrSaighnal/GCR-Google-Calendar-RAT
+
+metadata:
+  uuid: 3f0b4b8e-6017-406a-9461-740d542d0917
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-11
+  modified: 2025-07-04
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0096 #[Enterprise] APT41, BARIUM, Brass Typhoon, Wicked Panda
+    - name: misp::9c124874-042d-48cd-b72b-ccdc51ecbbd6 #APT41, G0096, TA415, Blackfly, Grayfly, LEAD, BARIUM, WICKED SPIDER, WICKED PANDA, BRONZE ATLAS, BRONZE EXPORT, Red Kelpie, G0044, Earth Baku, Amoeba, HOODOO, Brass Typhoon, Winnti, Double Dragon, TG-2633
+      sighting: |
+        Chinese affiliated threat actor conducted a cyber-espionage campaign,
+        including memory-only payloads, encryption, compression, process
+        hollowing, control flow obfuscation, and leveraging Google calendar
+        for C2.
+      references:
+        - https://cloud.google.com/blog/topics/threat-intelligence/apt41-innovative-tactics?hl=en
+  killchain: Persistence
+  att&ck:
+    - T1566.002 # Phishing: Spearphishing Link
+    - T1204.002 # User Execution: Malicious File
+    - T1190     # Exploit Public-Facing Application
+  chaining:
+    - relation: sequence::succeeds
+      vector: 1a68b5eb-0112-424d-a21f-88dda0b6b8df # Spearphishing Link
+      description: |
+        A threat actor initially sent spear phishing emails containing a link to
+        the ZIP archive hosted on the exploited government website. The archive
+        contains an LNK file, masquerading as a PDF, and a directory ref [1].     
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    A threat actor is using social engineering initial technique to entice an
+    end-user to open a malicious Google invitation (a mail or calendar
+    invitation event) and get infected. 
+    
+    The goal is an access and maintain of a persistence. 
+  targets:
+    - Laptop
+    - Customer
+    - Control Server
+    - Remote access
+    - Other # Google calendar
+    - Workstations
+  platforms:
+    - Google Workspace
+  severity: Moderate incident
+  leverage:
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Modify configuration # threat actor can modify a calendar settings to ensure that a malware message is delivered
+  impact:
+    - Data Breach
+    - Impairement
+    - Lose Capabilities
+  viability: Likely
+  description: |
+    In some of the reports and analysis a Chinese-affiliated threat actor was
+    observed abusing Google Calendar to deliver malware and establish Command
+    and Control (CnC) communication.  
+
+    ### Abuse of Google calendar
+
+    A malware delivered payload has the capability to read and write events with
+    an attacker-controlled Google calendar. Once executed, this malware creates
+    a zero minute calendar event at a hardcoded date, with data collected from
+    the compromised host being encrypted and written in the calendar event
+    description.  
+
+    A threat operator places encrypted commands in calendar events on this date
+    and next one day, which are predetermined dates also hardcoded into the
+    malware. The malicious code then begins polling calendar for these events.
+    When an event is retrieved, the event description is decrypted and the
+    command it contains is executed on the compromised host. Results from the
+    command execution are encrypted and written back to another calendar event
+    ref [1]. 
+
+    In several steps below is represented the threat vector pattern how the
+    threat actor manages to exploit a Google calendar ref [1]. 
+
+    - Initial access : The threat actor gains initial access to a victim's
+    Google account, often through phishing or credential reuse.
+    - Google calendar creation: As a next step the malicious actor creates
+    a new Google Calendar event, which is used as a mechanism to deliver
+    malware to the victim's device.
+    - Malicious event creation: The threat actor creates a new event in the
+    victim's Google calendar, which includes a malicious link or attachment.
+    The event is often titled with a misleading or innocuous name to avoid
+    suspicion.
+    - Notification and delivery: When the event is created, Google calendar
+    sends a notification to the victim's device, which includes the malicious
+    link or attachment. If the victim interacts with the notification,
+    the malware is delivered to their device.
+    - CnC Communication: Once the malware is installed, the threat actor
+    uses the compromised device to establish CnC communication. The malware
+    communicates with the threat actor's command and control server, allowing
+    them to issue commands, exfiltrate data, and further compromise the
+    victim's network.  
+
+    Where
+
+    - C2 server - is the attacker controlled calendar. C2 commands are passed as
+    encrypted google calendar events.
+    - C2 communication - established from the agent to the attacker controlled
+    google calendar over HTTPS to Google API, using valid credentials.
+    - C2 agent - posts computer information into the attacker controlled google
+    calendar. 
+
+    More detailed explanation is provided in ref [1].  
+
+    ### Used known tactics
+
+    - Event titles and descriptions: A Chinese-based threat actor group uses
+    misleading event titles and descriptions to avoid suspicion and increase
+    the likelihood of the victim interacting with the malicious event.
+    - Malicious links and attachments: The threat actor uses malicious links or
+    attachments in the event to deliver malware to the victim's
+    device.
+    - Calendar settings abuse: The threat actor configures the Google calendar
+    settings to send notifications to the victim's device, ensuring that the
+    malware is delivered even if the victim doesn't actively check their
+    calendar.
+    
+    By abusing Google calendar, the threat actor is able to deliver malware and
+    establish CnC communication in a way that is difficult to detect and block.
+    This tactic highlights the importance of monitoring cloud services and
+    implementing robust security controls to prevent such attacks ref [1], [2].  

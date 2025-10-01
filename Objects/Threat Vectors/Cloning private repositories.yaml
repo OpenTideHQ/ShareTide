@@ -1,0 +1,140 @@
+name: Cloning private repositories
+criticality: Medium
+references:
+  public:
+    1: https://stackoverflow.com/questions/2505096/clone-a-private-repository-github
+    2: https://www.educative.io/answers/how-to-clone-a-private-repository-from-github
+    3: https://www.wwwinsights.com/webinfra/git/clone-a-github-private-repository/
+    4: https://cyberhoot.com/blog/github-config-breach-exposes-cloud-service-credentials
+    5: https://github.com/0xjesus/git-cloner # Git-cloner, an automated tool which is used for cloning of repos
+    6: https://github.com/scm-manager/scm-manager
+    7: https://www.sentinelone.com/blog/exploiting-repos-6-ways-threat-actors-abuse-github-other-devops-platforms/
+    8: https://sysdig.com/blog/emeraldwhale/ # Emeraldwhale campaign ends up in huge amount of stolen credentials, one known used technique is clone of private repositories
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 4ac2b666-736a-42c5-9548-50393ea6bc46
+  schema: tvm::2.1
+  version: 1
+  created: 2025-03-05
+  modified: 2025-03-06
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0032 #[ICS] Lazarus Group, Diamond Sleet, Guardians Peace, HIDDEN COBRA, Labyrinth Chollima, NICKEL ACADEMY, ZINC
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 #Lazarus Group
+      #sighting: |
+        #...
+      references:
+        - https://securityscorecard.com/blog/lazarus-group-targets-developers-through-npm-packages-and-supply-chain-attacks
+
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, StellarParticle, The Dukes, UNC2452, UNC3524, YTTRIUM
+    - name: misp::b2056ff0-00b9-482e-b11c-c771daa5f28a #APT29
+      sighting: |
+        A Russian state-sponsored threat actor that has been observed
+        cloning private repositories to gain access to sensitive information.  
+      #references:
+        #-  
+  killchain: Exfiltration
+  att&ck:
+    - T1567.001 #Exfiltration Over Web Service: Exfiltration to Code Repository
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #- not found
+  domains:
+    - Enterprise
+    - Private Cloud
+    - Public Cloud
+  terrain: |
+    The attacker needs to obtain access to the CI pipeline.  
+  targets:
+    - CI/CD Pipelines
+    - Code Repositories
+    - Developer
+    - Laptop
+  platforms:
+    - Github
+    - Gitlab
+    - Bitbucket
+  severity: Localised incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+  impact:
+    - Data Breach
+    - Reputational Damages
+    - Impairement
+  viability: Environment dependent
+  description: |
+    A threat actor can clone legit repositories, embed malicious code
+    but make them looks like legit. Their purpose is to entice a developer
+    to download and use the decoy repositories.    
+
+    Unauthorized cloning of private repositories is a form of IP theft.
+    Adversaries from external hackers to insiders aim to steal source code,
+    configuration details and secrets. The stolen information can be used
+    in multiple ways such as competitive advantage, discover vulnerabilities,
+    compromise other systems or mimic the original repositories to trick
+    developers into their rogue repository.  
+    
+    After cloning of the repository, as a next step, the threat actor
+    spreads public available links from where a developer downloads its
+    malicious content.  
+
+    The threat actors employ various techniques to clone public or private
+    repositories, often with malicious intent. Some of the methods for
+    repository cloning include:  
+    
+    ### Misconfigured GitHub repositories
+
+    Threat actors exploit misconfigurations in GitHub, Gitlab or similar
+    repositories. They search for repositories with sensitive information
+    (such as API keys, credentials, or proprietary code) that have been
+    accidentally exposed. Once they find such repositories, they clone
+    them to their own accounts or local systems. By doing so, they gain
+    access to the codebase and any sensitive data within it ref [4].          
+
+    ### Automated cloning and credential harvesting
+
+    In some cases, threat actors use automated tools to clone public
+    repositories. They specifically target repositories containing
+    Identity and Access Management (IAM) credentials. By cloning these
+    repositories, they harvest sensitive credentials, which can later
+    be used for unauthorized access, example in ref [5].            
+    
+    ### Repo confusion scheme
+
+    This scheme involves cloning existing repositories, Trojanizing them
+    (adding malicious code), and re-uploading them. The attackers hope that
+    the developers will mistakenly download the infected version.      
+    
+    Once a threat actor has access to a CI pipeline, they obtain access key
+    or tokens to the SCM-Manager (ref [6]) and can perform action or operation
+    allowed for those credentials such as cloning private repository. This may
+    lead to unauthorized access to sensitive information and/or intellectual
+    property theft. Threat actors may identify weaknesses in the code and later
+    exploit them.      
+
+    A common command used for repositories cloning is:
+
+    git clone git://github.com/username/reponame.git
+
+    ### Injection of a malicious code directly into exposed libraries
+
+    Some of the threat actor groups are observed to inject malicious code
+    directly into exposed libraries or submit fraudulent pull requests.
+    This technique can be used in a combination with repository cloning
+    to convey a malicious payload and infect developer systems and pilfer
+    sensitive files further ref [7].    
+  

@@ -21,6 +21,10 @@ In such cases, we recommend either importing objects one by one to allow the sch
 
 You are welcome to open a PR and propose new OpenTide object to share to the community.
 
+### Licensing
+
+All objects shared in this repository are licensed under [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/deed.en). 
+
 **Guidelines**
 - Ensure that all information contained in the object is public information.
 - Before being ready for a review, your PR must pass the Schema Validation pipeline.

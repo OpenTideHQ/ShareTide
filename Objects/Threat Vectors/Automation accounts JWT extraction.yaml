@@ -1,0 +1,113 @@
+name: Automation accounts JWT extraction
+criticality: High
+references:
+  public:
+    1: https://posts.specterops.io/managed-identity-attack-paths-part-1-automation-accounts-82667d17187a
+    2: https://em360tech.com/tech-articles/jwt-just-wait-til-it-breaks-common-token-mistakes-and-how-avoid-them
+    3: https://github.com/nearform/fast-jwt/security/advisories/GHSA-c2ff-88x2-x9pg
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 841e2a63-c95f-43f8-aef0-7ab96456445a
+  schema: tvm::2.1
+  version: 1
+  created: 2025-06-18
+  modified: 2025-06-18
+  tlp: clear
+  #author: 
+  #contributors:
+    #-
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  #killchain: 
+  att&ck:
+    - T1134 #Access Token Manipulation
+    - T1528 #Steal Application Access Token
+    - T1550.001 #Use Alternate Authentication Material: Application Access Token
+    - T1190 #Exploit Public-Facing Application
+  #chaining:
+    #- relation: 
+      #vector: 
+      #description: |
+        #...
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Adversaries need to gain access to a valid JWT (JSON Web Token) associated with 
+    the automation account’s managed identity. This access is typically achieved by 
+    modifying automation runbooks or exploiting misconfigured permissions to execute 
+    code that retrieves the JWT from the managed identity endpoint.
+  targets:
+    - Cloud Storage Accounts
+    - Key Store
+    - Identity Services
+    - Compute Cluster
+    - Public-Facing Servers
+    - API Endpoints
+    - Cloud Portal
+  platforms:
+    - Azure
+    - Azure AD
+    - PowerShell 
+  severity: Significant incident
+  leverage:
+    - Spoofing
+    - Tampering
+    - Elevation of privilege
+    - Information Disclosure 
+  impact:
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Identity Theft
+    - Monetary Loss
+    - Business disruption 
+  viability: Likely
+  description: |
+    The threat vector refers to attacks where attackers exploit Azure Automation Accounts 
+    to steal JSON Web Tokens (JWTs) associated with Managed Identities, enabling privilege 
+    escalation and lateral movement in cloud environments. Here's a detailed breakdown:
+
+    ## Attack Methodology
+    **JWT Extraction via Runbook Modification**  
+    Attackers modify Automation Account runbooks to execute PowerShell scripts that 
+    access the Managed Identity endpoint:  
+    ```powershell
+    $tokenAuthURI = $env:MSI_ENDPOINT + "?resource=https://graph.microsoft.com/&api-version=2017-09-01"
+    $tokenResponse = Invive-RestMethod -Method Get -Headers @{"Secret"="$env:MSI_SECRET"} -Uri $tokenAuthURI
+    $tokenResponse.access_token
+    ```
+    This script retrieves a JWT for the Automation Account's Service Principal, which 
+    attackers then exfiltrate.
+
+    ## Abuse Potential
+    - **Privilege Escalation**: Stolen JWTs grant the same permissions as the Automation 
+    Account's Managed Identity, enabling access to Azure Graph API, Key Vaults, and 
+    other services.
+    - **Token Replay**: Attackers use extracted JWTs to authenticate as the Service 
+    Principal outside Azure Automation's context.
+    - **Algorithm Confusion**: Weak JWT validation could allow attackers to modify token 
+    claims while maintaining valid signatures (e.g., switching from RS256 to HS256).
+
+    ## Tooling
+    - **JWTXposer**: Scans archives for leaked JWTs and analyzes claims for privilege 
+    escalation opportunities.
+    - **jwt_tool**: Performs dictionary attacks against JWT secrets and exploits algorithm 
+    confusion vulnerabilities.
+    - **Azure APIs**: Native tools like Az PowerShell modules can abuse valid JWTs for 
+    resource enumeration.
