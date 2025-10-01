@@ -25,6 +25,13 @@ You are welcome to open a PR and propose new OpenTide object to share to the com
 
 All objects shared in this repository are licensed under [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/deed.en). 
 
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
+
+[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
+[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+
+
 **Guidelines**
 - Ensure that all information contained in the object is public information.
 - Before being ready for a review, your PR must pass the Schema Validation pipeline.
