@@ -16,9 +16,11 @@ ShareTide is the repository for open source, `TLP:CLEAR`, OpenTide objects that 
 You can import any file from this repository in your own OpenTide repo and let the automation rebuild your schemas to integrate the new objects. We recommend that you import these objects in a PR/MR to allow the pipeline to validate them, which will be important when ShareTide objects start referecing one another (for example TVM chaining, or cross-object relation).
 
 **Resolving chaining dependencies**
+
 When you're interested in importing several TVMs at once, if they contain chaining relations to objects not yet in your OpenTide instance, they will not be valid from a validation standpoint. We recommend commenting out chaining relations for those new files, importing them all at once (committing them to your default branch) to pass validation and update your local object index and schemas, and then uncommenting the chaining relations which will have become available. 
 
 **Resolving cross-object relation**
+
 When you're importing related objects (typically threats and related detection objects in one go), because they are not yet indexed, the UUIDs will not be valid to be referenced. We recommend starting from the top (e.g., threat vectors), importing those objects first, letting the object index and schema rebuild, then only move on to the next layer (Detection Objectives, finally Detection Rules).
  
 ### Contributing
