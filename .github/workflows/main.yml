@@ -51,6 +51,22 @@ jobs:
     with:
       coretide_ref: development
       opentide_secrets: ${{ needs.Secrets.outputs.opentide_secrets }}
+      
+  Documentation:
+    uses: OpenTideHQ/CoreTide/.github/workflows/documentation.yml@development
+    needs:
+      - Validation
+      - Secrets
+    with:
+      coretide_ref: development
+      opentide_secrets: ${{ needs.Secrets.outputs.opentide_secrets }}
+      mdr_changes: ${{ needs.Validation.outputs.mdr_changes }}
+      wiki_enabled: true
+      wiki_repo_owner: OpenTideHQ
+      wiki_repo_name: WikiTide
+      wiki_repo_branch: main
+    secrets:
+      wiki_token: ${{ secrets.WIKITIDE_GITHUB_TOKEN }}
 
   Deploy:
     uses: OpenTideHQ/CoreTide/.github/workflows/deployment.yml@development
