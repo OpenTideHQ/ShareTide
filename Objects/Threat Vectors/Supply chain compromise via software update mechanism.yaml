@@ -1,0 +1,177 @@
+name: Supply chain compromise via software update mechanism
+criticality: Emergency
+references:
+  public:
+    1: https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-352a
+    2: https://www.microsoft.com/en-us/security/blog/2020/12/18/analyzing-solorigate-the-compromised-dll-file-that-started-a-sophisticated-cyberattack-and-how-microsoft-defender-helps-protect/
+    3: https://www.fireeye.com/blog/threat-research/2020/12/evasive-attacker-leverages-solarwinds-supply-chain-compromises-with-sunburst-backdoor.html
+    4: https://attack.mitre.org/campaigns/C0024/
+    5: https://www.ncsc.gov.uk/news/solarwinds-advisory
+
+metadata:
+  uuid: 7290ceff-561d-49e2-b5a4-c4cfd29c09f7
+  schema: tvm::2.1
+  version: 1
+  created: 2025-10-15
+  modified: 2025-10-15
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: att&ck::G0118
+      sighting: |
+        APT29 (also known as Cozy Bear, The Dukes) was attributed to the SolarWinds 
+        supply chain compromise that began in 2019 and was discovered in December 2020.
+        The threat actor demonstrated advanced tradecraft and operational security.
+      references:
+        - https://attack.mitre.org/groups/G0118/
+        - https://www.mandiant.com/resources/blog/apt29-continues-targeting-microsoft-365
+  att&ck:
+    - T1195.002 # Supply Chain Compromise: Compromise Software Supply Chain
+    - T1195 # Supply Chain Compromise
+    - T1199 # Trusted Relationship
+    - T1078 # Valid Accounts
+    - T1218.011 # System Binary Proxy Execution: Rundll32
+    - T1027 # Obfuscated Files or Information
+    - T1140 # Deobfuscate/Decode Files or Information
+    - T1071 # Application Layer Protocol
+    - T1071.001 # Application Layer Protocol: Web Protocols
+    - T1095 # Non-Application Layer Protocol
+    - T1571 # Non-Standard Port
+    - T1573 # Encrypted Channel
+    - T1070 # Indicator Removal
+    - T1070.004 # Indicator Removal: File Deletion
+    - T1070.006 # Indicator Removal: Timestomp
+    - T1562.001 # Impair Defenses: Disable or Modify Tools
+    - T1562 # Impair Defenses
+    - T1036.005 # Masquerading: Match Legitimate Name or Location
+    - T1036 # Masquerading
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+    - SaaS
+  terrain: |
+    Organizations using the compromised software (SolarWinds Orion Platform versions 2019.4 through 2020.2.1 HF1)
+    that installed trojanized updates between March and June 2020. The attack vector requires:
+    - Legitimate software update mechanism in place
+    - Trust relationship between software vendor and customer
+    - Network connectivity to software vendor update servers
+    - Administrative privileges for software installation/update
+    - Insufficient supply chain security controls
+    - Limited visibility into software build and update processes
+  targets:
+    - Production Software
+    - Development Pipelines
+    - Software Development Tools
+    - Public-Facing Servers
+    - Identity Services
+    - Cloud Portal
+    - API Endpoints
+  platforms:
+    - Windows
+    - Azure
+    - Azure AD
+    - Office 365
+    - AWS
+  severity: National cyber emergency
+  leverage:
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Dwelling
+    - Elevation of privilege
+    - Spoofing
+    - Tampering
+  impact:
+    - National Security
+    - Catastrophic Loss
+    - Data Breach
+    - IP Loss
+    - Reputational Damages
+    - Business disruption
+  viability: Very Likely
+  description: |
+    The SolarWinds supply chain attack, also known as SUNBURST or Solorigate, represents one of the 
+    most sophisticated cyber espionage campaigns in history. Between March and June 2020, threat actors 
+    compromised the software build and distribution system of SolarWinds, a major IT management software 
+    provider. The attackers injected malicious code into legitimate software updates of the SolarWinds 
+    Orion Platform, affecting approximately 18,000 customers worldwide.
+    
+    ## Attack Methodology
+    
+    The attack unfolded in multiple sophisticated stages:
+    
+    ### Initial Compromise
+    Threat actors gained access to SolarWinds' software development environment, potentially through
+    compromised credentials or exploitation of vulnerabilities. This initial access provided the attackers
+    with the ability to modify the Orion Platform source code during the build process.
+    
+    ### Malicious Code Injection
+    The attackers injected a backdoor (dubbed SUNBURST/Solorigate) into the SolarWinds.Orion.Core.BusinessLayer.dll
+    dynamic link library. The malicious code was designed to:
+    - Remain dormant for approximately 12-14 days after installation
+    - Masquerade as legitimate Orion Improvement Program (OIP) functionality
+    - Use domain generation algorithms (DGA) to resolve command and control infrastructure
+    - Employ multiple evasion techniques to avoid detection
+    
+    ### Distribution via Legitimate Updates
+    The trojanized updates were digitally signed with SolarWinds' legitimate code-signing certificate,
+    lending credibility to the malicious packages. Organizations that automatically applied updates or
+    manually installed updates between versions 2019.4 through 2020.2.1 HF1 unknowingly deployed the backdoor.
+    
+    ### Command and Control
+    SUNBURST used sophisticated C2 mechanisms:
+    - DNS requests to avsvmcloud[.]com to resolve actual C2 servers
+    - HTTP/HTTPS communications disguised as Orion Improvement Program traffic
+    - Multiple C2 domains using cloud and content delivery networks
+    - Victim-specific C2 infrastructure allocation
+    
+    ### Post-Exploitation Activities
+    After establishing persistent access, attackers:
+    - Conducted extensive reconnaissance of victim networks
+    - Moved laterally to cloud environments (Azure, Microsoft 365)
+    - Stole authentication credentials and certificates
+    - Accessed sensitive email communications
+    - Deployed additional backdoors and tools (TEARDROP, RAINDROP, etc.)
+    - Maintained long-term persistent access
+    
+    ## Impact and Scope
+    
+    The campaign affected numerous high-value targets including:
+    - U.S. government agencies (Treasury, State, Commerce, Homeland Security, Energy, NIH)
+    - Critical infrastructure organizations
+    - Technology companies (Microsoft, Cisco, Intel, VMware, Palo Alto Networks)
+    - Telecommunications providers
+    - Think tanks and consulting firms
+    - Over 100 private sector companies
+    
+    ## Detection Challenges
+    
+    The attack was particularly difficult to detect due to:
+    - Use of legitimate, signed software updates
+    - Sophisticated operational security practices
+    - Low-and-slow approach to avoid anomaly detection
+    - Use of victim infrastructure for C2 communications
+    - Minimal forensic artifacts
+    - Encrypted communications
+    - Integration with legitimate network management tools
+    
+    ## Defense Recommendations
+    
+    Organizations should implement multiple layers of defense:
+    - Enhanced supply chain security assessment
+    - Software composition analysis
+    - Code signing verification and monitoring
+    - Network traffic analysis for anomalous patterns
+    - Enhanced endpoint detection and response (EDR)
+    - Privileged access management
+    - Zero-trust architecture implementation
+    - Regular security audits of third-party software
+    - Incident response planning for supply chain compromises
+    
+    This threat vector demonstrates the catastrophic potential of supply chain compromises and the
+    need for comprehensive security measures that extend beyond traditional perimeter defenses to
+    encompass the entire software development and distribution lifecycle.
