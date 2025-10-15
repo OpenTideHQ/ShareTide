@@ -1,0 +1,155 @@
+name: LINE VIPER shellcode loader on Cisco ASA
+criticality: Severe
+references:
+  public:
+    1: https://www.ncsc.gov.uk/static-assets/documents/malware-analysis-reports/RayInitiator-LINE-VIPER/ncsc-mar-rayinitiator-line-viper.pdf
+
+metadata:
+  uuid: 
+  schema: tvm::2.1
+  version: 1
+  created: "2025-10-15"
+  modified: "2025-10-15"
+  tlp: clear
+
+threat:
+  killchain: Execution
+  att&ck:
+    - T1059.008  # Command and Scripting Interpreter: Network Device CLI
+    - T1014      # Rootkit
+    - T1562.001  # Impair Defenses: Disable or Modify Tools
+    - T1562      # Impair Defenses
+    - T1202      # Indirect Command Execution
+    - T1040      # Network Sniffing
+    - T1480.001  # Execution Guardrails: Environmental Keying
+  #chaining:
+    #- relation: sequence::follows
+      #vector: 
+      #description: |
+        #LINE VIPER is deployed by RayInitiator bootkit which installs
+        #a handler in lina to load the shellcode
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Networking
+  terrain: |
+    LINE VIPER is an x64 user-mode shellcode loader deployed to Cisco
+    ASA devices via the RayInitiator bootkit [1]. The malware is loaded
+    into memory from a WebVPN client authentication request containing
+    a partial PKCS7 certificate followed by shellcode. It uses
+    victim-specific tokens and per-victim RSA keys for securing tasking
+    and exfiltration.
+  targets:
+    - Network Equipment
+    - VPN Client
+  platforms:
+    - Network Router
+  severity: Substantial incident
+  leverage:
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Dwelling
+    - Tampering
+    - Repudiation
+  impact:
+    - Data Breach
+    - Lose Capabilities
+    - Reputational Damages
+    - National Security
+  viability: Likely
+  description: |
+    LINE VIPER is a sophisticated user-mode shellcode loader with
+    associated modules that targets Cisco ASA (Adaptive Security
+    Appliance) devices. It represents a significant advancement over
+    previous malware families LINE DANCER and LINE RUNNER [1].
+    
+    The analyzed versions target Cisco ASA devices running firmware
+    versions 9.12(4)67 and 9.14(4)24, which at the time of
+    investigation were fully patched. LINE VIPER is loaded into memory
+    by the RayInitiator bootkit from a WebVPN client authentication
+    request containing a partial PKCS7 certificate followed by
+    shellcode [1].
+    
+    #### Tasking Methods
+    
+    LINE VIPER can be tasked via two distinct methods [1]:
+    
+    1. **WebVPN Client Authentication Sessions over HTTPS:** The
+       primary tasking method leverages the WebVPN authentication
+       mechanism. Tasking payloads are delivered through specially
+       crafted HTTPS requests to the WebVPN endpoint.
+    
+    2. **ICMP with Responses over Raw TCP:** An alternative method
+       receives tasking via ICMP packets and responds over raw TCP
+       connections using high-ephemeral ports.
+    
+    #### Security Mechanisms
+    
+    LINE VIPER employs multiple security mechanisms to protect its
+    operations [1]:
+    
+    - **Victim-Specific Tokens:** Utilizes victim-specific tokens for
+      authentication, a method previously observed in LINE DANCER and
+      LINE RUNNER. Tasking payloads are checked for multiple
+      victim-specific tokens before execution.
+    
+    - **Per-Victim RSA Keys:** Uses per-victim RSA public keys to
+      perform symmetric key exchange for securing tasking and
+      exfiltration via the WebVPN client authentication method.
+    
+    - **Environmental Keying:** Implements execution guardrails by
+      validating environmental conditions before running tasked
+      payloads.
+    
+    #### Capabilities
+    
+    LINE VIPER provides extensive capabilities for post-compromise
+    operations [1]:
+    
+    - **CLI Command Execution:** Ability to execute arbitrary CLI
+      commands on the compromised device, enabling full control over
+      device configuration and operation.
+    
+    - **Packet Capture:** Performs network packet captures and has been
+      observed collecting protocols with plaintext credentials,
+      supporting credential harvesting operations.
+    
+    - **AAA Bypass:** Bypasses Authentication, Authorization, and
+      Accounting (AAA) mechanisms for actor-controlled devices,
+      allowing unauthorized access without generating authentication
+      logs.
+    
+    - **Syslog Suppression:** Suppresses specific syslog messages to
+      hide malware behavior and evade detection by security monitoring
+      systems.
+    
+    - **CLI Command Harvesting:** Harvests and monitors user CLI
+      commands executed on the device, enabling intelligence gathering
+      on administrator activities.
+    
+    - **Delayed Reboot:** Forces a delayed reboot of the device,
+      potentially serving as an anti-forensic capability or to clean up
+      traces of malicious activity.
+    
+    #### Defense Evasion
+    
+    LINE VIPER implements multiple defense evasion techniques [1]:
+    
+    - **System Integrity Check Patching:** Patches system integrity
+      checks and returns results as if the device wasn't compromised,
+      defeating built-in security validation mechanisms.
+    
+    - **Heap Integrity Verification Disabling:** Disables heap
+      integrity verification functionality to prevent detection of
+      memory manipulation.
+    
+    - **Immediate Reboot Capability:** Implements an anti-forensic
+      capability to immediately reboot the device when certain CLI
+      commands are executed, potentially destroying volatile evidence.
+    
+    The combination of advanced persistence, multiple C2 channels,
+    encryption, and extensive defense evasion makes LINE VIPER a highly
+    sophisticated threat to network infrastructure.
