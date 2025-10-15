@@ -33,11 +33,13 @@ threat:
     - Enterprise
     - Networking
   terrain: |
-    LINE VIPER malware on Cisco ASA devices implements an alternative
-    command and control mechanism that receives tasking via ICMP packets
-    and responds over raw TCP connections using high-ephemeral ports
-    [1]. This provides a covert C2 channel that avoids typical web-based
-    monitoring and can operate when HTTPS-based methods are unavailable.
+    Network configurations where ICMP traffic is permitted to reach
+    Cisco ASA LAN interfaces, particularly through established VPN
+    tunnels [1]. In observed operations, ICMP tasking is not sent to the
+    WAN interface but instead tunneled through an established VPN
+    session to a LAN interface. The VPN connection allows actor-
+    controlled systems within the local network to send ICMP Echo
+    Requests that bypass traditional WAN-focused network monitoring.
   targets:
     - Network Equipment
   platforms:

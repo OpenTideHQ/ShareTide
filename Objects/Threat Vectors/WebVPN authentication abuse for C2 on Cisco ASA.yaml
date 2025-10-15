@@ -32,12 +32,13 @@ threat:
     - Enterprise
     - Networking
   terrain: |
-    LINE VIPER malware deployed on Cisco ASA devices leverages WebVPN
-    client authentication sessions over HTTPS as a command and control
-    channel [1]. The malware is loaded into memory from WebVPN client
-    authentication requests containing partial PKCS7 certificates
-    followed by shellcode. Tasking and exfiltration are secured using
-    per-victim RSA keys and per-request AES encryption.
+    Cisco ASA devices with WebVPN functionality enabled and accessible
+    to attacker infrastructure [1]. The WebVPN client authentication
+    mechanism processes XML data containing device-id, version, and form
+    elements through a large codebase in lina. This XML processing does
+    not adequately validate or sanitize crafted authentication requests,
+    allowing arbitrary data to be embedded in standard authentication
+    fields like device-type within the XML structure.
   targets:
     - Network Equipment
     - VPN Client

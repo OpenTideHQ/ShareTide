@@ -32,11 +32,13 @@ threat:
     - Enterprise
     - Networking
   terrain: |
-    RayInitiator is a persistent multi-stage bootkit that patches the GRUB
-    bootloader on Cisco ASA 5500-X series devices without secure boot [1].
-    The bootkit hijacks the boot process by modifying GRUB to execute
-    malicious code when loading the Cisco ASA firmware. It specifically
-    hooks the boot sequence where "Booting..." is output to the console.
+    Cisco ASA 5500-X series devices without secure boot technology,
+    lacking cryptographic verification of early boot software [1]. These
+    models were released in 2012 with an End of Life notice issued by
+    Cisco in 2020. All observed targeted models have either passed their
+    last day of support or reach end of support September 30, 2025 [1].
+    The absence of secure boot allows arbitrary modification of the GRUB
+    bootloader without cryptographic validation.
   targets:
     - Network Equipment
     - Firmware

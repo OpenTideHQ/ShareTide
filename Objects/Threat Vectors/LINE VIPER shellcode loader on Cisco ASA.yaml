@@ -36,12 +36,13 @@ threat:
     - Enterprise
     - Networking
   terrain: |
-    LINE VIPER is an x64 user-mode shellcode loader deployed to Cisco
-    ASA devices via the RayInitiator bootkit [1]. The malware is loaded
-    into memory from a WebVPN client authentication request containing
-    a partial PKCS7 certificate followed by shellcode. It uses
-    victim-specific tokens and per-victim RSA keys for securing tasking
-    and exfiltration.
+    Compromised Cisco ASA devices running firmware versions 9.12(4)67
+    and 9.14(4)24, which were fully patched at time of discovery [1].
+    Requires prior deployment of RayInitiator bootkit which installs
+    hooks into lina binary to intercept WebVPN XML form element
+    processing. The WebVPN traffic handling codebase in lina processes
+    XML data that can be weaponized to load shellcode when specific form
+    elements are encountered.
   targets:
     - Network Equipment
     - VPN Client

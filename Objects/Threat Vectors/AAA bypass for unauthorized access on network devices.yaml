@@ -32,11 +32,13 @@ threat:
     - Enterprise
     - Networking
   terrain: |
-    LINE VIPER malware deployed on Cisco ASA devices has the capability
-    to bypass Authentication, Authorization, and Accounting (AAA)
-    mechanisms for actor-controlled devices [1]. This allows
-    unauthorized access without generating authentication logs, enabling
-    stealth access to compromised network infrastructure.
+    Cisco ASA devices with LINE VIPER malware deployed that has memory-
+    resident hooks in the lina binary [1]. The malware operates with
+    sufficient privileges to modify AAA processing logic at runtime,
+    intercepting authentication requests before they reach legitimate
+    AAA validation routines. This requires prior compromise through
+    bootkit deployment that provides the necessary execution context and
+    privileges.
   targets:
     - Network Equipment
     - Server Authentication
