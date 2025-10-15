@@ -21,14 +21,7 @@ metadata:
 
 threat:
   actors:
-    - name: att&ck::G0118
-      sighting: |
-        APT29 (also known as Cozy Bear, The Dukes) was attributed to the SolarWinds 
-        supply chain compromise that began in 2019 and was discovered in December 2020.
-        The threat actor demonstrated advanced tradecraft and operational security.
-      references:
-        - https://attack.mitre.org/groups/G0118/
-        - https://www.mandiant.com/resources/blog/apt29-continues-targeting-microsoft-365
+    - name: att&ck::G0016 #[Enterprise] APT29, Blue Kitsune, Cozy Bear, CozyDuke, Dark Halo, IRON HEMLOCK, IRON RITUAL, Midnight Blizzard, NOBELIUM, NobleBaron, SolarStorm, The Dukes, UNC2452, UNC3524, YTTRIUM
   att&ck:
     - T1195.002 # Supply Chain Compromise: Compromise Software Supply Chain
     - T1195 # Supply Chain Compromise
