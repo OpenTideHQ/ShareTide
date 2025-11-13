@@ -1,0 +1,169 @@
+name: NPM packages being poisoned
+criticality: High
+references:
+  public:
+    1: https://www.bleepingcomputer.com/news/security/npm-ecosystem-at-risk-from-manifest-confusion-attacks/
+    2: https://socket.dev/blog/npm-manifest-confusion
+    3: https://blog.sandworm.dev/npm-malware-in-2023-a-year-in-review
+    4: https://snyk.io/blog/npm-security-preventing-malicious-packages/
+    5: https://www.reversinglabs.com/blog/npm-supply-chain-attack-targets-german-based-companies
+    6: https://thehackernews.com/2024/11/npm-packages-caught-exfiltrating.html
+
+metadata:
+  uuid: 34f5ee60-cedb-44db-80b6-7b643e1f437d
+  schema: tvm::2.1
+  version: 1
+  created: 2025-11-13
+  modified: 2025-11-13
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Exploitation
+  att&ck:
+    - T1195.002 # Supply Chain Compromise: Compromise Software Supply Chain
+    - T1195.001 # Supply Chain Compromise: Compromise Software Dependencies and Development Tools
+    - T1078      # Valid Accounts
+    - T1586.003  # Compromise Accounts: Cloud Accounts
+    - T1098      # Account Manipulation
+    - T1059.007  # Command and Scripting Interpreter: JavaScript
+  chaining:
+    - relation: atomicity::implements
+      vector: b6887f4b-eeae-462c-a2ac-7454efb5eabc # Legitimate software dependency injected with malicious code
+      description: |
+        NPM package poisoning is a specific implementation of software dependency
+        injection attacks, where threat actors compromise legitimate NPM packages
+        through account takeover or maintainer access exploitation.
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Organizations using Node.js and NPM packages in their software development
+    pipeline are vulnerable to package poisoning attacks. The attack vector
+    requires that developers have dependencies on NPM packages, and package
+    managers automatically download and execute code from the NPM registry
+    during installation or updates.
+  targets:
+    - CI/CD Pipelines
+    - Development Pipelines
+    - Developer
+    - Code Repositories
+    - Software Development Tools
+    - Production Software
+  platforms:
+    - Windows
+    - Linux
+    - macOS
+  severity: Highly significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Tampering
+    - Information Disclosure
+    - Elevation of privilege
+  impact:
+    - Data Breach
+    - Impairement
+    - IP Loss
+    - Business disruption
+    - Lose Capabilities
+    - Competitive disadvantage
+  viability: Likely
+  description: |
+    NPM package poisoning is a supply chain attack where threat actors compromise
+    legitimate NPM packages by gaining unauthorized access to package maintainer
+    accounts or exploiting vulnerabilities in the NPM ecosystem. Unlike
+    typosquatting or creating fake packages, this attack targets established,
+    trusted packages that are already widely used in production environments.
+    
+    ### Attack Methods
+    
+    Adversaries employ several methods to poison NPM packages:
+    
+    #### Account Compromise
+    Threat actors gain access to NPM maintainer accounts through:
+    - Credential theft via phishing campaigns targeting package maintainers
+    - Exploitation of weak or reused passwords
+    - Session hijacking or token theft
+    - Social engineering to obtain maintainer credentials
+    - Compromising maintainers' development machines
+    
+    #### Manifest Confusion Attacks
+    Attackers exploit discrepancies between package.json and published package
+    contents on the NPM registry. By manipulating manifest files, they can:
+    - Hide malicious scripts in lifecycle hooks (preinstall, postinstall)
+    - Inject code that executes during package installation
+    - Modify dependencies to include malicious packages
+    
+    #### Dependency Confusion
+    Threat actors publish packages with names matching internal private packages
+    but with higher version numbers, causing package managers to install the
+    malicious public version instead of the legitimate private one.
+    
+    #### Update Poisoning
+    Adversaries push malicious updates to legitimate packages, leveraging the
+    trust established by the package's history and download statistics. Users
+    who update to newer versions unknowingly install compromised code.
+    
+    ### Malicious Payloads
+    
+    Once a package is poisoned, the malicious code can:
+    - Exfiltrate environment variables containing API keys, credentials, and
+      secrets
+    - Steal source code and intellectual property
+    - Install backdoors for persistent access
+    - Deploy crypto miners
+    - Establish command and control (C2) channels
+    - Modify build artifacts to inject malware into production deployments
+    - Capture authentication tokens and session data
+    
+    ### Impact on Software Supply Chain
+    
+    The impact of NPM package poisoning extends beyond the immediate victim:
+    - Downstream consumers of the poisoned package are automatically affected
+    - Build pipelines and CI/CD systems execute malicious code
+    - Production deployments may contain compromised dependencies
+    - Credential theft can lead to lateral movement across development
+      infrastructure
+    - Loss of trust in the broader NPM ecosystem
+    
+    ### Detection Challenges
+    
+    NPM package poisoning is particularly difficult to detect because:
+    - Legitimate packages with established trust are compromised
+    - Malicious updates may appear as routine maintenance
+    - Code obfuscation hides malicious functionality
+    - Automated installation processes execute code without manual review
+    - Package managers cache dependencies, delaying detection
+    
+    ### Notable Examples
+    
+    Several high-profile NPM package poisoning incidents have occurred:
+    - Popular packages with millions of downloads have been compromised
+    - Maintainer accounts have been hijacked to push malicious updates
+    - Packages targeting specific organizations through dependency confusion
+    - Supply chain attacks affecting major technology companies
+    
+    ### Prevention Strategies
+    
+    Organizations can mitigate NPM package poisoning through:
+    - Implementing package version pinning and lock files
+    - Using private NPM registries with vetting processes
+    - Enabling multi-factor authentication for NPM accounts
+    - Conducting security audits of dependencies
+    - Monitoring for unexpected package updates
+    - Implementing Software Bill of Materials (SBOM) tracking
+    - Using automated security scanning tools
+    - Restricting execution of install scripts in CI/CD pipelines
