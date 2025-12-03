@@ -1,0 +1,135 @@
+name: NPM Supply Chain Compromise via Preinstall Scripts
+criticality: Emergency
+references:
+  public:
+    1: https://www.wiz.io/blog/new-shai-hulud-npm-supply-chain-campaign
+    2: https://www.aikido.dev/blog/npm-supply-chain-attack-shai-hulud
+    3: https://docs.npmjs.com/cli/v10/using-npm/scripts#life-cycle-scripts
+
+metadata:
+  uuid: 03888619-c386-469d-b4e4-0203a6207d48
+  schema: tvm::2.1
+  version: 1
+  created: 2025-12-03
+  modified: 2025-12-03
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #No attribution has been confirmed at this time for the Shai-Hulud campaign.
+      #references:
+        #-
+  killchain: Exploitation
+  att&ck:
+    - T1195.002 # Supply Chain Compromise: Compromise Software Supply Chain
+    - T1195.001 # Supply Chain Compromise: Compromise Software Dependencies and Development Tools
+    - T1059.007 # Command and Scripting Interpreter: JavaScript
+    - T1546.016 # Event Triggered Execution: Installer Packages
+    - T1078.004 # Valid Accounts: Cloud Accounts
+  chaining:
+    - relation: atomicity::implements
+      vector: b6887f4b-eeae-462c-a2ac-7454efb5eabc # Legitimate software dependency injected with malicious code
+      description: |
+        This threat vector implements the broader supply chain compromise pattern
+        by specifically targeting NPM package preinstall scripts to execute
+        malicious code during package installation.
+    - relation: support::enabled
+      vector: 1c1c9665-a30e-479b-bd80-1afb7b53ac83 # Compromised software packages
+      description: |
+        The Shai-Hulud campaign compromises legitimate popular NPM packages
+        from organizations like Zapier, ENS Domains, PostHog, and Postman
+        to execute credential theft during installation.
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Developer machines or CI/CD pipelines using npm to install dependencies.
+    The malware executes during the preinstall lifecycle phase, meaning that
+    any environment running `npm install` with a compromised package is at risk.
+    The attack widens the blast radius across dev machines and CI/CD pipelines
+    by executing during preinstall, which happens before dependencies are resolved.
+    CI environment detection is performed by checking environment variables:
+    BUILDKITE, PROJECT_ID, GITHUB_ACTIONS, CODEBUILD_BUILD_NUMBER, CIRCLE_SHA1.
+  targets:
+    - CI/CD Pipelines
+    - Development Pipelines
+    - Developer
+    - Workstations
+    - Code Repositories
+    - Key Store
+    - Cloud Storage Accounts
+  platforms:
+    - Windows
+    - Linux
+    - macOS
+    - Github
+    - AWS
+    - Azure
+  severity: Highly significant incident
+  leverage:
+    - Information Disclosure
+    - Infrastructure Compromise
+    - Dwelling
+    - Elevation of privilege
+  impact:
+    - Data Breach
+    - IP Loss
+    - Identity Theft
+    - Lose Capabilities
+    - Business disruption
+  viability: Almost certain
+  description: |
+    The Shai-Hulud npm supply-chain campaign compromises legitimate popular NPM
+    packages by publishing trojanized versions through compromised maintainer
+    accounts. Unlike previous variants, this campaign executes malicious code
+    during the preinstall lifecycle phase of npm package installation.
+
+    ## Attack Mechanism
+
+    The malware is distributed through compromised npm packages from major
+    organizations including Zapier, ENS Domains, PostHog, and Postman. These
+    packages are highly prevalent, occurring in approximately 27% of cloud
+    and code environments. The number of compromised packages is steadily
+    growing, currently at ~700 total.
+
+    ## Execution Method
+
+    The attack uses npm install lifecycle scripts, specifically the preinstall
+    phase. Two new payload files are characteristic of this variant:
+    - setup_bun.js
+    - bun_environment.js
+
+    The malware creates exfiltration files:
+    - cloud.json (cloud credentials)
+    - contents.json (file contents)
+    - environment.json (environment variables)
+    - truffleSecrets.json (detected secrets)
+
+    ## CI Environment Behavior
+
+    The malware behaves differently based on the execution environment:
+    - In CI Environments: Executes synchronously, ensuring the runner remains
+      active for the entire infection process
+    - In Non-CI Environments: Executes as a background process to avoid
+      alerting users during package installation
+
+    ## Exfiltration
+
+    Stolen data is exfiltrated cross-victim to GitHub repositories with
+    descriptions referencing Shai-Hulud. This means victim data may be
+    published to repositories owned by other unaffiliated compromised users.
+    The blast radius is massive with 25,000+ malicious repos across ~500
+    GitHub users, accelerating at ~1,000 new repos every 30 minutes.
+
+    ## Multi-Platform Support
+
+    The malware supports Linux, Windows, and macOS based runners with
+    suitable payloads for each operating system.

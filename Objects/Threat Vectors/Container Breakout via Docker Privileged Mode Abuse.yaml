@@ -1,0 +1,142 @@
+name: Container Breakout via Docker Privileged Mode Abuse
+criticality: Severe
+references:
+  public:
+    1: https://www.wiz.io/blog/new-shai-hulud-npm-supply-chain-campaign
+    2: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
+    3: https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/
+
+metadata:
+  uuid: 78a2086e-b755-417d-94a3-de848fa33698
+  schema: tvm::2.1
+  version: 1
+  created: 2025-12-03
+  modified: 2025-12-03
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name:
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Privilege Escalation
+  att&ck:
+    - T1611     # Escape to Host
+    - T1068     # Exploitation for Privilege Escalation
+    - T1548.003 # Abuse Elevation Control Mechanism: Sudo and Sudo Caching
+    - T1078.003 # Valid Accounts: Local Accounts
+  chaining:
+    - relation: prerequisite::requires
+      vector: 03888619-c386-469d-b4e4-0203a6207d48 # NPM Supply Chain Compromise via Preinstall Scripts
+      description: |
+        This container breakout technique is executed as part of the
+        Shai-Hulud npm supply chain payload when the compromised environment
+        has Docker available.
+    - relation: support::enabled
+      vector: 025c73c6-f1a6-4382-a64f-38cfe81f8dc6 # Container privilege escalation via kernel or container runtime exploit
+      description: |
+        This technique provides an alternative container escape method that
+        does not require kernel or runtime vulnerabilities, instead abusing
+        the privileged container feature and host filesystem mounting.
+  #cve:
+    #-
+  domains:
+    - Enterprise
+    - Public Cloud
+    - Private Cloud
+  terrain: |
+    Systems where Docker is available and the compromised user has permissions
+    to run Docker commands. The attack specifically targets environments where
+    privileged containers can be created, commonly found in CI/CD runners
+    and development environments with Docker-in-Docker configurations.
+  targets:
+    - Software Containers
+    - CI/CD Pipelines
+    - Developer
+    - Workstations
+    - Virtual Machines Host
+  platforms:
+    - Docker Engine
+    - Linux
+    - Kubernetes
+  severity: Highly significant incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Modify configuration
+    - Modify privileges
+  impact:
+    - Lose Capabilities
+    - Business disruption
+    - Data Breach
+  viability: Environment dependent
+  description: |
+    The Shai-Hulud campaign includes a Docker privilege escalation technique
+    that attempts to escape from container environments to gain root access
+    on the host system by abusing privileged container capabilities.
+
+    ## Attack Mechanism
+
+    The malware executes the following Docker command to achieve container
+    breakout and privilege escalation:
+
+    ```bash
+    docker run --rm --privileged -v /:/host ubuntu bash -c \
+      "cp /host/tmp/runner /host/etc/sudoers.d/runner"
+    ```
+
+    ## Technical Breakdown
+
+    1. **`docker run --rm`**: Creates a temporary container that is removed
+       after execution
+
+    2. **`--privileged`**: Grants the container full access to the host's
+       devices and disables most security isolation. This is the key flag
+       that enables the escape.
+
+    3. **`-v /:/host`**: Mounts the entire host root filesystem into the
+       container at `/host`, providing read/write access to all host files
+
+    4. **`ubuntu`**: Uses a standard Ubuntu base image
+
+    5. **`cp /host/tmp/runner /host/etc/sudoers.d/runner`**: Copies a
+       malicious sudoers file from a staging location to the host's
+       sudoers.d directory
+
+    ## Privilege Escalation Result
+
+    The copied sudoers file grants passwordless root access to the
+    compromised user, effectively providing:
+    - Full root privileges on the host system
+    - Persistence beyond container lifecycle
+    - Ability to modify any system configuration
+    - Access to all data and credentials on the host
+
+    ## Prerequisites
+
+    For this attack to succeed, the following conditions must be met:
+    - Docker must be installed and accessible to the compromised process
+    - The user must have permissions to run Docker commands
+    - The Docker daemon must allow privileged containers
+    - A malicious sudoers file must be staged at `/tmp/runner`
+
+    ## CI/CD Context
+
+    This technique is particularly dangerous in CI/CD environments where:
+    - Docker-in-Docker (DinD) configurations are common
+    - Build agents often run Docker commands
+    - Privileged mode may be enabled for building container images
+    - Shared runners process code from multiple sources
+
+    ## Detection Indicators
+
+    - Docker commands with `--privileged` flag
+    - Volume mounts of root filesystem (`-v /:/`)
+    - Writes to `/etc/sudoers.d/` directory
+    - Unexpected sudoers files appearing on systems
+    - Docker run commands executed during npm install
