@@ -1,4 +1,4 @@
-UUID,Name,Type,Tlp,Description,Version,Created,Modified,Childs,Parents,Chaining,Threat Actors,ATT&CK
+UUID,Name,Type,Tlp,Description,Version,Created,Modified,Childs,Parents,Chaining,Actors,Attack
 8934c19a-954b-4dce-8081-0a6acca599f6,Malicious container image deployed,Threat Vectors,clear,"Threat actors plant malicious code into container images which 
 execute in target environment. This vector is used to perform 
 cryptominning activities and as a persistence technique.
@@ -8971,3 +8971,33 @@ scripts. For example, TrickBot is configured to use network propagation
 script modules (sharedll and tabdll) that rely on SMB and can harvest
 credentials and propagate to additional systems in the network.
 ",5,2023-01-26,2025-10-01,,,,"[Enterprise] APT29, UNC2452, [Mobile] APT28, APT28, [Enterprise] Chimera, [ICS] Wizard Spider, UNC1878, [ICS] FIN6, FIN6, [ICS] FIN7, FIN7, [Enterprise] APT32, APT32, [Enterprise] APT37, APT37","T1098.001, T1059.003, T1555, T1003"
+0be66eea-4ae4-4544-811b-52651e20d744,RBA_RR - WIN base64 encoded powershell payload,Detection Rules,clear,"Detect base64 encoded PowerShell payload that could be used to launch 
+a process or a script.
+The detection applies up to 2 levels of encoded payload (a first payload 
+containing a PowerShell command with a second base64 payload).  
+
+### Splunk(Sentinel) investigation guidelines ###
+
+The alert notification contains
+- host(src_host): the host on which the process was launched.
+- src_user: the account used.
+- ParentProcessName(parent_process): the process launching the PS with base64 payload.
+- NewProcessName(process): PS.
+- CommandLine(command_line): the original command line as seen in logs.
+- payload_b64_ascii [and payload_b64]: the first level of encoded payload. 
+They are always present.
+- payload_level2_b64_ascii [and payload_level2_b64] may also be provided 
+if the first level was containing another base64 encoded payload.
+For Sentinel Alert, you have to decode the base64 string present in command_line field,
+using CyberChef or any base64 decoding tool.  
+
+### SENTINEL alerts triage ###
+CATCH uses TIDE_LD_005_CSIRC_WL_Win_Base64_Encoded_PS_Payload.csv
+to filter legitimate or benign base64 encoded payloads used by PowerShell 
+on EC Windows devices running on our Azure IaaS & PaaS tenant.
+
+### ES-SPLUNK alerts triage ###
+CATCH uses SOC_LT_289_WIN_reviewed_base64_encoded_payload-exclude.csv
+to filter legitimate or benign base64 encoded payloads used by PowerShell 
+on EC Windows devices.
+",6,2024-05-16,2025-01-09,,,,,
