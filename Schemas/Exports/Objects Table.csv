@@ -1001,7 +1001,7 @@ secrets or certificates to automate access and escalate privileges.
   to ensure continued access.
   - Use of valid credentials enables attackers to blend with legitimate user activity, 
   thus evading many traditional security detection systems.
-",2,2025-08-14,2025-09-04,,,"{'sequence::preceeds': ['a8c7b250-a2d4-4a0d-82f8-23dc99c77d7b', '66aafb61-9a46-4287-8b40-4785b42b77a3', 'c698fc79-3ed6-44a7-a9d7-bc447600e4c3', '5d43ef75-4637-4a75-b1ed-6716052cff0e', '60c5b065-7d06-4697-850f-c2f80765f10b', '6e988fa7-69c9-4aef-897c-a34fa5066dac', '78d5e363-14db-40c0-a1c4-4ba02a3e60d4', '2fd1cddb-c66d-4a99-9779-31e32b67495e', '20bd3620-b13b-4895-b291-b1a26bd9aef3', 'f18be76e-f2b3-410a-80c5-d67e7b8e7b03', '50c7e353-ac1c-48a7-8c98-2515b45f31f4', '23f6a192-a25d-48b8-a235-7bb55e483682']}","APT28, APT29, APT33, APT5, Scattered Spider, HAFNIUM, [Enterprise] Ke3chang, LAPSUS","T1078.004, T1110, T1555"
+",2,2025-08-14,2025-09-04,f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b,,"{'sequence::preceeds': ['a8c7b250-a2d4-4a0d-82f8-23dc99c77d7b', '66aafb61-9a46-4287-8b40-4785b42b77a3', 'c698fc79-3ed6-44a7-a9d7-bc447600e4c3', '5d43ef75-4637-4a75-b1ed-6716052cff0e', '60c5b065-7d06-4697-850f-c2f80765f10b', '6e988fa7-69c9-4aef-897c-a34fa5066dac', '78d5e363-14db-40c0-a1c4-4ba02a3e60d4', '2fd1cddb-c66d-4a99-9779-31e32b67495e', '20bd3620-b13b-4895-b291-b1a26bd9aef3', 'f18be76e-f2b3-410a-80c5-d67e7b8e7b03', '50c7e353-ac1c-48a7-8c98-2515b45f31f4', '23f6a192-a25d-48b8-a235-7bb55e483682']}","APT28, APT29, APT33, APT5, Scattered Spider, HAFNIUM, [Enterprise] Ke3chang, LAPSUS","T1078.004, T1110, T1555"
 37381f28-ad9f-40c3-80f8-d8a82d6ce9a3,Resource Secret Reveal in Azure,Threat Vectors,clear,"The following threat vector involves adversaries accessing sensitive secrets, keys, 
 or credentials stored or used by Azure resources such as KeyVaults, Storage Accounts, 
 Automation Accounts, or within deployment histories.
@@ -8971,6 +8971,25 @@ scripts. For example, TrickBot is configured to use network propagation
 script modules (sharedll and tabdll) that rely on SMB and can harvest
 credentials and propagate to additional systems in the network.
 ",5,2023-01-26,2025-10-01,,,,"[Enterprise] APT29, UNC2452, [Mobile] APT28, APT28, [Enterprise] Chimera, [ICS] Wizard Spider, UNC1878, [ICS] FIN6, FIN6, [ICS] FIN7, FIN7, [Enterprise] APT32, APT32, [Enterprise] APT37, APT37","T1098.001, T1059.003, T1555, T1003"
+f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b,Detect Abuse of Valid Azure Credentials,Detection Objectives,clear,"Detect when adversaries abuse valid Azure AD/Entra ID credentials to gain 
+unauthorized access to cloud resources. This detection objective focuses on 
+identifying anomalous authentication patterns, suspicious access behaviors, 
+and privilege abuse that indicate compromised credentials are being used 
+for malicious purposes.
+
+Attackers obtain credentials through various means (phishing, password spraying, 
+credential leaks) and use them to authenticate legitimately to Azure services, 
+making detection challenging as the authentication itself appears valid. This 
+objective aims to identify the contextual anomalies and behavioral indicators 
+that differentiate legitimate use from credential abuse.
+
+Key focus areas include:
+- Anomalous sign-in patterns (location, device, time, velocity)
+- Privilege escalation attempts post-authentication
+- Unusual resource access patterns
+- Service principal and application credential abuse
+- Cross-tenant authentication anomalies
+",1,2025-10-15,2025-10-15,"12fb0e6a-a4e4-42d3-b77b-3c9c96f90f0b, d4d7e42b-3f9b-41c7-8dfb-ee7021ee806f, 11686b3d-5f9d-4c1e-b3a8-4bae83653d24, 353add53-6e14-47df-b65a-a591d2c6aacd",2743bf18-3b86-4721-bf3e-153dcda0b149,,,"T1078.004, T1110, T1555"
 0be66eea-4ae4-4544-811b-52651e20d744,RBA_RR - WIN base64 encoded powershell payload,Detection Rules,clear,"Detect base64 encoded PowerShell payload that could be used to launch 
 a process or a script.
 The detection applies up to 2 levels of encoded payload (a first payload 

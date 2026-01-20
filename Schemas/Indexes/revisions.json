@@ -2955,6 +2955,19 @@
             }
         }
     },
+    "f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b": {
+        "name": "Detect Abuse of Valid Azure Credentials",
+        "object": "Detection Objectives",
+        "description": "Detect when adversaries abuse valid Azure AD/Entra ID credentials to gain \nunauthorized access to cloud resources. This detection objective focuses on \nidentifying anomalous authentication patterns, suspicious access behaviors, \nand privilege abuse that indicate compromised credentials are being used \nfor malicious purposes.\n\nAttackers obtain credentials through various means (phishing, password spraying, \ncredential leaks) and use them to authenticate legitimately to Azure services, \nmaking detection challenging as the authentication itself appears valid. This \nobjective aims to identify the contextual anomalies and behavioral indicators \nthat differentiate legitimate use from credential abuse.\n\nKey focus areas include:\n- Anomalous sign-in patterns (location, device, time, velocity)\n- Privilege escalation attempts post-authentication\n- Unusual resource access patterns\n- Service principal and application credential abuse\n- Cross-tenant authentication anomalies\n",
+        "revisions": {
+            "1": {
+                "date": "2026-01-20",
+                "message": "feat: import DOM from InitTide, update schemas and configs",
+                "author": "BESSON Amine (DIGIT-EXT)",
+                "commit": "c82b2076318c795b18b2dfabb996e64cb7d7a3ce"
+            }
+        }
+    },
     "0be66eea-4ae4-4544-811b-52651e20d744": {
         "name": "RBA_RR - WIN base64 encoded powershell payload",
         "object": "Detection Rules",
