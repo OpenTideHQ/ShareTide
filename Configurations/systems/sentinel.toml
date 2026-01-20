@@ -1,5 +1,5 @@
 [platform]
-enabled = false
+enabled = true
 identifier = "sentinel"
 name = "Microsoft Sentinel"
 subschema = "Microsoft Sentinel"
