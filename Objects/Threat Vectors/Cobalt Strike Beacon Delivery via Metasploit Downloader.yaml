@@ -1,0 +1,173 @@
+name: Cobalt Strike Beacon Delivery via Metasploit Downloader
+criticality: High
+references:
+  public:
+    1: https://securelist.com/notepad-plus-plus-supply-chain-attack/111234/
+
+metadata:
+  uuid: 5a7f3c9e-8b2d-4e6a-9f1c-7b4e8d3a6c2f
+  schema: tvm::2.1
+  tlp: clear
+  version: 1
+  created: 2026-02-09
+  modified: 2026-02-09
+
+threat:
+  killchain: Command and Control
+  att&ck:
+    - T1105
+    - T1071.001
+  chaining:
+    - relation: atomicity::implements
+      vector: 4c8f3d2a-9b7e-4f5a-8c1d-6e3a7b9f2d4c
+      description: |
+        This threat vector implements the command and control establishment
+        phase following initial compromise via the Notepad++ supply chain
+        and execution of malicious payloads. The multi-stage delivery process
+        uses Metasploit as a downloader to fetch and deploy Cobalt Strike.
+    - relation: atomicity::requires
+      vector: 9d2e6b8f-4c1a-7e3d-5f9b-8a4c7e1d3b6f
+      description: |
+        Requires successful execution via legitimate software abuse or DLL
+        side-loading to establish the initial beachhead for downloading
+        additional payloads.
+  domains:
+    - Enterprise
+  terrain: |
+    Compromised Windows systems with outbound HTTPS connectivity to
+    attacker-controlled infrastructure. The environment requires execution
+    privileges sufficient to download and execute additional payloads.
+    Networks without TLS inspection or robust DNS filtering are more
+    vulnerable to C2 channel establishment.
+  targets:
+    - Laptop
+    - Workstations
+    - Virtual Machines
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Persistence
+    - Lateral Movement
+  impact:
+    - Data Breach
+    - IP Loss
+    - Business disruption
+  viability: Observed
+  description: |
+    Following successful execution via ProShow exploitation, Lua interpreter
+    abuse, or DLL side-loading, the deployed Metasploit shellcode acts as a
+    lightweight downloader to fetch and execute Cobalt Strike Beacon, the
+    primary command and control implant.
+    
+    **Multi-Stage Delivery Architecture:**
+    
+    Stage 1: Initial NSIS installer payload (delivered via Notepad++ update)
+    Stage 2: Metasploit downloader shellcode (embedded in execution vector)
+    Stage 3: Cobalt Strike Beacon (downloaded from attacker infrastructure)
+    
+    This multi-stage approach provides operational security benefits:
+    - Smaller initial payload size reduces detection likelihood
+    - Final payload only downloaded on successful compromise
+    - Network indicators (C2 domains) not present in initial stage
+    - Allows attacker to selectively deploy payloads based on reconnaissance
+    
+    **Cobalt Strike Beacon Download Infrastructure:**
+    
+    Chain #1 (July-August 2025):
+    - Download URL: https://45.77.31[.]210/users/admin
+    - Metasploit shellcode fetches Cobalt Strike Beacon via HTTPS
+    - C2 Domain: cdncheck.it[.]com
+    
+    Chain #2 (September-October 2025):
+    - Download infrastructure rotated
+    - C2 Domains (evolved over time):
+      * self-dns.it[.]com
+      * safe-dns.it[.]com
+    
+    Chain #3 (October 2025):
+    - C2 Domain: api.wiresguard[.]com
+    - Also deploys Chrysalis backdoor as backup C2 channel
+    
+    Additional C2 Infrastructure:
+    - api.skycloudcenter[.]com (observed in later variants)
+    
+    **Cobalt Strike Configuration:**
+    
+    All Cobalt Strike Beacon payloads utilized XOR encryption with the static
+    key "CRAZY" to obfuscate embedded configuration data including:
+    - C2 server addresses
+    - Communication protocols (HTTPS in observed samples)
+    - User-Agent strings for blending with legitimate traffic
+    - Sleep/jitter timing for beaconing intervals
+    - Named pipes for inter-process communication
+    
+    The use of a consistent XOR key across campaigns suggests operational
+    continuity and a shared toolkit among the threat actors.
+    
+    **C2 Communication Characteristics:**
+    
+    The attackers employed domain names mimicking legitimate services:
+    - cdncheck.it.com → resembles CDN infrastructure
+    - safe-dns.it.com / self-dns.it.com → resembles DNS services
+    - api.wiresguard[.]com → mimics WireGuard VPN (note typo: "wiresguard")
+    - api.skycloudcenter[.]com → resembles cloud service provider
+    
+    These domain naming conventions facilitate:
+    1. Blending with legitimate enterprise traffic to cloud services
+    2. Evading basic domain reputation filtering
+    3. Social engineering security analysts (domains appear benign)
+    
+    All C2 communication occurred over HTTPS (port 443), making payload
+    inspection difficult without TLS decryption capabilities.
+    
+    **Infrastructure Rotation:**
+    
+    The threat actors demonstrated sophisticated infrastructure management:
+    
+    Timeline of C2 Infrastructure Usage:
+    - July-August 2025: cdncheck.it[.]com
+    - September 2025: self-dns.it[.]com, safe-dns.it[.]com
+    - October 2025: api.wiresguard[.]com, api.skycloudcenter[.]com
+    
+    This rotation pattern suggests:
+    - Proactive infrastructure cycling to evade blocklists
+    - Multiple C2 channels for resilience
+    - Preparation for long-term operations with backup domains
+    
+    **Metasploit Downloader Characteristics:**
+    
+    The Metasploit Framework shellcode used as the downloader exhibited:
+    - Position-independent code (PIC) for execution at arbitrary memory locations
+    - HTTPS download capability with minimal footprint (~4-8KB)
+    - In-memory execution of downloaded payload (fileless after download)
+    - Standard Metasploit shellcode signatures (detectable by YARA rules)
+    
+    **Operational Timeline:**
+    
+    Initial Compromise: July 2025
+    Peak Activity: September-October 2025
+    Infrastructure Persistence: Until December 2025
+    Public Disclosure: February 2, 2026
+    
+    The extended timeline indicates a long-running campaign with continuous
+    infrastructure evolution and payload refinement based on defensive responses.
+    
+    **Associated IOCs:**
+    
+    Download Servers:
+    - 45.77.31[.]210
+    - 45.76.155[.]202
+    - 45.32.144[.]255
+    - 95.179.213[.]0
+    
+    C2 Domains:
+    - cdncheck.it[.]com
+    - self-dns.it[.]com
+    - safe-dns.it[.]com
+    - api.wiresguard[.]com
+    - api.skycloudcenter[.]com
+    
+    XOR Key: "CRAZY"

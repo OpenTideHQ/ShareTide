@@ -1,0 +1,326 @@
+name: WIN - Suspicious Reconnaissance Commands Following Software Update
+references:
+  public:
+    1: https://securelist.com/notepad-plus-plus-supply-chain-attack/111234/
+
+metadata:
+  uuid: 1d8e5b9f-7c3a-4e2f-8b6d-9a4c7e2f5b3d
+  schema: mdr::2.0
+  tlp: clear
+  version: 1
+  created: 2026-02-09
+  modified: 2026-02-09
+  author: ShareTide Community
+
+description: |
+  Detects execution of suspicious system reconnaissance command sequences
+  characteristic of the Notepad++ supply chain compromise campaign. The attack
+  deployed malicious NSIS installers through compromised update infrastructure,
+  which subsequently executed chains of discovery commands to profile victim systems.
+  
+  This rule identifies the execution patterns observed across multiple infection chains:
+  
+  Chain #1 (July-August 2025):
+  - cmd /c whoami&&tasklist > 1.txt
+  
+  Chain #2 (September-October 2025):
+  - cmd /c whoami&&tasklist&&systeminfo&&netstat -ano > a.txt
+  
+  The rule detects:
+  1. Execution of multiple reconnaissance commands (whoami, tasklist, systeminfo, netstat)
+     within a short time window from the same host
+  2. Commands launched from suspicious parent processes or unusual directories
+  3. Output redirection to files in suspicious AppData subdirectories:
+     - %appdata%\ProShow\
+     - %APPDATA%\Adobe\Scripts\
+     - %appdata%\Bluetooth\
+  4. Command execution patterns consistent with the observed attack chains
+  
+  This detection focuses on behavioral patterns rather than specific IOCs to identify
+  both known and potential future variants of this attack technique.
+
+response:
+  alert_severity: High
+  responders: CSIRC
+  procedure:
+    analysis: |
+      1. Verify the parent process and working directory of the reconnaissance commands
+      2. Check for recent NSIS installer or GUP.exe execution on the affected host
+      3. Examine files created in AppData subdirectories (ProShow, Adobe\Scripts, Bluetooth)
+      4. Review network connections for communication to temp.sh or known C2 domains:
+         - cdncheck.it.com, self-dns.it.com, safe-dns.it.com, api.wiresguard.com
+      5. Check for presence of suspicious executables or DLLs in AppData locations:
+         - ProShow.exe, lua.exe, script.exe, BluetoothService.exe
+         - Suspicious files: load, alien.ini, log.dll
+      6. Review process memory for injected code or shellcode indicators
+      7. Collect and analyze any output files (1.txt, a.txt) before they are exfiltrated
+    containment: |
+      1. Isolate affected system from network to prevent C2 communication and lateral movement
+      2. Suspend or terminate suspicious processes executing from AppData directories
+      3. Block network communication to known C2 infrastructure (see IOC list)
+      4. Collect forensic artifacts: memory dumps, process listings, file system artifacts
+      5. Search for additional compromised systems using IOC sweeps and behavioral hunting
+      6. Patch Notepad++ installation or block automatic updates until infrastructure is verified clean
+
+configurations:
+  sentinel:
+    schema: sentinel::2.0
+    status: PRODUCTION
+    scheduling:
+      frequency: 5m
+      lookback: 10m
+    trigger:
+      threshold: 1
+      operator: GreaterThan
+    alert:
+      description: |
+        {{description}}
+        
+        Detected suspicious reconnaissance command execution on host: {{Computer}}
+        User: {{AccountName}}
+        Parent Process: {{ParentProcessName}}
+        Command Pattern: {{CommandPattern}}
+        
+        Investigate immediately for signs of Notepad++ supply chain compromise.
+      suppression: false
+      create_incident: true
+    grouping:
+      event: AlertPerResult
+    entities:
+      - entity: Process
+        mappings:
+          - identifier: CommandLine
+            column: CommandLine
+          - identifier: ProcessId
+            column: ProcessId
+      - entity: Host
+        mappings:
+          - identifier: HostName
+            column: Computer
+          - identifier: DnsDomain
+            column: ComputerDomain
+      - entity: Account
+        mappings:
+          - identifier: Name
+            column: AccountName
+          - identifier: Sid
+            column: AccountSid
+    query: |
+      // Detects suspicious reconnaissance command sequences following potential software update compromise
+      // Targets patterns observed in Notepad++ supply chain attack (July-October 2025)
+      let TimeWindow = 5m;
+      let SuspiciousAppDataPaths = dynamic([
+          "\\appdata\\proshow\\",
+          "\\appdata\\adobe\\scripts\\",
+          "\\appdata\\bluetooth\\",
+          "\\appdata\\roaming\\proshow\\",
+          "\\appdata\\roaming\\adobe\\scripts\\",
+          "\\appdata\\roaming\\bluetooth\\"
+      ]);
+      let ReconCommands = dynamic([
+          "whoami",
+          "tasklist",
+          "systeminfo",
+          "netstat",
+          "ipconfig",
+          "net user",
+          "net group"
+      ]);
+      // Collect all process creation events with reconnaissance commands
+      let ReconEvents = 
+      SecurityEvent
+      | where EventID == 4688
+      | where TimeGenerated >= ago(TimeWindow)
+      | extend CommandLine = tostring(CommandLine)
+      | where CommandLine has_any (ReconCommands)
+      | extend Computer = tolower(Computer)
+      | project TimeGenerated, Computer, AccountName, AccountSid, NewProcessName, 
+                CommandLine, ProcessId, ParentProcessName, SubjectUserName
+      | extend ReconType = case(
+          CommandLine has "whoami", "UserDiscovery",
+          CommandLine has "tasklist", "ProcessDiscovery",
+          CommandLine has "systeminfo", "SystemInfoDiscovery",
+          CommandLine has "netstat", "NetworkDiscovery",
+          CommandLine has "ipconfig", "NetworkDiscovery",
+          CommandLine has "net user" or CommandLine has "net group", "AccountDiscovery",
+          "Other"
+      );
+      // Alternative: Sysmon Event ID 1 for better command line visibility
+      let ReconEventsSysmon = 
+      Event
+      | where Source == "Microsoft-Windows-Sysmon"
+      | where EventID == 1
+      | extend CommandLine = tostring(EventData.CommandLine)
+      | where CommandLine has_any (ReconCommands)
+      | extend Computer = tolower(Computer)
+      | extend ParentImage = tostring(EventData.ParentImage)
+      | extend CurrentDirectory = tostring(EventData.CurrentDirectory)
+      | extend ProcessId = tostring(EventData.ProcessId)
+      | extend User = tostring(EventData.User)
+      | project TimeGenerated, Computer, User, ParentImage, CommandLine, 
+                ProcessId, CurrentDirectory
+      | extend ReconType = case(
+          CommandLine has "whoami", "UserDiscovery",
+          CommandLine has "tasklist", "ProcessDiscovery",
+          CommandLine has "systeminfo", "SystemInfoDiscovery",
+          CommandLine has "netstat", "NetworkDiscovery",
+          CommandLine has "ipconfig", "NetworkDiscovery",
+          "Other"
+      );
+      // Combine Windows Security and Sysmon events
+      let AllReconEvents = 
+      union 
+          (ReconEvents | extend AccountName = AccountName, ComputerDomain = "", ParentProcessName = ParentProcessName, AccountSid = AccountSid),
+          (ReconEventsSysmon | extend AccountName = User, ComputerDomain = "", ParentProcessName = ParentImage, AccountSid = "")
+      | extend CommandLineLower = tolower(CommandLine);
+      // Find hosts with multiple reconnaissance commands in time window
+      let SuspiciousHosts = 
+      AllReconEvents
+      | summarize 
+          CommandCount = dcount(ReconType),
+          Commands = make_set(ReconType),
+          CommandLines = make_set(CommandLine),
+          FirstSeen = min(TimeGenerated),
+          LastSeen = max(TimeGenerated)
+          by Computer, AccountName
+      | where CommandCount >= 2  // At least 2 different recon command types
+      | extend TimeDiff = datetime_diff('second', LastSeen, FirstSeen)
+      | where TimeDiff <= 300;  // Within 5 minutes
+      // Enrich with suspicious indicators
+      AllReconEvents
+      | join kind=inner (SuspiciousHosts) on Computer, AccountName
+      | extend IsSuspiciousPath = iff(
+          CommandLineLower has_any (SuspiciousAppDataPaths), 
+          true, 
+          false
+      )
+      | extend HasOutputRedirect = iff(
+          CommandLine has ">" and (CommandLine has "1.txt" or CommandLine has "a.txt" or CommandLine has ".txt"),
+          true,
+          false
+      )
+      | extend IsSuspiciousParent = iff(
+          ParentProcessName has_any (SuspiciousAppDataPaths) or
+          ParentProcessName has "\\appdata\\local\\temp\\" or
+          ParentProcessName has "gup.exe" or
+          ParentProcessName has "update.exe" or
+          ParentProcessName endswith ".tmp",
+          true,
+          false
+      )
+      | extend CommandPattern = strcat_array(Commands, ", ")
+      // Prioritize alerts with additional suspicious indicators
+      | extend SuspicionScore = 
+          iff(IsSuspiciousPath, 2, 0) +
+          iff(HasOutputRedirect, 2, 0) +
+          iff(IsSuspiciousParent, 3, 0) +
+          iff(CommandCount >= 3, 1, 0)
+      | where SuspicionScore >= 2 or CommandCount >= 3
+      | project 
+          TimeGenerated,
+          Computer,
+          ComputerDomain,
+          AccountName,
+          AccountSid,
+          CommandPattern,
+          CommandCount,
+          Commands,
+          CommandLine,
+          ProcessId,
+          ParentProcessName,
+          FirstSeen,
+          LastSeen,
+          TimeDiff,
+          IsSuspiciousPath,
+          HasOutputRedirect,
+          IsSuspiciousParent,
+          SuspicionScore
+      | sort by SuspicionScore desc, TimeGenerated desc
+
+  splunk:
+    schema: splunk::2.0
+    status: PRODUCTION
+    throttling:
+      duration: 1h
+      fields:
+        - host
+        - user
+    scheduling:
+      frequency: 5m
+      lookback: 10m
+    risk:
+      message: Suspicious reconnaissance command sequence detected on $host$ by user $user$ - potential Notepad++ supply chain compromise
+      risk_objects:
+        - field: host
+          type: system
+          score: 80
+        - field: user
+          type: user
+          score: 60
+      threat_objects:
+        - field: process
+          type: process
+        - field: parent_process
+          type: process
+    query: |
+      (index=windows OR index=edr OR index=sysmon)
+      (EventCode=4688 OR EventCode=1 OR sourcetype=XmlWinEventLog:Microsoft-Windows-Sysmon/Operational)
+      (CommandLine="*whoami*" OR CommandLine="*tasklist*" OR CommandLine="*systeminfo*" OR 
+       CommandLine="*netstat*" OR CommandLine="*ipconfig*" OR CommandLine="*net user*" OR 
+       CommandLine="*net group*")
+      | eval command_lower=lower(CommandLine)
+      | eval parent_lower=lower(ParentProcessName)
+      | eval current_dir_lower=lower(CurrentDirectory)
+      | eval recon_type=case(
+          match(command_lower, "whoami"), "UserDiscovery",
+          match(command_lower, "tasklist"), "ProcessDiscovery",
+          match(command_lower, "systeminfo"), "SystemInfoDiscovery",
+          match(command_lower, "netstat"), "NetworkDiscovery",
+          match(command_lower, "ipconfig"), "NetworkDiscovery",
+          match(command_lower, "net (user|group)"), "AccountDiscovery",
+          1=1, "Other"
+      )
+      | eval is_suspicious_path=if(
+          match(command_lower, "appdata\\\\(roaming\\\\)?(proshow|adobe\\\\scripts|bluetooth)") OR
+          match(current_dir_lower, "appdata\\\\(roaming\\\\)?(proshow|adobe\\\\scripts|bluetooth)"),
+          1, 0
+      )
+      | eval has_output_redirect=if(
+          match(command_lower, ">.*\\.txt"),
+          1, 0
+      )
+      | eval is_suspicious_parent=if(
+          match(parent_lower, "appdata\\\\(local|roaming)") OR
+          match(parent_lower, "gup\\.exe") OR
+          match(parent_lower, "update\\.exe") OR
+          match(parent_lower, "\\.tmp"),
+          1, 0
+      )
+      | bin _time span=5m
+      | stats 
+          dc(recon_type) as recon_command_count,
+          values(recon_type) as recon_types,
+          values(CommandLine) as command_lines,
+          max(is_suspicious_path) as has_suspicious_path,
+          max(has_output_redirect) as has_redirect,
+          max(is_suspicious_parent) as has_suspicious_parent,
+          earliest(_time) as first_seen,
+          latest(_time) as last_seen,
+          values(ParentProcessName) as parent_processes,
+          values(ProcessId) as process_ids
+          by _time, host, user
+      | where recon_command_count >= 2
+      | eval time_diff=last_seen - first_seen
+      | where time_diff <= 300
+      | eval suspicion_score=
+          (has_suspicious_path * 2) +
+          (has_redirect * 2) +
+          (has_suspicious_parent * 3) +
+          if(recon_command_count >= 3, 1, 0)
+      | where suspicion_score >= 2 OR recon_command_count >= 3
+      | eval command_pattern=mvjoin(recon_types, ", ")
+      | eval risk_message="Suspicious reconnaissance commands detected: " . command_pattern . " | Parent: " . mvindex(parent_processes, 0) . " | Score: " . suspicion_score
+      | table _time, host, user, command_pattern, recon_command_count, command_lines, 
+              parent_processes, has_suspicious_path, has_redirect, has_suspicious_parent, 
+              suspicion_score, time_diff, risk_message
+      | sort - suspicion_score, - _time

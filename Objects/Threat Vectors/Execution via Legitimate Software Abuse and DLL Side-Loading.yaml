@@ -1,0 +1,135 @@
+name: Execution via Legitimate Software Abuse and DLL Side-Loading
+criticality: High
+references:
+  public:
+    1: https://securelist.com/notepad-plus-plus-supply-chain-attack/111234/
+
+metadata:
+  uuid: 9d2e6b8f-4c1a-7e3d-5f9b-8a4c7e1d3b6f
+  schema: tvm::2.1
+  tlp: clear
+  version: 1
+  created: 2026-02-09
+  modified: 2026-02-09
+
+threat:
+  killchain: Execution
+  att&ck:
+    - T1574.002
+    - T1203
+    - T1059
+  chaining:
+    - relation: atomicity::implements
+      vector: 4c8f3d2a-9b7e-4f5a-8c1d-6e3a7b9f2d4c
+      description: |
+        This threat vector implements the execution phase following deployment
+        via the Notepad++ supply chain compromise. Multiple sophisticated
+        techniques are employed to execute malicious payloads while evading
+        security controls through abuse of legitimate software components.
+  domains:
+    - Enterprise
+  terrain: |
+    Windows systems with legitimate software that can be exploited for
+    DLL side-loading or contains known vulnerabilities. The attack requires
+    successful initial compromise through the Notepad++ update mechanism
+    and the ability to write files to user-writable AppData directories.
+    Systems without application whitelisting or EDR solutions are more
+    susceptible to these execution techniques.
+  targets:
+    - Laptop
+    - Workstations
+    - Virtual Machines
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Elevation of privilege
+    - Tampering
+    - Code Execution
+  impact:
+    - Data Breach
+    - Business disruption
+  viability: Observed
+  description: |
+    The Notepad++ supply chain attackers employed three distinct execution
+    techniques across their infection chains, demonstrating adaptability and
+    advanced tradecraft to evade detection:
+    
+    **Chain #1: ProShow Vulnerability Exploitation (July-August 2025)**
+    
+    Deployment Directory: %appdata%\ProShow\
+    
+    Components:
+    - ProShow.exe (legitimate ProShow Producer application binary)
+    - "load" file (contains exploit payload with embedded shellcode)
+    
+    Execution Technique:
+    The malicious payload exploits an old, unpatched vulnerability in ProShow
+    Producer (NOT via DLL side-loading). The exploit is triggered by the
+    presence of a specially crafted "load" file that ProShow.exe attempts to
+    process. When ProShow.exe reads the malicious "load" file, the embedded
+    shellcode is executed in the context of the legitimate process.
+    
+    The shellcode is a Metasploit downloader that fetches Cobalt Strike Beacon
+    from https://45.77.31[.]210/users/admin and establishes C2 communication
+    with cdncheck.it[.]com.
+    
+    **Chain #2: Lua Interpreter Abuse (September-October 2025)**
+    
+    Deployment Directory: %APPDATA%\Adobe\Scripts\
+    
+    Components:
+    - Lua interpreter executables (lua.exe or script.exe)
+    - alien.ini (compiled malicious Lua script)
+    - Supporting Lua runtime libraries
+    
+    Execution Technique:
+    The attackers deploy a legitimate Lua scripting interpreter alongside a
+    malicious compiled Lua script (alien.ini). When executed, alien.ini:
+    
+    1. Allocates memory regions in the interpreter process
+    2. Writes Metasploit downloader shellcode directly to allocated memory
+    3. Invokes the Windows API function EnumWindowStationsW
+    4. Passes the memory address containing shellcode as a callback parameter
+    5. Windows executes the "callback" (actually the shellcode)
+    
+    This technique abuses the legitimate Windows API callback mechanism to
+    execute arbitrary shellcode without traditional process injection. The
+    shellcode downloads Cobalt Strike Beacon, with C2 domains rotating between
+    self-dns.it[.]com and safe-dns.it[.]com.
+    
+    **Chain #3: DLL Side-Loading with BluetoothService (October 2025)**
+    
+    Deployment Directory: %appdata%\Bluetooth\
+    
+    Components:
+    - BluetoothService.exe (legitimate signed binary vulnerable to DLL side-loading)
+    - log.dll (malicious DLL masquerading as legitimate dependency)
+    - BluetoothService (encrypted shellcode file, no extension)
+    
+    Execution Technique:
+    Classic DLL side-loading attack leveraging a legitimate signed executable:
+    
+    1. BluetoothService.exe is a legitimate binary that loads log.dll
+    2. Due to Windows DLL search order, the malicious log.dll in the same
+       directory is loaded instead of the legitimate system DLL
+    3. The malicious log.dll reads the "BluetoothService" file (encrypted payload)
+    4. Decrypts and executes the shellcode, deploying Chrysalis backdoor
+    5. Also deploys Cobalt Strike Beacon with C2: api.wiresguard[.]com
+    
+    The use of a legitimate signed binary provides several advantages:
+    - Bypasses application whitelisting based on signatures
+    - Appears as legitimate software in process listings
+    - Evades heuristic detection looking for unsigned/suspicious executables
+    
+    **Common Characteristics Across All Chains:**
+    
+    - Deployment to user-writable AppData subdirectories mimicking legitimate software
+    - Abuse of legitimate, often signed executables to proxy malicious execution
+    - Multi-stage execution with Metasploit downloader fetching Cobalt Strike
+    - Use of Windows API functions to obfuscate malicious activity
+    - Minimal direct shellcode execution, leveraging host processes
+    
+    The diversity of execution techniques suggests threat actor sophistication
+    and preparation for detection evasion across different security control
+    configurations.

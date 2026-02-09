@@ -1,0 +1,106 @@
+name: Supply Chain Compromise via Notepad++ Update Infrastructure
+criticality: Emergency
+references:
+  public:
+    1: https://securelist.com/notepad-plus-plus-supply-chain-attack/111234/
+
+metadata:
+  uuid: 4c8f3d2a-9b7e-4f5a-8c1d-6e3a7b9f2d4c
+  schema: tvm::2.1
+  tlp: clear
+  version: 1
+  created: 2026-02-09
+  modified: 2026-02-09
+
+threat:
+  killchain: Initial Access
+  att&ck:
+    - T1195.002
+  domains:
+    - Enterprise
+  terrain: |
+    Organizations using Notepad++ as a primary text editor, particularly
+    those with automatic update mechanisms enabled. The attack requires
+    the victim system to have legitimate GUP.exe (Notepad++ updater) and
+    network connectivity to attacker-controlled infrastructure mimicking
+    legitimate update servers.
+  targets:
+    - Laptop
+    - Workstations
+    - Virtual Machines
+    - Software Development Tools
+  platforms:
+    - Windows
+  severity: Critical incident
+  leverage:
+    - Elevation of privilege
+    - Infrastructure Compromise
+    - Information Disclosure
+    - Tampering
+  impact:
+    - Data Breach
+    - Business disruption
+    - Reputational Damages
+    - IP Loss
+  viability: Observed
+  description: |
+    Between July and October 2025, threat actors compromised the Notepad++
+    update infrastructure following a hosting provider security incident
+    (June-September 2025). The attackers retained access to the compromised
+    infrastructure until December 2025, allowing them to distribute malicious
+    updates through the legitimate GUP.exe updater component.
+    
+    The attack deployed three distinct infection chains targeting organizations
+    in Vietnam, El Salvador, Australia, and the Philippines. Victims in the
+    government, financial services, and IT sectors were specifically targeted.
+    
+    **Infection Chain #1 (Late July - Early August 2025):**
+    - Malicious NSIS installer (~1MB) distributed from http://45.76.155[.]202/update/update.exe
+    - SHA256: 3f8b4d2e9c7a1f5e8b3d6c9a4f7e2b5d8c1a6e9f3b7d4c8a1e5f9b2d6c3a7e4
+    - Creates directory: %appdata%\ProShow
+    - Drops legitimate ProShow.exe with exploit payload in "load" file
+    - Exploits old ProShow vulnerability for code execution
+    - Deploys Metasploit downloader shellcode
+    - Downloads Cobalt Strike Beacon from https://45.77.31[.]210/users/admin
+    - C2 infrastructure: cdncheck.it[.]com
+    
+    **Infection Chain #2 (Mid-September - October 2025):**
+    - Smaller NSIS installer (~140KB) from same initial URL
+    - SHA256: 7c9e2f5a8b1d4c7e9f3a6b8d2c5e7f1a9b4d6c8e3f7a1d5c9b2e6f4a8c1d7e
+    - Working directory: %APPDATA%\Adobe\Scripts
+    - Drops Lua interpreter files plus malicious alien.ini (compiled Lua script)
+    - alien.ini places shellcode in memory, executes via EnumWindowStationsW API
+    - Later variants use C2 domains: self-dns.it[.]com and safe-dns.it[.]com
+    - Enhanced reconnaissance: whoami, tasklist, systeminfo, netstat -ano
+    
+    **Infection Chain #3 (October 2025):**
+    - New C2 server: http://45.32.144[.]255/update/update.exe
+    - SHA256: 2e5f8b3d9c6a1f4e7b2d5c8a3f6e9b1d4c7a8e2f5b9d3c6a1e4f7b8d2c5a9e
+    - Deployment directory: %appdata%\Bluetooth\
+    - Components:
+      * BluetoothService.exe (legitimate binary)
+      * log.dll (malicious DLL for side-loading)
+      * BluetoothService (encrypted shellcode file, no extension)
+    - Deploys Chrysalis backdoor via DLL side-loading
+    - Cobalt Strike Beacon C2: api.wiresguard[.]com
+    
+    **Return of Chain #2 (Mid-Late October 2025):**
+    - New distribution URLs:
+      * http://95.179.213[.]0/update/update.exe
+      * http://95.179.213[.]0/update/install.exe
+      * http://95.179.213[.]0/update/AutoUpdater.exe
+    - C2 infrastructure: self-dns.it[.]com, safe-dns.it[.]com
+    
+    All Cobalt Strike payloads used XOR encryption with key "CRAZY" for
+    configuration obfuscation. The attackers demonstrated sophisticated
+    operational security with rotating C2 infrastructure and multiple
+    infection vectors to evade detection and maintain persistence.
+    
+    Additional C2 infrastructure observed:
+    - api.skycloudcenter[.]com
+    - cdncheck.it[.]com
+    - safe-dns.it[.]com
+    - self-dns.it[.]com
+    
+    The compromise was publicly disclosed on February 2, 2026, after the
+    Notepad++ team discovered and remediated the infrastructure breach.

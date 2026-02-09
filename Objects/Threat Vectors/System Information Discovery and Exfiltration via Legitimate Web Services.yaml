@@ -1,0 +1,107 @@
+name: System Information Discovery and Exfiltration via Legitimate Web Services
+criticality: High
+references:
+  public:
+    1: https://securelist.com/notepad-plus-plus-supply-chain-attack/111234/
+
+metadata:
+  uuid: 7f9e3b5d-2c8a-4f1e-9b6d-3a7c5e8f1b4d
+  schema: tvm::2.1
+  tlp: clear
+  version: 1
+  created: 2026-02-09
+  modified: 2026-02-09
+
+threat:
+  killchain: Discovery
+  att&ck:
+    - T1082
+    - T1033
+    - T1057
+    - T1049
+    - T1567
+  chaining:
+    - relation: atomicity::implements
+      vector: 4c8f3d2a-9b7e-4f5a-8c1d-6e3a7b9f2d4c
+      description: |
+        This threat vector implements the discovery and reconnaissance phase
+        following initial compromise via the Notepad++ supply chain attack.
+        The malicious update payload executes system discovery commands and
+        exfiltrates results to evade direct C2 communication detection.
+  domains:
+    - Enterprise
+  terrain: |
+    Windows systems compromised through the Notepad++ update mechanism with
+    outbound internet connectivity. The target environment must allow execution
+    of cmd.exe and access to legitimate web services like temp[.]sh for data
+    exfiltration. Organizations without egress filtering for uncommon web
+    services are particularly vulnerable.
+  targets:
+    - Laptop
+    - Workstations
+    - Virtual Machines
+  platforms:
+    - Windows
+  severity: Significant incident
+  leverage:
+    - Information Disclosure
+  impact:
+    - Information Disclosure
+  viability: Observed
+  description: |
+    Following initial compromise via the malicious Notepad++ update, the
+    payload performs extensive system reconnaissance using native Windows
+    utilities to gather victim information. The threat actor progressively
+    enhanced their reconnaissance capabilities across infection chains:
+    
+    **Chain #1 (Late July - Early August 2025):**
+    Executes basic discovery commands:
+    ```
+    cmd /c whoami&&tasklist > 1.txt
+    ```
+    
+    Output file "1.txt" is uploaded to temp[.]sh (a legitimate temporary
+    file sharing service) using curl. The resulting temp[.]sh URL is then
+    transmitted to the C2 server encoded in the User-Agent header of HTTP
+    requests, avoiding direct file transfer to attacker infrastructure.
+    
+    **Chain #2 (Mid-September - October 2025):**
+    Enhanced reconnaissance with comprehensive system profiling:
+    ```
+    cmd /c "whoami&&tasklist&&systeminfo&&netstat -ano" > a.txt
+    ```
+    
+    This extended command sequence gathers:
+    - Current user context (whoami)
+    - Running processes (tasklist)
+    - System configuration including OS version, patches, hardware (systeminfo)
+    - Active network connections and listening ports (netstat -ano)
+    
+    The output file "a.txt" is similarly exfiltrated via temp[.]sh, with
+    the URL passed to C2 through User-Agent header manipulation.
+    
+    **Exfiltration Technique:**
+    The use of temp[.]sh as an intermediary service provides several
+    operational advantages for the attacker:
+    
+    1. Legitimate Service Abuse: Traffic to temp[.]sh appears as normal
+       web browsing activity, bypassing reputation-based blocking
+    
+    2. Indirect Exfiltration: Victim systems never directly communicate
+       with attacker C2 for data exfiltration, only accessing a public
+       file-sharing service
+    
+    3. Asynchronous Retrieval: Attackers retrieve reconnaissance data
+       from temp[.]sh separately, further compartmentalizing operations
+    
+    4. Minimal Footprint: No need for complex data staging or encoding,
+       reducing forensic artifacts on the victim system
+    
+    The reconnaissance data informs attacker decision-making for deploying
+    additional payloads (Cobalt Strike Beacon, Chrysalis backdoor) based
+    on victim environment value and defensive posture.
+    
+    Working directories for reconnaissance operations:
+    - Chain #1: %appdata%\ProShow\
+    - Chain #2: %APPDATA%\Adobe\Scripts\
+    - Chain #3: %appdata%\Bluetooth\
