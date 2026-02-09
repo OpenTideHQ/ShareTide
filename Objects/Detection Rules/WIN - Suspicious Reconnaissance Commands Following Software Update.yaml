@@ -150,14 +150,13 @@ configurations:
       Event
       | where Source == "Microsoft-Windows-Sysmon"
       | where EventID == 1
-      | extend RenderedContent = parse_xml(EventData)
-      | extend CommandLine = tostring(RenderedContent.DataItem.EventData.Data.[4]["#text"])
+      | parse EventData with * '<Data Name="CommandLine">' CommandLine '</Data>' *
       | where CommandLine has_any (ReconCommands)
       | extend Computer = tolower(Computer)
-      | extend ParentImage = tostring(RenderedContent.DataItem.EventData.Data.[20]["#text"])
-      | extend CurrentDirectory = tostring(RenderedContent.DataItem.EventData.Data.[16]["#text"])
-      | extend SysmonProcessId = tostring(RenderedContent.DataItem.EventData.Data.[3]["#text"])
-      | extend User = tostring(RenderedContent.DataItem.EventData.Data.[12]["#text"])
+      | parse EventData with * '<Data Name="ParentImage">' ParentImage '</Data>' *
+      | parse EventData with * '<Data Name="CurrentDirectory">' CurrentDirectory '</Data>' *
+      | parse EventData with * '<Data Name="ProcessId">' SysmonProcessId '</Data>' *
+      | parse EventData with * '<Data Name="User">' User '</Data>' *
       | project TimeGenerated, Computer, User, ParentImage, CommandLine, 
                 SysmonProcessId, CurrentDirectory
       | extend ReconType = case(
