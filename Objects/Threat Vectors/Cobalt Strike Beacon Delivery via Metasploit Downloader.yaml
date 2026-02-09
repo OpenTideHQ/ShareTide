@@ -110,8 +110,8 @@ threat:
     **C2 Communication Characteristics:**
     
     The attackers employed domain names mimicking legitimate services:
-    - cdncheck.it.com → resembles CDN infrastructure
-    - safe-dns.it.com / self-dns.it.com → resembles DNS services
+    - cdncheck.it[.]com → resembles CDN infrastructure
+    - safe-dns.it[.]com / self-dns.it[.]com → resembles DNS services
     - api.wiresguard[.]com → mimics WireGuard VPN (note typo: "wiresguard")
     - api.skycloudcenter[.]com → resembles cloud service provider
     
