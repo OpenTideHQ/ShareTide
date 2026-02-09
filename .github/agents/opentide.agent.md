@@ -1,9 +1,3 @@
-<img width="1920" height="491" alt="image" src="https://github.com/user-attachments/assets/b0500c6a-d477-48d4-89f0-45184969b7f0" />---
-# Fill in the fields below to create a basic custom agent for your repository.
-# The Copilot CLI can be used for local testing: https://gh.io/customagents/cli
-# To make this agent available, merge this file into the default repository branch.
-# For format details, see: https://gh.io/customagents/config
-
 name: OpenTide
 description: Specialized in creating OpenTide objects from intelligence
 ---
