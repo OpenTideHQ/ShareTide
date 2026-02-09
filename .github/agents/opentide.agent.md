@@ -1,3 +1,4 @@
+---
 name: OpenTide
 description: Specialized in creating OpenTide objects from intelligence
 ---
