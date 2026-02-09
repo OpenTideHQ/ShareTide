@@ -506,14 +506,7 @@
                                     "system": {
                                         "title": "Target system for the search",
                                         "type": "string",
-                                        "enum": [
-                                            "crowdstrike",
-                                            "carbon_black_cloud",
-                                            "sentinel_one",
-                                            "splunk",
-                                            "defender_for_endpoint",
-                                            "sentinel"
-                                        ]
+                                        "description": "On which system the query should run"
                                     },
                                     "query": {
                                         "title": "\ud83d\udd0e Supporting Search Query",
@@ -1955,7 +1948,13 @@
                             "properties": {
                                 "title": {
                                     "title": "\ud83c\udfab Alert Title",
+                                    "type": "string",
                                     "description": "Name of the alert triggered by the custom detection rule. By\ndefault, the name of the MDR will be used, but this parameter allows\nto override it. \n"
+                                },
+                                "description": {
+                                    "title": "\ud83d\udd2c Alert Description",
+                                    "type": "string",
+                                    "description": "Detailed description of the alert triggered by the custom detection rule.\nThis text provides context about the detection and helps analysts understand\nthe nature of the threat.\n\nBy default, the description of the MDR will be used, but this parameter\nallows to override it.\n"
                                 },
                                 "category": {
                                     "title": "Threat Category",
