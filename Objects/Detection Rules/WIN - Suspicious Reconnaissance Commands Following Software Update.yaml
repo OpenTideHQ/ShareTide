@@ -131,11 +131,11 @@ configurations:
       SecurityEvent
       | where EventID == 4688
       | where TimeGenerated >= ago(TimeWindow)
-      | extend CommandLine = tostring(CommandLine)
+      | where isnotempty(CommandLine)
       | where CommandLine has_any (ReconCommands)
       | extend Computer = tolower(Computer)
-      | project TimeGenerated, Computer, AccountName, AccountSid, NewProcessName, 
-                CommandLine, ProcessId, ParentProcessName, SubjectUserName
+      | project TimeGenerated, Computer, SubjectUserName, SubjectUserSid, NewProcessName, 
+                CommandLine, ProcessId, ParentProcessName
       | extend ReconType = case(
           CommandLine has "whoami", "UserDiscovery",
           CommandLine has "tasklist", "ProcessDiscovery",
@@ -150,15 +150,16 @@ configurations:
       Event
       | where Source == "Microsoft-Windows-Sysmon"
       | where EventID == 1
-      | extend CommandLine = tostring(EventData.CommandLine)
+      | extend RenderedContent = parse_xml(EventData)
+      | extend CommandLine = tostring(RenderedContent.DataItem.EventData.Data.[4]["#text"])
       | where CommandLine has_any (ReconCommands)
       | extend Computer = tolower(Computer)
-      | extend ParentImage = tostring(EventData.ParentImage)
-      | extend CurrentDirectory = tostring(EventData.CurrentDirectory)
-      | extend ProcessId = tostring(EventData.ProcessId)
-      | extend User = tostring(EventData.User)
+      | extend ParentImage = tostring(RenderedContent.DataItem.EventData.Data.[20]["#text"])
+      | extend CurrentDirectory = tostring(RenderedContent.DataItem.EventData.Data.[16]["#text"])
+      | extend SysmonProcessId = tostring(RenderedContent.DataItem.EventData.Data.[3]["#text"])
+      | extend User = tostring(RenderedContent.DataItem.EventData.Data.[12]["#text"])
       | project TimeGenerated, Computer, User, ParentImage, CommandLine, 
-                ProcessId, CurrentDirectory
+                SysmonProcessId, CurrentDirectory
       | extend ReconType = case(
           CommandLine has "whoami", "UserDiscovery",
           CommandLine has "tasklist", "ProcessDiscovery",
@@ -170,8 +171,8 @@ configurations:
       // Combine Windows Security and Sysmon events
       let AllReconEvents = 
       union 
-          (ReconEvents | extend AccountName = AccountName, ComputerDomain = "", ParentProcessName = ParentProcessName, AccountSid = AccountSid),
-          (ReconEventsSysmon | extend AccountName = User, ComputerDomain = "", ParentProcessName = ParentImage, AccountSid = "")
+          (ReconEvents | extend AccountName = SubjectUserName, ComputerDomain = "", ParentProcessName = ParentProcessName, AccountSid = SubjectUserSid),
+          (ReconEventsSysmon | extend AccountName = User, ComputerDomain = "", ParentProcessName = ParentImage, AccountSid = "", ProcessId = SysmonProcessId)
       | extend CommandLineLower = tolower(CommandLine);
       // Find hosts with multiple reconnaissance commands in time window
       let SuspiciousHosts = 
