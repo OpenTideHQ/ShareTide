@@ -165,11 +165,11 @@
                         "red"
                     ],
                     "markdownEnumDescriptions": [
-                        "\n### \u26aa clear\n\n\ud83d\udd11 **Identifier** : `TLP:CLEAR`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nRecipients can spread this to the world, there is no limit on disclosure.\n",
-                        "\n### \ud83d\udfe2 green\n\n\ud83d\udd11 **Identifier** : `TLP:GREEN`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nLimited disclosure, recipients can spread this within their community. Sources may use TLP:GREEN when information is useful to increase awareness within their wider community.\n",
-                        "\n### \ud83d\udfe0 amber\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nLimited disclosure, recipients can only spread this on a need-to-know basis within their organization and its clients.\n",
-                        "\n### \ud83d\udfe0 amber+strict\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER+STRICT`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nSimilar to TLP:AMBER, but restricts sharing to the organization only.\n",
-                        "\n### \ud83d\udd34 red\n\n\ud83d\udd11 **Identifier** : `TLP:RED`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nFor the eyes and ears of individual recipients only, no further disclosure.\n"
+                        "\n### \u26aa Clear\n\n\ud83d\udd11 **Identifier** : `TLP:CLEAR`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nRecipients can spread this to the world, there is no limit on disclosure.\n",
+                        "\n### \ud83d\udfe2 Green\n\n\ud83d\udd11 **Identifier** : `TLP:GREEN`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nLimited disclosure, recipients can spread this within their community. Sources may use TLP:GREEN when information is useful to increase awareness within their wider community.\n",
+                        "\n### \ud83d\udfe0 Amber\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nLimited disclosure, recipients can only spread this on a need-to-know basis within their organization and its clients.\n",
+                        "\n### \ud83d\udfe0 Amber+Strict\n\n\ud83d\udd11 **Identifier** : `TLP:AMBER+STRICT`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nSimilar to TLP:AMBER, but restricts sharing to the organization only.\n",
+                        "\n### \ud83d\udd34 Red\n\n\ud83d\udd11 **Identifier** : `TLP:RED`\n\n_Vocabulary_ : `Traffic Light Protocol`\n\n \n\n\n\n\n\n---\n\nFor the eyes and ears of individual recipients only, no further disclosure.\n"
                     ]
                 },
                 "classification": {
@@ -557,7 +557,6 @@
                             "Kafka",
                             "Apache HTTP Server",
                             "PowerShell",
-                            "EU Login",
                             "VMWare",
                             "AWS EC2",
                             "AWS EKS",
@@ -639,7 +638,6 @@
                             "\n### \ud83d\udcbf Kafka\n\n\ud83d\udd11 **Identifier** : `PFM0026`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\n\n\n---\n\nPlaceholder\n",
                             "\n### \ud83d\udcbf Apache HTTP Server\n\n\ud83d\udd11 **Identifier** : `PFM0027`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\n\n\n---\n\nPlaceholder\n",
                             "\n### \ud83d\udcbf PowerShell\n\n\ud83d\udd11 **Identifier** : `PFM0028`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\n\n\n---\n\nPlaceholder\n",
-                            "\n### \ud83d\udcbf EU Login\n\n\ud83d\udd11 **Identifier** : `PFM1024`\n\n_Vocabulary_ : `Platforms`\n\n  | **\ud83d\udd34TLP:RED**\n\n\n\n\n\n---\n\nPlaceholder\n",
                             "\n### \ud83d\udcbf VMWare\n\n\ud83d\udd11 **Identifier** : `PFM0030`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\n\n\n---\n\nPlaceholder\n",
                             "\n### \ud83d\udcbf AWS EC2\n\n\ud83d\udd11 **Identifier** : `PFM0031`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://docs.aws.amazon.com/ec2/index.html\n\n---\n\nAmazon Elastic Compute Cloud (Amazon EC2) is a web service that provides resizable computing capacity\u2014literally, servers in Amazon's data centers\u2014that you use to build and host your software systems.\n",
                             "\n### \ud83d\udcbf AWS EKS\n\n\ud83d\udd11 **Identifier** : `PFM0032`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://docs.aws.amazon.com/eks/index.html\n\n---\n\nAmazon Elastic Kubernetes Service (Amazon EKS) is a managed service that makes it easy for you to run Kubernetes on AWS without needing to install and operate your own Kubernetes clusters.\n",
@@ -690,7 +688,7 @@
                             "\n### \ud83d\udcbf OPC UA\n\n\ud83d\udd11 **Identifier** : `PFM0076`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://opcfoundation.org/about/opc-technologies/opc-ua/\n\n---\n\nOPC Unified Architecture (OPC UA) is a machine-to-machine communication protocol for industrial automation. Provides secure, reliable data exchange across platforms.\n",
                             "\n### \ud83d\udcbf OPC DA\n\n\ud83d\udd11 **Identifier** : `PFM0077`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://opcfoundation.org/about/opc-technologies/opc-classic/\n\n---\n\nOPC Data Access (OPC DA) is a legacy OPC specification for real-time data access from PLCs, DCS, and other control devices to HMIs and SCADA systems.\n",
                             "\n### \ud83d\udcbf BACnet\n\n\ud83d\udd11 **Identifier** : `PFM0078`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://www.bacnetinternational.org/\n\n---\n\nBuilding Automation and Control Networks (BACnet) is a communication protocol for building automation and control networks, used in HVAC, lighting, and access control systems.\n",
-                            "\n### \ud83d\udcbf PROFINET\n\n\ud83d\udd11 **Identifier** : `PFM0079`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://www.profibus.com/technology/profinet\n\n---\n\nPROFINET is an industry standard for industrial Ethernet, primarily used with Siemens and other European automation equipment.\n",
+                            "\n### \ud83d\udcbf PROFINET\n\n\ud83d\udd11 **Identifier** : `PFM0079`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://www.profibus.com/technology/profinet\n\n---\n\nPROFINET is an industry standard for industrial Ethernet, primarily used with Siemens and other fropean automation equipment.\n",
                             "\n### \ud83d\udcbf IEC 61850\n\n\ud83d\udd11 **Identifier** : `PFM0080`\n\n_Vocabulary_ : `Platforms`\n\n \n\n\n\nhttps://webstore.iec.ch/publication/6028\n\n---\n\nIEC 61850 is a standard for communication networks and systems in substations, enabling interoperability between intelligent electronic devices (IEDs) in power systems.\n"
                         ]
                     },
