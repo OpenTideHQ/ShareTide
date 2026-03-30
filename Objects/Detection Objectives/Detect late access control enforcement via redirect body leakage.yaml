@@ -17,9 +17,9 @@ metadata:
   #author: 
   #contributors:
     #-
-  organisation:
-    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
-    name: EC DIGIT CSOC
+  #organisation:
+    #uuid: 
+    #name: 
 
 objective:
   priority: High
