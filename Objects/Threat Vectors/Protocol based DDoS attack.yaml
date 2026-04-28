@@ -46,7 +46,6 @@ threat:
   platforms:
     - AWS
     - Azure
-    - EU Login
     - Apache HTTP Server
     - Confluence
     - JIRA
