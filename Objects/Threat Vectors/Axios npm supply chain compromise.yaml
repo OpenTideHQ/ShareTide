@@ -326,20 +326,6 @@ threat:
     - `nrwise` (`nrwise@proton.me`) - attacker-created npm account
       used to publish `plain-crypto-js`.
 
-    ## Detection Opportunities
-
-    Detection capability for this incident is modelled as a
-    dedicated Detection Objective:
-    `Detect Axios npm Supply Chain Compromise Activity`
-    (DOM uuid `f45b9b82-a3c5-4643-932b-debfd8739bd8`). It covers
-    lockfile / SBOM audit for compromised versions, suspicious
-    npm postinstall lifecycle execution, WAVESHAPER.V2 on-disk
-    artefacts on macOS / Windows / Linux, renamed-PowerShell +
-    transient-VBScript loader patterns from Node.js process trees,
-    C2 communication to `sfrclak[.]com`, and npm publisher /
-    provenance regression on critical packages. Refer to that DOM
-    for signal-level detail rather than duplicating it here.
-
     ## Mitigation Recommendations
 
     1. **Immediate**
