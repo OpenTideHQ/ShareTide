@@ -23,20 +23,14 @@ threat:
     - T1071 #Application Layer Protocol
     - T1059 #Command and Scripting Interpreter
     - T1574 #Hijack Execution Flow (DLL Side-Loading sub-technique)
-  domains:
-    - Enterprise
+  surface:
+    - OS::Windows::Desktop
   terrain: |
     Organizations and individuals using Notepad++ text editor on Windows systems, 
     particularly those with automatic update mechanisms enabled. The attack targeted 
     the legitimate update infrastructure, delivering malicious payloads disguised 
     as authentic software updates. Victims were distributed globally across multiple 
     sectors including government, financial services, and IT service providers.
-  targets:
-    - Developer
-    - Workstations
-    - Laptop
-  platforms:
-    - Windows
   severity: Highly significant incident
   leverage:
     - Elevation of privilege
@@ -187,7 +181,7 @@ threat:
     1. **Process Monitoring**: Monitor for suspicious NSIS installer activity and child processes
     2. **File System Monitoring**: Watch for file creation in %appdata%\ProShow\, %appdata%\Adobe\Scripts\, and %appdata%\Bluetooth\ directories
     3. **Network Monitoring**: Block/alert on connections to known malicious IPs and domains
-    4. **DLL Loading**: Monitor for suspicious DLL loading patterns, particularly BluetoothService.dll
+    4. **DLL Loading**: Monitor `BluetoothService.exe` sideloading `log.dll` from `%appdata%\Bluetooth\` (Chain #3, Chrysalis backdoor) and any executable loading DLLs from non-system paths
     5. **Update Mechanism**: Verify integrity of software update processes and validate update sources
     6. **Cobalt Strike Detection**: Look for Cobalt Strike Beacon behaviors and C2 communication patterns
     7. **Lua Interpreter**: Detect unexpected Lua interpreter execution
@@ -219,8 +213,8 @@ threat:
     - **T1059** - Command and Scripting Interpreter
       - Leveraged Lua interpreter for malicious code execution
     
-    - **T1574.002** - Hijack Execution Flow: DLL Side-Loading
-      - Employed BluetoothService DLL side-loading to load Chrysalis backdoor
+    - **T1574** - Hijack Execution Flow (DLL Side-Loading sub-technique T1574.002)
+      - Employed `BluetoothService.exe` sideloading `log.dll` to load Chrysalis backdoor
     
     ## References
     

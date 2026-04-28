@@ -31,8 +31,8 @@ threat:
         (chains #1 and #2) where attackers used temp.sh as a Living-Off-the-Land
         C2 service to exfiltrate system information and communicate with their
         command and control infrastructure through legitimate file sharing services.
-  domains:
-    - Enterprise
+  surface:
+    - OS::Windows::Desktop
   terrain: |
     Organizations and environments where adversaries have established initial access
     and are attempting to maintain covert command and control communications while
@@ -41,12 +41,6 @@ threat:
     to blend malicious traffic with normal business operations. Particularly relevant
     in environments with developer workstations, laptops, and systems with curl.exe
     or similar HTTP client tools available.
-  targets:
-    - Workstations
-    - Developer
-    - Laptop
-  platforms:
-    - Windows
   severity: Moderate incident
   leverage:
     - Information Disclosure

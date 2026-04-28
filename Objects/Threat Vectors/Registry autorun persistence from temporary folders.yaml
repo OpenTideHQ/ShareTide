@@ -28,8 +28,8 @@ threat:
         This persistence technique was observed in the Notepad++ supply chain attack,
         where attackers established persistence by adding registry Run key entries
         pointing to malicious executables dropped in temporary %appdata% subdirectories.
-  domains:
-    - Enterprise
+  surface:
+    - OS::Windows::Desktop
   terrain: |
     Windows endpoints where attackers have successfully deployed malicious payloads
     to temporary or roaming application data directories (%appdata%) and seek to
@@ -37,12 +37,6 @@ threat:
     effective against systems with limited security monitoring of registry autorun
     mechanisms, especially when combined with execution from non-standard application
     data locations that evade traditional security controls.
-  targets:
-    - Workstations
-    - Developer
-    - Laptop
-  platforms:
-    - Windows
   severity: Significant incident
   leverage:
     - Tampering

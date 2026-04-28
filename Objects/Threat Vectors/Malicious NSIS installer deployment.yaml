@@ -27,20 +27,14 @@ threat:
       description: |
         This threat vector implements the Notepad++ supply chain attack campaign,
         where malicious NSIS installers were distributed through compromised update mechanisms.
-  domains:
-    - Enterprise
+  surface:
+    - OS::Windows::Desktop
   terrain: |
     Targeted systems are Windows-based workstations and laptops where legitimate software 
     update mechanisms exist. The attack leverages NSIS (Nullsoft Scriptable Install System) 
     installers to masquerade as legitimate software updates, particularly targeting 
     developer environments and end-user workstations. The NSIS framework creates temporary 
     directories during runtime that can serve as indicators of compromise.
-  targets:
-    - Developer
-    - Workstations
-    - Laptop
-  platforms:
-    - Windows
   severity: Significant incident
   leverage:
     - Software installation

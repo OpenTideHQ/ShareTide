@@ -29,8 +29,8 @@ threat:
         This technique was used as Chain #2 in the Notepad++ supply chain attack 
         (September-October 2025). The Lua interpreter execution chain served as 
         one of three distinct attack variants deployed by the threat actors.
-  domains:
-    - Enterprise
+  surface:
+    - OS::Windows::Desktop
   terrain: |
     Windows endpoints where adversaries have established initial access and seek to 
     execute shellcode through legitimate scripting interpreters. The technique abuses 
@@ -38,12 +38,6 @@ threat:
     Lua scripts that perform memory allocation and shellcode injection. Commonly seen 
     in supply chain attacks where malicious files are dropped to application data 
     directories (%APPDATA%) to appear as legitimate software components.
-  targets:
-    - Workstations
-    - Developer
-    - Laptop
-  platforms:
-    - Windows
   severity: Significant incident
   leverage:
     - Elevation of privilege

@@ -30,8 +30,8 @@ threat:
         This TVM implements specific post-compromise reconnaissance activities observed 
         in the Notepad++ supply chain attack. These commands were executed immediately 
         after successful initial access through the compromised update mechanism.
-  domains:
-    - Enterprise
+  surface:
+    - OS::Windows::Desktop
   terrain: |
     Following successful exploitation via a compromised software supply chain, threat 
     actors execute a series of standard Windows reconnaissance commands to gather 
@@ -40,12 +40,6 @@ threat:
     of the compromised host and determine next steps for lateral movement or data 
     exfiltration. The reconnaissance commands are executed through cmd.exe with output 
     redirection to text files stored in seemingly legitimate application directories.
-  targets:
-    - Workstations
-    - Developer
-    - Laptop
-  platforms:
-    - Windows
   severity: Moderate incident
   leverage:
     - Information Disclosure
