@@ -61,7 +61,6 @@ threat:
     - Identity Services
     - Mobile phone
   platforms:
-    - EU Login
     - Office 365
   severity: Significant incident
   leverage:

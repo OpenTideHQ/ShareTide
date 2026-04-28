@@ -63,8 +63,6 @@ threat:
     - Helpdesk
     - Identity Services
     - Mobile phone
-  platforms:
-    - EU Login
   severity: Significant incident
   leverage:
     - Elevation of privilege
