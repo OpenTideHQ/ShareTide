@@ -1,0 +1,410 @@
+name: Axios npm supply chain compromise
+criticality: Severe
+references:
+  public:
+    1: https://www.cisa.gov/news-events/alerts/2026/04/20/supply-chain-compromise-impacts-axios-node-package-manager
+    2: https://www.microsoft.com/en-us/security/blog/2026/04/01/mitigating-the-axios-npm-supply-chain-compromise/
+    3: https://cloud.google.com/blog/topics/threat-intelligence/north-korea-threat-actor-targets-axios-npm-package # Google GTIG attribution to UNC1069
+    4: https://www.aikido.dev/blog/axios-npm-compromised-maintainer-hijacked-rat
+    5: https://socprime.com/active-threats/supply-chain-attack-on-axios-pulls-malicious-dependency-from-npm/
+    6: https://www.huntress.com/blog/axios-npm-compromise # Huntress Tradecraft Tuesday recap
+    7: https://www.elastic.co/security-labs/axios-one-rat-to-rule-them-all # Elastic Security Labs - WAVESHAPER.V2 deep dive
+    8: https://www.picussecurity.com/resource/blog/axios-npm-supply-chain-attack-cross-platform-rat-delivery-via-compromised-maintainer-credentials
+    9: https://www.stepsecurity.io/blog/axios-compromised-on-npm-malicious-versions-drop-remote-access-trojan
+    10: https://socket.dev/blog/axios-npm-package-compromised
+    11: https://github.com/axios/axios/issues/10636 # Maintainer post-mortem
+    12: https://www.airlockdigital.com/airlock-blog/the-axios-supply-chain-attack-why-detection-wasnt-enough
+
+metadata:
+  uuid: 000790d9-06de-49af-893d-e4993abe6e38
+  schema: tvm::2.1
+  version: 1
+  created: 2026-04-28
+  modified: 2026-04-28
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  actors:
+    - name: misp::825abfd9-7238-4438-a9e7-c08791f4df4e # TraderTraitor / Jade Sleet / UNC4899 / Pukchong - DPRK-nexus supply-chain cluster
+      sighting: |
+        Google Threat Intelligence Group (GTIG) attributes the Axios
+        npm compromise to UNC1069, a financially motivated North
+        Korea-nexus threat actor active since at least 2018. UNC1069
+        sits in the broader DPRK developer-targeting ecosystem
+        alongside TraderTraitor / Jade Sleet, which has historically
+        targeted blockchain and technology employees with social
+        engineering on communication platforms - the same tradecraft
+        observed against the axios maintainer. Attribution to UNC1069
+        is based on the deployment of WAVESHAPER.V2 (an updated
+        variant of WAVESHAPER previously used by UNC1069) and on
+        infrastructure overlap: the C2 host sfrclak[.]com
+        (142.11.206.73) was contacted from an AstrillVPN node
+        previously linked to UNC1069, and adjacent infrastructure on
+        the same ASN has been historically tied to the same cluster.
+      references:
+        - https://cloud.google.com/blog/topics/threat-intelligence/north-korea-threat-actor-targets-axios-npm-package
+    - name: misp::68391641-859f-4a9a-9a1e-3e5cf71ec376 # Lazarus Group
+      sighting: |
+        UNC1069 is generally aligned with the broader DPRK cyber
+        ecosystem (Lazarus cluster). The use of npm package
+        compromise as an initial access vehicle is consistent with
+        prior Lazarus / TraderTraitor operations targeting developer
+        tooling and cryptocurrency-adjacent organisations.
+  killchain: Delivery
+  att&ck:
+    - T1195.001 # Compromise Software Dependencies and Development Tools
+    - T1195.002 # Compromise Software Supply Chain
+    - T1546.016 # Event Triggered Execution: Installer Packages (npm postinstall)
+    - T1078     # Valid Accounts (stolen npm publish token / hijacked maintainer account)
+    - T1566.004 # Phishing: Spearphishing Voice (fake Teams call to maintainer)
+    - T1027.014 # Obfuscated Files or Information: Polymorphic Code (Base64 + custom XOR)
+    - T1059.001 # PowerShell (Windows stage-2)
+    - T1059.005 # Visual Basic (VBScript loader on Windows)
+    - T1059.006 # Python (Linux stage-2)
+    - T1059.004 # Unix Shell (macOS dropper)
+    - T1036.003 # Rename Legitimate Utilities (powershell.exe copied to wt.exe)
+    - T1036.005 # Match Legitimate Resource Name or Location (/Library/Caches/com.apple.act.mond)
+    - T1070.004 # File Deletion (setup.js self-delete + package.json replaced with clean stub)
+    - T1071.001 # Application Layer Protocol: Web Protocols (HTTP POST to C2)
+    - T1082     # System Information Discovery (FirstInfo / BaseInfo beacons)
+    - T1102.002 # Web Service: Bidirectional Communication (poll/response over HTTP)
+    - T1219     # Remote Access Tools (WAVESHAPER.V2 cross-platform RAT)
+  chaining:
+    - relation: atomicity::implements
+      vector: d24f2b4a-80fc-4ee7-9293-3f6e9e3bbbe4 # Adversary publishing malicious NPM packages to compromise software
+      description: |
+        The Axios npm supply chain compromise is a concrete, named
+        instance of the broader pattern of adversaries publishing
+        malicious npm packages to compromise downstream software.
+        It implements that generic vector via maintainer account
+        takeover (rather than typosquatting or new-package attacks)
+        and abuses the npm postinstall lifecycle hook on a transitive
+        dependency to deliver a cross-platform RAT.
+  surface:
+    - OS::Windows::Desktop
+    - OS::macOS
+    - OS::Linux
+    - Application::Development::Package Management::npm
+    - Application::Development::CI/CD
+  terrain: |
+    Any organisation, developer workstation, or CI/CD pipeline that
+    resolved axios from the public npm registry between 2026-03-31
+    ~00:21 UTC and ~03:20 UTC, where the resolved version was either
+    axios@1.14.1 (tagged latest) or axios@0.30.4 (tagged legacy).
+    During that ~3-hour window, a default `npm install axios` (or any
+    transitive resolution that floated to the latest minor) pulled in
+    the malicious plain-crypto-js@^4.2.1 dependency, whose postinstall
+    hook executed automatically on Windows, macOS, and Linux build
+    hosts and developer laptops. Affected populations explicitly
+    observed in the wild include developer endpoints, build agents,
+    and CI runners across multiple operating systems and sectors;
+    Huntress alone reported at least 135 endpoints communicating with
+    the attacker C2 during the exposure window. The attack does not
+    rely on any vulnerability in axios source code - the trust
+    boundary between maintainer credentials and the npm publish
+    pipeline is the actual vulnerable surface.
+  severity: Highly significant incident
+  leverage:
+    - Infrastructure Compromise
+    - Tampering
+    - Software installation
+    - Information Gathering
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Business disruption
+    - Lose Capabilities
+    - Reputational Damages
+    - Operating costs
+  viability: Almost certain
+  description: |
+    ## Executive Summary
+
+    On 31 March 2026, the npm account of `jasonsaayman` - the lead
+    maintainer of the `axios` HTTP client (~100M weekly downloads on
+    the 1.x branch and ~83M on the 0.x branch) - was used to publish
+    two malicious releases: `axios@1.14.1` (tagged `latest`) and
+    `axios@0.30.4` (tagged `legacy`). The compromised versions were
+    live for roughly three hours before being unpublished by npm.
+    During that window, any default `npm install axios` resolved to a
+    backdoored package whose only modification - a single line in
+    `package.json` adding `"plain-crypto-js": "^4.2.1"` - pulled in a
+    pre-staged dropper that, via the npm postinstall lifecycle hook,
+    deployed a cross-platform Remote Access Trojan (tracked by Google
+    GTIG and Elastic Security Labs as `WAVESHAPER.V2`) on Windows,
+    macOS, and Linux hosts.
+
+    Google Threat Intelligence Group attributes the activity to
+    `UNC1069`, a financially motivated North Korea-nexus actor active
+    since at least 2018, based on malware lineage and infrastructure
+    overlap.
+
+    ## Attack Timeline (UTC)
+
+    - **2026-03-30 05:57** - Attacker-controlled npm account `nrwise`
+      (`nrwise@proton.me`) publishes a clean decoy package
+      `plain-crypto-js@4.2.0` to seed registry history.
+    - **2026-03-30 23:59** - `nrwise` publishes
+      `plain-crypto-js@4.2.1` carrying the malicious `setup.js`
+      dropper wired into the `postinstall` hook.
+    - **2026-03-31 00:21** - The `jasonsaayman` npm account, with
+      its registered email silently changed to `ifstap@proton.me`,
+      publishes `axios@1.14.1` directly via CLI (no GitHub Actions
+      OIDC, no SLSA provenance), declaring `plain-crypto-js@^4.2.1`
+      as a dependency.
+    - **2026-03-31 ~01:00** - Same actor publishes `axios@0.30.4`
+      with the identical malicious dependency, hitting the
+      legacy 0.x branch.
+    - **2026-03-31 ~01:00** - First external detections by
+      Socket / StepSecurity / Aikido automated supply-chain
+      monitoring; community alerting begins.
+    - **2026-03-31 ~03:20** - Both compromised axios versions and
+      `plain-crypto-js@4.2.1` are unpublished from the npm registry.
+    - **2026-04-02** - Maintainer publishes the public post-mortem
+      (axios issue #10636) describing the social-engineering chain
+      that compromised his workstation.
+
+    ## Initial Access: Maintainer Account Takeover via Social Engineering
+
+    The attackers gained `npm publish` rights on `axios` not by
+    exploiting the registry or the source code, but by compromising
+    the maintainer's workstation. According to the maintainer's own
+    post-mortem and corroborating reporting:
+
+    1. Attackers approached the maintainer pretending to be the
+       founder of a (plausibly branded) company and invited him to
+       a private Slack workspace populated with realistic channels,
+       team members, and posts.
+    2. They scheduled a Microsoft Teams call with what appeared to
+       be several stakeholders.
+    3. During the call, the attackers told the maintainer that
+       "something on his system was out of date" and prompted him
+       to install a fix. The "fix" was a Remote Access Trojan.
+    4. With full RAT-grade control of the workstation, the attackers
+       extracted a long-lived classic npm access token (2FA on the
+       account did not block local `npm publish` because TOTP can
+       be relayed by a RAT operator), changed the registered email
+       on the npm account to `ifstap@proton.me`, and published the
+       two malicious releases directly from the registry CLI -
+       bypassing the GitHub Actions / OIDC / SLSA Trusted Publisher
+       workflow that had signed every legitimate v1.x release since
+       2023.
+
+    ## Delivery: Pre-staged Transitive Dependency
+
+    The only change to the axios package itself, in both compromised
+    versions, was a single new entry under `dependencies` in
+    `package.json`:
+
+    ```json
+    "plain-crypto-js": "^4.2.1"
+    ```
+
+    `plain-crypto-js` is never imported anywhere in the axios source.
+    It exists solely to execute its `postinstall` hook on every
+    consumer. The dependency had been pre-staged ~18 hours earlier:
+    a clean `4.2.0` was published first to give the package
+    legitimate-looking registry history, then `4.2.1` was published
+    with the malicious `setup.js` dropper.
+
+    Because npm's standard resolution honours `^` semver ranges,
+    every downstream `npm install axios` during the exposure window
+    transparently pulled the malicious transitive dependency,
+    regardless of any explicit pinning at the application level.
+
+    ## Execution: setup.js Dropper and WAVESHAPER.V2 Deployment
+
+    The `postinstall` hook of `plain-crypto-js@4.2.1` runs
+    `node setup.js`, an obfuscated Node.js dropper using a custom
+    Base64 + XOR string-table scheme. After deobfuscation it:
+
+    1. Calls `os.platform()` and branches into one of three
+       OS-specific delivery routines.
+    2. Issues an HTTP POST to `http://sfrclak[.]com:8000/6202033`
+       with a platform tag in the body
+       (`packages.npm.org/product0` for macOS,
+       `packages.npm.org/product1` for Windows,
+       `packages.npm.org/product2` for Linux). The
+       `packages.npm.org/` prefix in the body is a deliberate
+       attempt to make outbound traffic look like benign npm
+       registry chatter in network logs.
+    3. Receives the platform-specific stage-2 payload from the same
+       endpoint and executes it.
+    4. Self-deletes (`setup.js` is removed and `package.json` is
+       overwritten with a clean stub) to hide on-disk evidence.
+
+    ### macOS chain
+    - Stage-2: compiled Mach-O binary saved to
+      `/Library/Caches/com.apple.act.mond` (masquerading as an
+      Apple system daemon).
+    - Permissions set with `chmod`, launched in the background
+      via `nohup` / `/bin/bash`.
+
+    ### Windows chain
+    - The dropper locates `powershell.exe` and copies it to
+      `%PROGRAMDATA%\wt.exe` (masquerading as the Windows Terminal
+      binary).
+    - Writes a transient VBScript at `%TEMP%\6202033.vbs`, executed
+      via the renamed PowerShell, which fetches a PowerShell-based
+      RAT script from C2 and executes it in memory.
+    - Transient artefacts: `%TEMP%\6202033.vbs`,
+      `%TEMP%\6202033.ps1`.
+
+    ### Linux chain
+    - The dropper uses Node.js `execSync` to fetch a Python RAT
+      script, saved to `/tmp/ld.py` and launched in the background
+      via `nohup` for terminal-session-independent persistence.
+
+    All three stage-2 payloads are functionally the same RAT
+    (`WAVESHAPER.V2`): identical C2 protocol, command set, and
+    operational behaviour across implementations.
+
+    ## WAVESHAPER.V2 Operational Profile
+
+    - C2 transport: HTTP POST.
+    - Body encoding: Base64-encoded JSON.
+    - User-Agent: `mozilla/4.0 (compatible; msie 8.0; windows nt 5.1; trident/4.0)`
+      (deliberately anachronistic, useful as a network detection
+      signal).
+    - Beacon interval: ~60 seconds.
+    - Per-execution session UID: 16-character random alphanumeric.
+    - Outbound message types: `FirstInfo`, `BaseInfo`, `CmdResult`.
+    - Inbound command types: `kill`, `peinject`, `runscript`,
+      `rundir`.
+    - Response command types: `rsp_kill`, `rsp_peinject`,
+      `rsp_runscript`, `rsp_rundir`.
+
+    Capabilities observed across the three implementations include
+    system reconnaissance, in-memory script execution, payload
+    drop-and-run from a directory, PE injection (Windows), and
+    process termination.
+
+    ## Indicators of Compromise (IOCs)
+
+    ### Malicious npm packages
+    - `axios@1.14.1` - shasum
+      `2553649f2322049666871cea80a5d0d6adc700ca` (compromised,
+      tagged `latest` at time of discovery)
+    - `axios@0.30.4` - shasum
+      `d6f3f62fd3b9f5432f5782b62d8cfd5247d5ee71` (compromised,
+      tagged `legacy` at time of discovery)
+    - `plain-crypto-js@4.2.1` - shasum
+      `07d889e2dadce6f3910dcbc253317d28ca61c766` (malicious dropper)
+    - `plain-crypto-js@4.2.0` (clean decoy used to seed registry
+      history)
+
+    ### Network indicators
+    - C2 domain: `sfrclak[.]com`
+    - C2 IP: `142.11.206.73`
+    - Suspected adjacent UNC1069 IP: `23.254.167.216`
+    - Full C2 URL: `http://sfrclak[.]com:8000/6202033`
+    - Campaign ID: `6202033`
+    - Distinctive User-Agent:
+      `mozilla/4.0 (compatible; msie 8.0; windows nt 5.1; trident/4.0)`
+    - Suspicious POST body markers (decoy npm-looking strings):
+      `packages.npm.org/product0`, `packages.npm.org/product1`,
+      `packages.npm.org/product2`
+
+    ### File system indicators
+    - macOS: `/Library/Caches/com.apple.act.mond`
+      sha256 `92ff08773995ebc8d55ec4b8e1a225d0d1e51efa4ef88b8849d0071230c9645a`
+    - Windows: `%PROGRAMDATA%\wt.exe`,
+      `%TEMP%\6202033.vbs`, `%TEMP%\6202033.ps1`
+      (PowerShell stage-2 sha256
+      `617b67a8e1210e4fc87c92d1d1da45a2f311c08d26e89b12307cf583c900d101`)
+    - Linux: `/tmp/ld.py`
+      sha256 `fcb81618bb15edfdedfb638b4c08a2af9cac9ecfa551af135a8402bf980375cf`
+    - Presence of `node_modules/plain-crypto-js/` in any project
+      tree is, on its own, a strong indicator that the dropper ran.
+
+    ### Attacker accounts
+    - `jasonsaayman` (compromised legitimate maintainer; registered
+      email silently flipped to `ifstap@proton.me`).
+    - `nrwise` (`nrwise@proton.me`) - attacker-created npm account
+      used to publish `plain-crypto-js`.
+
+    ## Detection Opportunities
+
+    1. **Lockfile / SBOM audit** - search lockfiles
+       (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`) and SBOM
+       feeds across repositories and CI/CD build artefacts for
+       references to `axios@1.14.1`, `axios@0.30.4`, or any version
+       of `plain-crypto-js`.
+    2. **Network telemetry** - alert on any outbound traffic to
+       `sfrclak[.]com` or `142.11.206.73:8000`, on the distinctive
+       MSIE 8 User-Agent, and on POST bodies containing
+       `packages.npm.org/productN` markers leaving non-package-manager
+       processes.
+    3. **macOS file events** - creation of
+       `/Library/Caches/com.apple.act.mond` or any new executable
+       under `/Library/Caches/` named to look like an Apple daemon.
+    4. **Windows process / file events** - creation of
+       `%PROGRAMDATA%\wt.exe`, especially when its file content
+       matches `powershell.exe`; transient `%TEMP%\6202033.vbs` /
+       `6202033.ps1`; renamed PowerShell child processes spawned
+       from `node.exe`, `npm.cmd`, `pnpm.cmd`, or `yarn.cmd`.
+    5. **Linux file / process events** - creation of `/tmp/ld.py`
+       and `python3 /tmp/ld.py` (or equivalent) launched via
+       `nohup` from a Node.js parent process.
+    6. **npm postinstall behaviour** - generic detection on Node.js
+       package-manager parents spawning unexpected interpreters
+       (powershell, cscript, wscript, bash with curl-pipe, python,
+       chmod+nohup chains) during `npm install`. SOC Prime publishes
+       a curated detection bundle covering these behaviours under
+       the active threat profile for this incident.
+    7. **npm registry telemetry** - in CI environments, alert on
+       changes to the resolved publisher email or on packages
+       resolved with no provenance attestation when prior
+       legitimate releases of the same package had SLSA provenance.
+
+    ## Mitigation Recommendations
+
+    1. **Immediate**
+       - Pin to safe versions: `axios@1.14.0` (1.x branch) and
+         `axios@0.30.3` (0.x branch). Add explicit `overrides` /
+         `resolutions` in manifests to prevent transitive resolution
+         to compromised versions.
+       - Remove `plain-crypto-js` from `node_modules` and
+         regenerate lockfiles from a clean state.
+       - Treat any host that ran `npm install` resolving to
+         `axios@1.14.1` or `axios@0.30.4` as fully compromised.
+         Rotate every credential reachable from that host: npm
+         tokens, GitHub PATs, AWS / Azure / GCP keys, SSH keys,
+         CI/CD secrets, and `.env` values.
+       - Block egress to `sfrclak[.]com` and `142.11.206.73`.
+    2. **Hardening**
+       - Run `npm ci --ignore-scripts` in CI/CD as a default policy
+         to neutralise `postinstall`-based supply chain attacks.
+       - Configure managed npm registries / proxies to enforce a
+         minimum package age (e.g. `npm config set min-release-age 3`
+         days) so that packages published in a narrow attacker
+         window are not pulled into builds before community
+         detection.
+       - Enforce GitHub Actions / OIDC Trusted Publishing and
+         require SLSA provenance attestations on critical packages;
+         monitor for regressions where a previously-attested package
+         is suddenly published from a CLI without provenance.
+       - Subscribe to malicious-package feeds (OpenSSF Malicious
+         Packages, Aikido Intel, Socket, StepSecurity) and integrate
+         them into pre-install gating.
+
+    ## Key Takeaways
+
+    - The axios source code was never modified - the attack lived
+      entirely in the npm publish pipeline and a single injected
+      transitive dependency.
+    - 2FA on the maintainer account did not stop the attack; a RAT
+      with interactive control of the workstation defeats software
+      TOTP just as easily as it defeats a stored token.
+    - The same incident chained two human-targeted techniques (fake
+      Slack / fake Teams call to install a "fix") with two
+      ecosystem-targeted techniques (transitive dependency staging
+      + maintainer account takeover) to reach hundreds of millions
+      of consumers in a 3-hour window.
+    - WAVESHAPER.V2 is a single RAT specification implemented in
+      three languages targeting three operating systems, all
+      sharing the same C2 protocol. Detection should not focus on
+      a single platform.
