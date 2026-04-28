@@ -18,7 +18,7 @@ references:
 metadata:
   uuid: 000790d9-06de-49af-893d-e4993abe6e38
   schema: tvm::2.1
-  version: 1
+  version: 2
   created: 2026-04-28
   modified: 2026-04-28
   tlp: clear
@@ -328,37 +328,17 @@ threat:
 
     ## Detection Opportunities
 
-    1. **Lockfile / SBOM audit** - search lockfiles
-       (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`) and SBOM
-       feeds across repositories and CI/CD build artefacts for
-       references to `axios@1.14.1`, `axios@0.30.4`, or any version
-       of `plain-crypto-js`.
-    2. **Network telemetry** - alert on any outbound traffic to
-       `sfrclak[.]com` or `142.11.206.73:8000`, on the distinctive
-       MSIE 8 User-Agent, and on POST bodies containing
-       `packages.npm.org/productN` markers leaving non-package-manager
-       processes.
-    3. **macOS file events** - creation of
-       `/Library/Caches/com.apple.act.mond` or any new executable
-       under `/Library/Caches/` named to look like an Apple daemon.
-    4. **Windows process / file events** - creation of
-       `%PROGRAMDATA%\wt.exe`, especially when its file content
-       matches `powershell.exe`; transient `%TEMP%\6202033.vbs` /
-       `6202033.ps1`; renamed PowerShell child processes spawned
-       from `node.exe`, `npm.cmd`, `pnpm.cmd`, or `yarn.cmd`.
-    5. **Linux file / process events** - creation of `/tmp/ld.py`
-       and `python3 /tmp/ld.py` (or equivalent) launched via
-       `nohup` from a Node.js parent process.
-    6. **npm postinstall behaviour** - generic detection on Node.js
-       package-manager parents spawning unexpected interpreters
-       (powershell, cscript, wscript, bash with curl-pipe, python,
-       chmod+nohup chains) during `npm install`. SOC Prime publishes
-       a curated detection bundle covering these behaviours under
-       the active threat profile for this incident.
-    7. **npm registry telemetry** - in CI environments, alert on
-       changes to the resolved publisher email or on packages
-       resolved with no provenance attestation when prior
-       legitimate releases of the same package had SLSA provenance.
+    Detection capability for this incident is modelled as a
+    dedicated Detection Objective:
+    `Detect Axios npm Supply Chain Compromise Activity`
+    (DOM uuid `f45b9b82-a3c5-4643-932b-debfd8739bd8`). It covers
+    lockfile / SBOM audit for compromised versions, suspicious
+    npm postinstall lifecycle execution, WAVESHAPER.V2 on-disk
+    artefacts on macOS / Windows / Linux, renamed-PowerShell +
+    transient-VBScript loader patterns from Node.js process trees,
+    C2 communication to `sfrclak[.]com`, and npm publisher /
+    provenance regression on critical packages. Refer to that DOM
+    for signal-level detail rather than duplicating it here.
 
     ## Mitigation Recommendations
 

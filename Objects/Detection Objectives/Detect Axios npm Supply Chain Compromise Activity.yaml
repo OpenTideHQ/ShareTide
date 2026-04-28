@@ -1,0 +1,548 @@
+name: Detect Axios npm Supply Chain Compromise Activity
+
+references:
+  public:
+    1: https://www.cisa.gov/news-events/alerts/2026/04/20/supply-chain-compromise-impacts-axios-node-package-manager
+    2: https://cloud.google.com/blog/topics/threat-intelligence/north-korea-threat-actor-targets-axios-npm-package
+    3: https://www.elastic.co/security-labs/axios-one-rat-to-rule-them-all
+    4: https://www.aikido.dev/blog/axios-npm-compromised-maintainer-hijacked-rat
+    5: https://socprime.com/active-threats/supply-chain-attack-on-axios-pulls-malicious-dependency-from-npm/
+    6: https://www.huntress.com/blog/axios-npm-compromise
+    7: https://www.picussecurity.com/resource/blog/axios-npm-supply-chain-attack-cross-platform-rat-delivery-via-compromised-maintainer-credentials
+    8: https://www.stepsecurity.io/blog/axios-compromised-on-npm-malicious-versions-drop-remote-access-trojan
+    9: https://github.com/axios/axios/issues/10636
+
+metadata:
+  uuid: f45b9b82-a3c5-4643-932b-debfd8739bd8
+  schema: dom::1.0
+  version: 1
+  created: 2026-04-28
+  modified: 2026-04-28
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+objective:
+  priority: Critical
+  att&ck:
+    - T1195.001 # Compromise Software Dependencies and Development Tools
+    - T1195.002 # Compromise Software Supply Chain
+    - T1546.016 # Event Triggered Execution: Installer Packages (npm postinstall)
+    - T1059.001 # PowerShell
+    - T1059.005 # Visual Basic
+    - T1059.006 # Python
+    - T1059.004 # Unix Shell
+    - T1036.003 # Rename Legitimate Utilities
+    - T1036.005 # Match Legitimate Resource Name or Location
+    - T1071.001 # Web Protocols
+    - T1102.002 # Bidirectional Communication
+    - T1219     # Remote Access Tools
+    - T1078     # Valid Accounts
+  type: Threat
+  threats:
+    - 000790d9-06de-49af-893d-e4993abe6e38 # Axios npm supply chain compromise (TVM)
+  investment: Significant
+  description: |
+    This Detection Objective addresses the 31 March 2026 supply chain
+    compromise of the `axios` npm package, in which a hijacked
+    maintainer account published `axios@1.14.1` and `axios@0.30.4`
+    carrying a malicious transitive dependency (`plain-crypto-js@4.2.1`)
+    whose npm `postinstall` hook deployed a cross-platform Remote
+    Access Trojan tracked as `WAVESHAPER.V2` on Windows, macOS, and
+    Linux hosts. Google Threat Intelligence Group attributes the
+    activity to the DPRK-nexus actor `UNC1069`.
+
+    Detection coverage is required across three time horizons:
+
+    - **Retrospective**: identifying any developer workstation, CI
+      runner, or build artefact that resolved a compromised version
+      during the ~3-hour exposure window (2026-03-31 ~00:21 - ~03:20
+      UTC), so that credentials and hosts can be triaged for rotation
+      and reimaging.
+    - **Live response**: detecting active stage-2 RAT behaviour on
+      hosts where the postinstall dropper executed - on-disk
+      artefacts, renamed system utilities, transient script loaders,
+      and outbound C2 communications to `sfrclak[.]com`.
+    - **Preventive**: surfacing future occurrences of the same class
+      of attack (maintainer account takeover -> direct CLI publish
+      bypassing OIDC / SLSA Trusted Publishing -> postinstall-based
+      RAT delivery) so that npm registry telemetry and SBOM tooling
+      catch the next instance, not just this one.
+
+    Critical priority is justified by the population at risk
+    (~100M weekly downloads on the 1.x branch alone), the named
+    state-nexus attribution, the cross-platform RAT capability, and
+    the fact that the attack does not rely on any vulnerability in
+    axios source code - it lives entirely in the npm publish trust
+    boundary, which is shared by every Node.js ecosystem consumer.
+
+  composition:
+    strategy: Combined
+    description: |
+      Signals span the full intrusion lifecycle of this incident -
+      from inventory-level evidence that a compromised package was
+      ever resolved, through behavioural detection of the
+      postinstall dropper, to platform-specific stage-2 RAT
+      artefacts and finally network-level C2 traffic. They are
+      intended to be combined per host / repository / CI runner
+      entity so that, for any single asset, all signals firing
+      around the same time horizon are grouped into a single
+      incident.
+
+      Operational guidance:
+
+      1. **Inventory signal first** (Signal 1) gives a known set of
+         exposed entities: every host or repository that ever
+         resolved `axios@1.14.1`, `axios@0.30.4`, or any version of
+         `plain-crypto-js`. Treat that population as
+         "potentially compromised" until proven otherwise.
+      2. **Behavioural signals** (Signals 2 and 4) confirm that the
+         dropper actually ran in a given environment, by catching
+         npm-tree processes spawning unexpected interpreters or the
+         distinctive Windows renamed-PowerShell + VBScript chain.
+      3. **Artefact signals** (Signal 3) confirm stage-2 RAT
+         deployment via OS-specific on-disk indicators with high
+         specificity.
+      4. **Network signal** (Signal 5) is the highest-fidelity
+         confirmation of an active RAT beacon and should be treated
+         as Critical regardless of host signals.
+      5. **Preventive signal** (Signal 6) is intended for medium-
+         term hardening: it surfaces future supply-chain regressions
+         on critical packages by watching for publisher email
+         changes and missing SLSA provenance on packages that
+         previously had it. It is lower severity individually but
+         compounds value across the dependency tree.
+
+      Where the same asset (host, repository, or CI runner) appears
+      across two or more of these signals within the relevant time
+      window, the combined alert should be escalated and the host
+      treated as fully compromised: rotate every credential
+      reachable from it, regenerate lockfiles from a clean state,
+      and reimage.
+
+  signals:
+    - name: Compromised Axios / plain-crypto-js Versions Resolved in Dependency Manifests
+      uuid: cf53a85e-38af-4053-a2b5-549bce394b8a
+      description: |
+        Inventory-level detection that any project, lockfile, SBOM,
+        or build artefact ever resolved a compromised version of
+        `axios` or any version of `plain-crypto-js`. This is the
+        primary signal for retrospective triage of the 3-hour
+        exposure window and for ongoing assurance that compromised
+        versions do not re-enter the supply chain (e.g. via pinned
+        legacy lockfiles or internal package mirrors that cached
+        the malicious version before takedown).
+
+        Detection criteria:
+
+        - Strings in `package-lock.json`, `yarn.lock`,
+          `pnpm-lock.yaml`, `npm-shrinkwrap.json`, or generated
+          SBOM (CycloneDX / SPDX) feeds matching:
+            * `axios@1.14.1`
+            * `axios@0.30.4`
+            * any version of `plain-crypto-js`
+              (the package was created solely to host the dropper
+              and has no legitimate downstream use)
+        - Package shasum / integrity matches:
+            * axios `2553649f2322049666871cea80a5d0d6adc700ca`
+            * axios `d6f3f62fd3b9f5432f5782b62d8cfd5247d5ee71`
+            * plain-crypto-js `07d889e2dadce6f3910dcbc253317d28ca61c766`
+        - Presence of `node_modules/plain-crypto-js/` on any disk
+          (developer laptop, CI runner, container image layer) -
+          the dropper self-deletes `setup.js` and replaces
+          `package.json` with a clean stub, but the directory
+          itself remains and is, on its own, a strong indicator
+          that the dropper ran.
+
+        Coverage should be pushed all the way left into source
+        control (lockfile scanning at PR time), CI (pre-build
+        gating against malicious-package feeds such as OpenSSF
+        Malicious Packages, Aikido Intel, Socket, StepSecurity),
+        and into the runtime estate (file inventory across
+        developer endpoints).
+      severity: High
+      effort: 2
+      methodology: Artifacts
+      data:
+        availability: Partial
+        requirements: |
+          - Lockfile and manifest content from source code
+            repositories (server-side scanning preferred over
+            client-side)
+          - SBOM feeds from CI/CD and from production container
+            images (CycloneDX or SPDX)
+          - File inventory or EDR telemetry on developer endpoints
+            and CI runners exposing `node_modules/plain-crypto-js/`
+            directory presence
+          - Optional: integration with malicious-package threat
+            feeds (OpenSSF Malicious Packages
+            `MAL-2026-2307`, Aikido Intel, Socket, StepSecurity)
+
+          Preferred log sources:
+          - Source code management (GitHub / GitLab) repository
+            content APIs
+          - SBOM generation tooling output (Syft, CycloneDX, SPDX)
+          - EDR file inventory / file-event telemetry
+          - Container registry image-scanning telemetry
+      entities:
+        - host::Software
+        - host::File
+        - host::File Hash
+        - host::Hostname
+
+    - name: Suspicious npm Postinstall Lifecycle Execution Spawning Unexpected Interpreters
+      uuid: 6c2c0f21-5821-4b5f-9279-9b91dfd5d148
+      description: |
+        Behavioural detection of the npm `postinstall` hook
+        executing the `setup.js` dropper. The dropper is launched
+        by the package manager (`npm`, `pnpm`, or `yarn` -
+        ultimately resolving to `node`) and then immediately
+        spawns OS-specific stage-1 commands to fetch and execute
+        the platform-appropriate stage-2 RAT.
+
+        Detection criteria:
+
+        - Process tree where the parent process is a Node.js
+          binary or package manager (`node`, `node.exe`, `npm`,
+          `npm.cmd`, `pnpm`, `pnpm.cmd`, `yarn`, `yarn.cmd`,
+          `npx`, `corepack`) and the child process is one of:
+            * `powershell.exe` (Windows stage-2)
+            * `cscript.exe` / `wscript.exe`
+              (Windows VBScript loader)
+            * `python` / `python3` launched via `nohup` /
+              `/bin/bash -c` / `/bin/sh -c` (Linux stage-2)
+            * `curl` or `wget` piping into a shell or saving
+              executables under `/Library/Caches/`, `/tmp/`, or
+              `%PROGRAMDATA%`
+            * `chmod` + `nohup` chained in a single command line
+              (macOS / Linux dropper)
+        - Outbound HTTP POST issued from a Node.js process to a
+          non-registry host within seconds of an `npm install`
+          (or equivalent) command, with body containing the
+          decoy markers `packages.npm.org/product0`,
+          `packages.npm.org/product1`, or
+          `packages.npm.org/product2`.
+        - File-write events from a Node.js process tree creating
+          executables outside `node_modules/` and outside the
+          project working directory - particularly in
+          `/Library/Caches/`, `/tmp/`, or `%PROGRAMDATA%`.
+
+        This signal generalises beyond the axios incident: any
+        future npm supply-chain attack using the postinstall
+        lifecycle to deliver native payloads will exhibit the
+        same parent / child / file-write pattern.
+      severity: High
+      effort: 4
+      methodology: Behavioural
+      data:
+        availability: Partial
+        requirements: |
+          - Process execution telemetry with full parent-child
+            chains and command line arguments
+          - Outbound network telemetry attributable to the
+            spawning process (process-aware firewall, EDR
+            network module, or Sysmon Event ID 3 with process
+            context)
+          - File-write events with originating process
+
+          Preferred log sources:
+          - Sysmon Event ID 1 (Process Create), 3 (Network
+            Connection), 11 (File Create) - all with process
+            context
+          - EDR process / network / file telemetry (Defender for
+            Endpoint, CrowdStrike, SentinelOne, Elastic Agent)
+          - Linux / macOS auditd / OSQuery / Endpoint Security
+            framework
+          - Windows Event ID 4688 with command line auditing
+      entities:
+        - host::Process
+        - host::Command Line
+        - host::File
+        - host::Hostname
+        - network::URL
+
+    - name: WAVESHAPER.V2 Cross-Platform RAT On-Disk Artefacts
+      uuid: 6524f5a6-d9e9-48ff-983f-23c4aed9c1fd
+      description: |
+        High-specificity file-event detection for the platform-
+        specific stage-2 RAT artefacts dropped by the
+        plain-crypto-js postinstall chain. Each branch of the
+        dropper writes a fixed, well-known path on its target
+        OS, masquerading as a legitimate system component.
+
+        ### macOS
+        - File creation at `/Library/Caches/com.apple.act.mond`
+          (Mach-O binary, masquerading as an Apple system daemon
+          per `T1036.005`).
+        - SHA-256:
+          `92ff08773995ebc8d55ec4b8e1a225d0d1e51efa4ef88b8849d0071230c9645a`
+        - Any new executable under `/Library/Caches/` named to
+          look like an Apple-signed cache daemon should be
+          treated as suspicious by default.
+
+        ### Windows
+        - File creation at `%PROGRAMDATA%\wt.exe`. The file
+          content matches `powershell.exe` byte-for-byte (the
+          dropper copies the system PowerShell binary into a
+          new location to defeat naive name-based detection -
+          per `T1036.003`).
+        - Transient files in `%TEMP%`:
+          `%TEMP%\6202033.vbs`, `%TEMP%\6202033.ps1`.
+        - PowerShell stage-2 SHA-256:
+          `617b67a8e1210e4fc87c92d1d1da45a2f311c08d26e89b12307cf583c900d101`
+
+        ### Linux
+        - File creation at `/tmp/ld.py`.
+        - SHA-256:
+          `fcb81618bb15edfdedfb638b4c08a2af9cac9ecfa551af135a8402bf980375cf`
+
+        ### Cross-platform
+        - Presence of the `node_modules/plain-crypto-js/`
+          directory (the dropper self-deletes `setup.js` and
+          rewrites `package.json` to a clean stub, but the
+          directory itself persists).
+
+        Detection should fire on file creation, not only on
+        file presence, so that hosts which received but later
+        cleaned the artefact are still surfaced.
+      severity: Critical
+      effort: 2
+      methodology: Artifacts
+      data:
+        availability: Partial
+        requirements: |
+          - File creation events on Windows, macOS, and Linux
+            with full paths and file hashes
+          - File integrity monitoring or EDR file telemetry
+          - Optional: file-content hashing on creation, to catch
+            `wt.exe` whose hash matches `powershell.exe`
+
+          Preferred log sources:
+          - Sysmon Event ID 11 (File Create) and Event ID 15
+            (FileCreateStreamHash) on Windows
+          - macOS Endpoint Security framework / OSQuery /
+            Jamf Protect file events
+          - Linux auditd `path` watches on `/tmp/`,
+            `/Library/Caches/` (macOS), `%PROGRAMDATA%`
+            (Windows), and `node_modules/`
+          - EDR file telemetry (Defender for Endpoint,
+            CrowdStrike, SentinelOne, Elastic Agent)
+      entities:
+        - host::File
+        - host::File Hash
+        - host::Hostname
+        - host::Process
+
+    - name: Renamed PowerShell + Transient VBScript Loader from Node.js Process Tree (Windows)
+      uuid: 9866b082-7f59-43d3-8ed8-2567eda7d4fc
+      description: |
+        Windows-specific behavioural detection for the
+        distinctive stage-2 chain used by `WAVESHAPER.V2`. The
+        dropper:
+
+        1. Locates `powershell.exe` and copies it to
+           `%PROGRAMDATA%\wt.exe` (masquerade as Windows
+           Terminal).
+        2. Writes `%TEMP%\6202033.vbs` (the VBScript loader).
+        3. Executes the VBScript via the renamed PowerShell
+           with hidden / bypass flags (`-w h`, `-ep bypass`,
+           `-enc`, etc.).
+        4. The VBScript fetches a PowerShell-based RAT script
+           from `sfrclak[.]com:8000/6202033`, executes it
+           in-memory with `[scriptblock]::Create([Encoding]::UTF8.GetString(...))`,
+           and self-deletes.
+
+        Detection criteria:
+
+        - `wt.exe` running from `%PROGRAMDATA%\` whose parent
+          process belongs to the npm process tree (`node.exe`,
+          `npm.cmd`, `pnpm.cmd`, `yarn.cmd`).
+        - `wt.exe` whose file content / SHA-256 matches that
+          of `powershell.exe` on the same host (high-fidelity
+          masquerade indicator).
+        - `cscript.exe` or `wscript.exe` invoked on a path
+          matching `%TEMP%\6202033.vbs` or any
+          `%TEMP%\<digits>.vbs` from a Node.js process tree.
+        - PowerShell command lines combining
+          `Invoke-WebRequest -UseBasicParsing`,
+          `-Method POST -Body`, and the literal string
+          `packages.npm.org/product1` (the Windows stage-2
+          marker), particularly when launched with hidden
+          window / encoded-command flags.
+        - `start /min powershell -w h` patterns spawned by
+          Node-tree processes.
+
+        These patterns directly correspond to GTIG's
+        `G_Hunting_Downloader_suspected_UNC1069_PS_1` YARA
+        signal logic.
+      severity: High
+      effort: 3
+      methodology: Behavioural
+      data:
+        availability: Partial
+        requirements: |
+          - Windows process execution telemetry with full
+            parent-child relationships and command line
+          - File create / file content hash telemetry for
+            `%PROGRAMDATA%\wt.exe`
+          - Optional: PowerShell Script Block Logging
+            (Event ID 4104) for in-memory script body capture
+          - Optional: AMSI buffer telemetry
+
+          Preferred log sources:
+          - Sysmon Event ID 1 (Process Create), 11 (File
+            Create), 15 (FileCreateStreamHash)
+          - PowerShell Operational log: Event ID 4104
+            (Script Block Logging)
+          - Windows Event ID 4688 with command line auditing
+          - EDR process telemetry
+      entities:
+        - host::Process
+        - host::Command Line
+        - host::File
+        - host::File Hash
+        - host::Hostname
+
+    - name: WAVESHAPER.V2 C2 Communication to sfrclak[.]com
+      uuid: a5331e78-144f-4300-8672-4b69b6ae732c
+      description: |
+        Network-level detection of the `WAVESHAPER.V2` command-
+        and-control channel. All three OS-specific RAT
+        implementations share the same C2 protocol, host, and
+        beacon characteristics, so a single network signal
+        covers Windows, macOS, and Linux infections.
+
+        Detection indicators:
+
+        - DNS queries for `sfrclak[.]com` (or any subdomain).
+        - Outbound TCP connections to `142.11.206.73:8000`.
+        - HTTP POSTs to
+          `http://sfrclak[.]com:8000/6202033` (campaign ID
+          `6202033`) or to any path on `sfrclak[.]com`.
+        - Distinctive User-Agent header
+          `mozilla/4.0 (compatible; msie 8.0; windows nt 5.1; trident/4.0)`
+          (deliberately anachronistic) - high fidelity, low
+          false-positive rate even outside this campaign.
+        - HTTP POST body containing decoy markers
+          `packages.npm.org/product0`,
+          `packages.npm.org/product1`, or
+          `packages.npm.org/product2` leaving any process
+          other than a legitimate npm client.
+        - Beacon-pattern traffic at ~60-second intervals with
+          Base64-encoded JSON bodies.
+        - Suspected adjacent UNC1069 infrastructure on the
+          same ASN: `23.254.167.216` (lower-confidence
+          enrichment indicator).
+
+        This is the highest-fidelity confirmation of an
+        active RAT and should be treated as Critical
+        regardless of host-side signals.
+      severity: Critical
+      effort: 2
+      methodology: Pattern Matching
+      data:
+        availability: Complete
+        requirements: |
+          - DNS query logs (server-side or endpoint)
+          - Egress firewall / proxy logs with destination
+            domain, IP, port, and HTTP method
+          - HTTP / HTTPS proxy logs with full URL, User-Agent,
+            and request body sampling where available
+          - NetFlow / connection metadata for periodic-beacon
+            detection
+          - Optional: TLS / SNI inspection if the campaign
+            evolves to HTTPS
+
+          Preferred log sources:
+          - DNS server logs (BIND, Unbound, AD-DNS) or
+            endpoint DNS query telemetry (Sysmon Event ID 22)
+          - Firewall logs (Palo Alto, Fortinet, Cisco
+            ASA/FTD) with URL filtering
+          - Web proxy logs (Zscaler, Squid, Bluecoat) with
+            request body sampling
+          - Zeek / Suricata network security monitor
+          - EDR network telemetry
+      entities:
+        - host::Domain
+        - network::IP Address
+        - network::URL
+        - network::DNS Query
+        - network::Network Connection
+        - host::Process
+        - host::Hostname
+
+    - name: NPM Publisher Email or SLSA Provenance Regression on Critical Packages
+      uuid: 68f4ac42-9bd8-4b1e-b547-56f890bfe457
+      description: |
+        Preventive detection that surfaces the registry-side
+        precondition exploited in the axios attack: the
+        legitimate maintainer's account was hijacked, the
+        registered email was silently changed to
+        `ifstap@proton.me`, and the malicious releases were
+        published from a CLI without GitHub Actions OIDC and
+        without SLSA provenance, even though all prior
+        legitimate releases on the same package had OIDC +
+        provenance attestations going back to 2023.
+
+        Detection criteria, evaluated per package against npm
+        registry metadata (`registry.npmjs.org/<pkg>`):
+
+        - Maintainer email change on a critical package
+          between two consecutive published versions.
+        - New version published without SLSA provenance
+          attestation when the previous N versions on the
+          same dist-tag had provenance.
+        - New version published via direct CLI (`_npmUser`
+          present, no `_attestations` field) when the
+          publishing workflow is supposed to use OIDC
+          Trusted Publishing.
+        - Sudden tag flip (`latest`, `legacy`) to a version
+          with materially different maintainer / provenance
+          metadata than the previous tagged version.
+        - Optional enrichment: cross-reference with the
+          OpenSSF Malicious Packages feed
+          (the axios incident was flagged as
+          `MAL-2026-2307`).
+
+        This signal is medium severity in isolation (false
+        positives include legitimate maintenance handovers
+        and CI workflow changes) but high value when
+        compounded across the dependency tree of an
+        organisation's "critical" packages list.
+
+        It also enables enforcing a configurable minimum
+        package age (e.g. `npm config set min-release-age 3`)
+        that would have prevented `plain-crypto-js@4.2.1`
+        from being pulled into builds during the 18-hour
+        window in which it was the most recent published
+        version.
+      severity: Medium
+      effort: 5
+      methodology: Anomaly
+      data:
+        availability: Partial
+        requirements: |
+          - Continuous monitoring of npm registry metadata
+            for an organisation-defined list of critical
+            packages (`registry.npmjs.org/<pkg>` JSON)
+          - Historical record of publisher identity and
+            provenance attestations per version
+          - Integration with malicious-package feeds (OpenSSF
+            Malicious Packages, Aikido Intel, Socket,
+            StepSecurity) for enrichment
+          - In CI: `npm audit signatures` / equivalent
+            integrity verification before install
+
+          Preferred log sources:
+          - Custom registry-watcher pipeline querying
+            `registry.npmjs.org/<pkg>` and emitting a diff
+            event per package change
+          - SBOM-feed-driven critical-package list
+          - Cloudsmith / JFrog / Nexus / GitHub Packages
+            registry-side audit logs for self-hosted
+            mirrors
+      entities:
+        - host::Software
+        - host::User
+        - host::Hostname
