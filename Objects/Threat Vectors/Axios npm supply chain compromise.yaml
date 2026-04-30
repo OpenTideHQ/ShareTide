@@ -18,7 +18,7 @@ references:
 metadata:
   uuid: 000790d9-06de-49af-893d-e4993abe6e38
   schema: tvm::2.1
-  version: 2
+  version: 1
   created: 2026-04-28
   modified: 2026-04-28
   tlp: clear
