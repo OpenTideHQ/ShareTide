@@ -84,7 +84,7 @@ threat:
         and abuses the npm postinstall lifecycle hook on a transitive
         dependency to deliver a cross-platform RAT.
   surface:
-    - OS::Windows::Desktop
+    - OS::Windows
     - OS::macOS
     - OS::Linux
     - Application::Development::Package Management::npm
