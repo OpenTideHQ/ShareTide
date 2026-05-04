@@ -1,0 +1,101 @@
+name: Late access control enforcement via redirect body leakage
+criticality: High
+references:
+  public:
+    1: https://owasp.org/Top10/A01_2021-Broken_Access_Control/
+    2: https://cwe.mitre.org/data/definitions/284.html
+    3: https://portswigger.net/web-security/access-control
+  #internal:
+    #a: 
+
+metadata:
+  uuid: 0663c192-cdeb-49a2-994c-4cc8e98f764e
+  schema: tvm::2.1
+  version: 1
+  created: 2026-03-30
+  modified: 2026-03-30
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  #actors:
+    #- name: 
+      #sighting: |
+        #...
+      #references:
+        #-
+  killchain: Collection
+  att&ck:
+    - T1190 #Exploit Public-Facing Application
+  #chaining:
+    #- relation: enables
+      #vector: 
+      #description: |
+        #This vector may chain with reconnaissance or discovery vectors,
+        #as leaked page content can reveal internal application structure,
+        #user data, or credentials that facilitate further attack stages.
+    #- relation: enables
+      #vector: 
+      #description: |
+        #If the leaked protected pages contain credentials or session
+        #tokens, this vector may chain with credential access vectors,
+        #enabling an adversary to escalate from information disclosure
+        #to authenticated access.
+  #cve:
+    #-
+  #misp:
+    #-
+  #surface:
+    #-
+  terrain: |
+    A web application that performs access control checks late in the request
+    processing pipeline, after the response body has already been constructed.
+    The application must use HTTP redirects (typically 302 Found) for access
+    control enforcement rather than blocking the request outright or returning
+    a minimal error response. The response body includes the full rendered
+    protected page content alongside the redirect Location header. This pattern
+    typically arises in framework-level middleware or filter configurations where
+    page rendering occurs before authentication and authorisation gates are
+    evaluated. The vulnerability is systemic rather than endpoint-specific,
+    affecting multiple authenticated or role-restricted routes that share the
+    same flawed request processing pipeline.
+  severity: Substantial incident
+  leverage:
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - IP Loss
+  viability: Likely
+  description: |
+    An adversary exploits a broken access control pattern in a web application
+    where the server constructs and includes the full rendered page content in
+    the HTTP response body before enforcing authentication or authorisation
+    checks. When the access control check fails, the server issues an HTTP 302
+    Found redirect response with a Location header pointing to a login or error
+    page — however, the response body still contains the complete protected page
+    content.
+
+    Standard web browsers automatically follow the redirect and do not display
+    the body content to the user, masking the data leakage. However, an attacker
+    using HTTP clients that do not follow redirects (e.g. curl, Burp Suite, or
+    custom scripts) can intercept and read the full protected content from the
+    redirect response body.
+
+    This vulnerability affects authenticated and role-restricted web pages in a
+    pattern-based manner, meaning it is not isolated to a single endpoint but
+    rather stems from a systemic flaw in the application's access control
+    enforcement architecture. The root cause is a late enforcement model where
+    the application constructs the complete response — including sensitive data —
+    before determining whether the requesting user is authorised to view it.
+
+    Exploitation is trivial once the pattern is discovered: the adversary simply
+    sends HTTP requests to protected endpoints and inspects the response bodies
+    of 302 redirect responses. No authentication tokens, session cookies, or
+    special headers are required. The attack can be automated to enumerate and
+    exfiltrate content from all affected endpoints systematically.
+
+    This aligns with OWASP Top 10 A01:2021 Broken Access Control and CWE-284
+    Improper Access Control. The vulnerability represents a fundamental flaw in
+    the application's security architecture rather than a simple misconfiguration.
