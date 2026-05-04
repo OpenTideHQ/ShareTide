@@ -1,0 +1,78 @@
+name: Client-controlled session state authentication bypass
+criticality: High
+references:
+  public:
+    1: https://owasp.org/Top10/A01_2021-Broken_Access_Control/
+    2: https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/
+    3: https://cwe.mitre.org/data/definitions/565.html
+    4: https://cwe.mitre.org/data/definitions/287.html
+    5: https://cwe.mitre.org/data/definitions/602.html
+
+metadata:
+  uuid: 38adba1e-0961-4417-bd84-33fa9c42439f
+  schema: tvm::2.1
+  version: 1
+  created: 2026-05-04
+  modified: 2026-05-04
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  killchain: Exploitation
+  att&ck:
+    - T1190 #Exploit Public-Facing Application
+  chaining:
+    - relation: support::synergize
+      vector: b0d6bf74-b204-4a48-9509-4499ed795771 #Pass-the-cookie Attack
+      description: |
+        Both vectors abuse web session trust. Pass-the-cookie reuses a valid stolen session token,
+        while this vector fabricates or alters weak client-controlled session values. Detection and
+        hardening should therefore consider cookie and header integrity together.
+    - relation: support::synergize
+      vector: 0663c192-cdeb-49a2-994c-4cc8e98f764e #Late access control enforcement via redirect body leakage
+      description: |
+        Both vectors expose systemic web access-control failures. Differential HTTP testing across
+        unauthenticated, injected, and modified state can reveal either leaked protected content or
+        client-controlled authentication decisions.
+  terrain: |
+    External web applications that derive authentication or authorisation state from client-supplied
+    cookies, Authorization headers, or other request variables without strong server-side validation.
+    The vulnerable terrain may be shared middleware or framework logic rather than a single
+    endpoint. The server accepts the presence of values, simple strings, usernames, role flags, or
+    fabricated bearer values instead of verifying cryptographic integrity, server-issued session
+    binding, token signature, expiry, and privilege state.
+  severity: Substantial incident
+  leverage:
+    - Spoofing
+    - Elevation of privilege
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Business disruption
+    - Legal and regulatory
+  viability: Likely
+  description: |
+    An adversary bypasses authentication or authorisation by injecting or modifying client-controlled
+    session state in HTTP requests. The application treats cookies, Authorization headers, or other
+    request variables as trusted authentication context even when values are arbitrary, unsigned, or
+    user-controlled.
+
+    Typical vulnerable logic checks whether a value is present, whether a simple string equals an
+    expected flag such as Login=true, or whether an identifier such as AppUsername=Admin is supplied.
+    The server does not verify that the value was issued by the application, bound to a server-side
+    session, signed, protected by HMAC, or validated as a JWT or equivalent token. As a result, a
+    crafted request can be treated as an authenticated or privileged session.
+
+    Exploitation is low complexity. The adversary compares behaviour with no cookies or headers,
+    then resends the same request with injected or modified values. Indicators include access granted
+    after arbitrary values are supplied, privilege changes after cookie modification, or different
+    protected content returned based only on client-controlled values. The issue can be systemic
+    because the same flawed session handling is reused across endpoints, roles, or application modules.
+
+    The threat should be confirmed by before/after request evidence showing authentication bypass,
+    authorisation bypass, or privilege escalation through crafted cookies or headers. Severity depends
+    on whether the trusted fields represent identity, role, login state, or access flags, and on the
+    breadth of affected endpoints.
