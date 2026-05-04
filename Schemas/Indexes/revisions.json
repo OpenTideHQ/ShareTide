@@ -555,6 +555,12 @@
                 "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
                 "author": "Behemoth Security",
                 "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
+            },
+            "2": {
+                "date": "2026-05-04",
+                "message": "Credit Hold Security Threat Research contributors\n\nAdds Hold Security Threat Research as contributor metadata on the recent web finding TVM and DOM objects.",
+                "author": "Behemoth Security",
+                "commit": "8b7eddc02e0677a781ed724e996d43205065c4cc"
             }
         }
     },
@@ -1646,6 +1652,12 @@
                 "message": "Add TVM for late access control enforcement via redirect body leakage (#10)\n\n* feat: Add TVM for late access control enforcement via redirect body leakage\n\nAdds a new Threat Vector Model describing a broken access control pattern\nwhere web applications construct full response bodies before completing\nauthentication/authorisation checks. Upon failed access control, the server\nreturns an HTTP 302 redirect but the response body still contains the full\nrendered protected page content, allowing adversaries using non-browser HTTP\nclients to exfiltrate sensitive data.\n\nReferences:\n- OWASP A01:2021 Broken Access Control\n- CWE-284 Improper Access Control\n- PortSwigger Access Control\n\nUUID: 0663c192-cdeb-49a2-994c-4cc8e98f764e\n\nCo-authored-by: behemothsecurity <97615419+behemothsecurity@users.noreply.github.com>\n\n* Add DOM: Detect late access control enforcement via redirect body leakage\n\nCreates a new Detection Objective (DOM) linked to TVM 0663c192-cdeb-49a2-994c-4cc8e98f764e.\n\nTwo complementary detection signals:\n- Anomalous HTTP 302 response body size (Pattern Matching)\n- Repeated unauthenticated access attempts to restricted endpoints (Frequency Analysis)\n\nMaps to MITRE ATT&CK T1190, OWASP A01:2021, CWE-284.\n\nCo-authored-by: behemothsecurity <97615419+behemothsecurity@users.noreply.github.com>\n\n* Add TVM and DOM for late access control enforcement via redirect body leakage\n\nAgent-Logs-Url: https://github.com/OpenTideHQ/ShareTide/sessions/12e677b6-bcf2-448a-aaf8-bdfa154f7809\n\nCo-authored-by: behemothsecurity <97615419+behemothsecurity@users.noreply.github.com>\n\n* Fix PR 10 OpenTide validation\n\n---------\n\nCo-authored-by: copilot-swe-agent[bot] <198982749+Copilot@users.noreply.github.com>\nCo-authored-by: behemothsecurity <97615419+behemothsecurity@users.noreply.github.com>\nCo-authored-by: BESSON Amine (DIGIT-EXT) <amine.besson@ext.ec.europa.eu>",
                 "author": "Copilot",
                 "commit": "b5a1565d6829a3d99c8b0bcfa93e5e484f91590f"
+            },
+            "2": {
+                "date": "2026-05-04",
+                "message": "Credit Hold Security Threat Research contributors\n\nAdds Hold Security Threat Research as contributor metadata on the recent web finding TVM and DOM objects.",
+                "author": "Behemoth Security",
+                "commit": "8b7eddc02e0677a781ed724e996d43205065c4cc"
             }
         }
     },
@@ -2179,6 +2191,12 @@
                 "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
                 "author": "Behemoth Security",
                 "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
+            },
+            "2": {
+                "date": "2026-05-04",
+                "message": "Credit Hold Security Threat Research contributors\n\nAdds Hold Security Threat Research as contributor metadata on the recent web finding TVM and DOM objects.",
+                "author": "Behemoth Security",
+                "commit": "8b7eddc02e0677a781ed724e996d43205065c4cc"
             }
         }
     },
@@ -3140,6 +3158,12 @@
                 "message": "Refine DOM capability names and signal quality\n\nRenames and refactors the recent DOMs to express detection capabilities rather than mirroring TVM names, preserving UUIDs and improving signal implementation guidance.",
                 "author": "Behemoth Security",
                 "commit": "3829aa9e17c3b110ffe79078b641cd94c0efd8fc"
+            },
+            "3": {
+                "date": "2026-05-04",
+                "message": "Credit Hold Security Threat Research contributors\n\nAdds Hold Security Threat Research as contributor metadata on the recent web finding TVM and DOM objects.",
+                "author": "Behemoth Security",
+                "commit": "8b7eddc02e0677a781ed724e996d43205065c4cc"
             }
         }
     },
@@ -3159,6 +3183,12 @@
                 "message": "Refine DOM capability names and signal quality\n\nRenames and refactors the recent DOMs to express detection capabilities rather than mirroring TVM names, preserving UUIDs and improving signal implementation guidance.",
                 "author": "Behemoth Security",
                 "commit": "3829aa9e17c3b110ffe79078b641cd94c0efd8fc"
+            },
+            "3": {
+                "date": "2026-05-04",
+                "message": "Credit Hold Security Threat Research contributors\n\nAdds Hold Security Threat Research as contributor metadata on the recent web finding TVM and DOM objects.",
+                "author": "Behemoth Security",
+                "commit": "8b7eddc02e0677a781ed724e996d43205065c4cc"
             }
         }
     },
@@ -3178,6 +3208,12 @@
                 "message": "Refine DOM capability names and signal quality\n\nRenames and refactors the recent DOMs to express detection capabilities rather than mirroring TVM names, preserving UUIDs and improving signal implementation guidance.",
                 "author": "Behemoth Security",
                 "commit": "3829aa9e17c3b110ffe79078b641cd94c0efd8fc"
+            },
+            "3": {
+                "date": "2026-05-04",
+                "message": "Credit Hold Security Threat Research contributors\n\nAdds Hold Security Threat Research as contributor metadata on the recent web finding TVM and DOM objects.",
+                "author": "Behemoth Security",
+                "commit": "8b7eddc02e0677a781ed724e996d43205065c4cc"
             }
         }
     },

@@ -1686,7 +1686,7 @@ The threat should be confirmed by before/after request evidence showing authenti
 authorisation bypass, or privilege escalation through crafted cookies or headers. Severity depends
 on whether the trusted fields represent identity, role, login state, or access flags, and on the
 breadth of affected endpoints.
-",1,2026-05-04,2026-05-04,d4c509d7-f9ab-452a-a91d-4da040095414,,"{'support::synergize': ['b0d6bf74-b204-4a48-9509-4499ed795771', '0663c192-cdeb-49a2-994c-4cc8e98f764e']}",,T1190
+",2,2026-05-04,2026-05-04,d4c509d7-f9ab-452a-a91d-4da040095414,,"{'support::synergize': ['b0d6bf74-b204-4a48-9509-4499ed795771', '0663c192-cdeb-49a2-994c-4cc8e98f764e']}",,T1190
 08b47a3b-fe90-4c9e-97f0-aa7bae361db1,Scheduled tasks to connect to adversarial infrastructure,Threat Vectors,clear,"A scheduled task is a task that is set to run automatically at a specific
 time or interval. 
 
@@ -5508,7 +5508,7 @@ exfiltrate content from all affected endpoints systematically.
 This aligns with OWASP Top 10 A01:2021 Broken Access Control and CWE-284
 Improper Access Control. The vulnerability represents a fundamental flaw in
 the application's security architecture rather than a simple misconfiguration.
-",1,2026-03-30,2026-03-30,f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,,,,T1190
+",2,2026-03-30,2026-05-04,f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,,,,T1190
 810057c6-cb84-41e4-add4-ae56b52c8ab7,authentication bypass on Ivanti Connect Secure appliances,Threat Vectors,clear,"### chained exploitation of CVE-2023-46805 or CVE-2024-21893 together with CVE-2024-21887.
 
 Attackers may chain exploits on vulnerabilities CVE-2023-46805 and 
@@ -7859,7 +7859,7 @@ and account-state checks are reused across environments, cloud-hosted instances,
 The vector enables bypass of onboarding controls, internal enumeration from a trusted application
 context, and a foothold for additional abuse. Severity should be finalised from evidence of the
 endpoint, request and response pairs, reset behaviour, token issuance, and access level achieved.
-",1,2026-05-04,2026-05-04,3a73c153-abd7-40cd-86a5-4d57a42b9a44,,"{'support::enabling': ['38adba1e-0961-4417-bd84-33fa9c42439f'], 'support::synergize': ['e2d8ce6b-f21e-4444-a828-0c6b722a9c93']}",,"T1190, T1136"
+",2,2026-05-04,2026-05-04,3a73c153-abd7-40cd-86a5-4d57a42b9a44,,"{'support::enabling': ['38adba1e-0961-4417-bd84-33fa9c42439f'], 'support::synergize': ['e2d8ce6b-f21e-4444-a828-0c6b722a9c93']}",,"T1190, T1136"
 49625e57-94e0-4185-8466-ac68fe15b7e1,Abuse of Getsystem command for privilege escalation,Threat Vectors,clear,"Use of Getsystem command to elevate from a local administrator to the SYSTEM user.
 There are different tools to do this, most popular are Cobalt Strike beacons and 
 Metasploit Meterpreter payload.
@@ -11371,20 +11371,20 @@ context. The detection capability focuses on evidence that fabricated cookies, h
 variables change the server-side decision from unauthenticated to authenticated or from lower to
 higher privilege. It intentionally abstracts away from the exact TVM wording and frames what SOC,
 application security, and continuous assurance controls need to observe.
-",2,2026-05-04,2026-05-04,"9ba566b6-bfed-4059-bdb1-50bb3cac3c29, 9bfe87d7-c197-4893-b7e1-829ab6d1fcf5, 7ff9ea94-7bf4-4df5-83f1-7d3dc0174653",38adba1e-0961-4417-bd84-33fa9c42439f,,,T1190
+",3,2026-05-04,2026-05-04,"9ba566b6-bfed-4059-bdb1-50bb3cac3c29, 9bfe87d7-c197-4893-b7e1-829ab6d1fcf5, 7ff9ea94-7bf4-4df5-83f1-7d3dc0174653",38adba1e-0961-4417-bd84-33fa9c42439f,,,T1190
 3a73c153-abd7-40cd-86a5-4d57a42b9a44,Detect premature account activation and restricted onboarding bypass,Detection Objectives,clear,"Detect account lifecycle control failures where an identity becomes usable before the intended
 approval, invitation, or eligibility gate is complete. The capability is broader than a single
 registration endpoint: it correlates account creation, approval state, password reset, token
 issuance, and first resource access. This gives analysts a lifecycle view of onboarding bypass
 rather than a simple route-hit alert.
-",2,2026-05-04,2026-05-04,"7f6d1aae-c807-42fb-8734-4d3c6c4e9670, d5906e6c-0f66-4dd6-8add-216a90b2b1f2, 958eeed6-43f6-43c8-8bb9-96397aab29a1",3d7dada6-5f9d-4f67-952e-faa2ab794fde,,,"T1190, T1136"
+",3,2026-05-04,2026-05-04,"7f6d1aae-c807-42fb-8734-4d3c6c4e9670, d5906e6c-0f66-4dd6-8add-216a90b2b1f2, 958eeed6-43f6-43c8-8bb9-96397aab29a1",3d7dada6-5f9d-4f67-952e-faa2ab794fde,,,"T1190, T1136"
 f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,Detect protected content in abnormal redirect responses,Detection Objectives,clear,"Identify access-control defects where redirect responses carry more content than a redirect
 should reasonably contain. This objective is not a one-to-one restatement of the upstream threat
 vector; it defines the detection capability around abnormal HTTP response semantics, protected
 route access patterns, and differential validation of unauthenticated requests. The capability is
 useful for reverse proxies, WAFs, API gateways, and synthetic validation jobs that can observe
 response status, size, headers, and route sensitivity.
-",2,2026-03-30,2026-05-04,"f798884c-46ea-424c-9958-45f2c4f8110a, 0770d2a4-9299-46d7-93f2-c3fff68aad26, 077ee487-7694-4ed5-9a83-5ed36b4f31c5",0663c192-cdeb-49a2-994c-4cc8e98f764e,,,T1190
+",3,2026-03-30,2026-05-04,"f798884c-46ea-424c-9958-45f2c4f8110a, 0770d2a4-9299-46d7-93f2-c3fff68aad26, 077ee487-7694-4ed5-9a83-5ed36b4f31c5",0663c192-cdeb-49a2-994c-4cc8e98f764e,,,T1190
 f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b,Detect Abuse of Valid Azure Credentials,Detection Objectives,clear,"Detect when adversaries abuse valid Azure AD/Entra ID credentials to gain 
 unauthorized access to cloud resources. This detection objective focuses on 
 identifying anomalous authentication patterns, suspicious access behaviors, 
