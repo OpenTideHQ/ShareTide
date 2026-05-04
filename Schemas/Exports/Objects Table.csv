@@ -11366,26 +11366,25 @@ Due to the critical nature of supply chain attacks and their potential for
 widespread impact, this objective is assigned Critical priority with High
 investment requirements for comprehensive detection coverage.
 ",1,2026-02-09,2026-02-09,"8d4f6b2e-9c7a-4e1f-8b3d-6a9c5e7f2b4d, 2f7c9b4e-8d3a-4e6f-9b1c-7a5d8e2f4b6c, 6c9f3e7b-4d2a-4e8f-9b6d-3a7c5e1f8b4d, 4e7b9d3f-6c2a-4e8f-9b1d-7a5c8e3f6b2d, 9b6e4d8f-7c3a-4e2f-8b1d-6a9c5e7f3b4d","8b7cae6f-b6cf-4414-9cdc-fe8c8ee7ee22, 52462685-bebb-4e86-94b0-fd46aeacb085, 23d06aa7-f6d5-44ee-be8f-e6de2f495bd9, bc365789-bdbb-4e78-b2ae-b097a7ccd35f, bc95c747-ede2-4c16-a6b4-506b305e744a, 7c4d9a2e-8f3b-4e6a-9d1c-5a7b8e2f4d3a, bee6e973-b0d0-4735-a26a-003f39b8c08d, bf30d882-9b96-403a-9a47-83a2981fc526, 55eaa437-5a25-4c29-b1fc-9c0fba4a18ad",,,"T1195.002, T1082, T1033, T1057, T1049, T1574, T1203, T1105, T1071.001, T1567"
-d4c509d7-f9ab-452a-a91d-4da040095414,Detect client-controlled session state authentication bypass,Detection Objectives,clear,"Detect or continuously validate web applications that grant authentication or authorisation based on client-supplied
-cookies, Authorization headers, or request variables without verifying server-issued session state
-or token integrity. The objective focuses on differential request behaviour, privilege changes
-caused by modified values, and anomalous acceptance of fabricated session indicators.
-",1,2026-05-04,2026-05-04,"9ba566b6-bfed-4059-bdb1-50bb3cac3c29, 9bfe87d7-c197-4893-b7e1-829ab6d1fcf5, 7ff9ea94-7bf4-4df5-83f1-7d3dc0174653",38adba1e-0961-4417-bd84-33fa9c42439f,,,T1190
-f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,Detect late access control enforcement via redirect body leakage,Detection Objectives,clear,"Detect exploitation of a broken access control pattern where web application
-HTTP 302 redirect responses contain the full rendered protected page content
-in the response body. This detection objective targets the observable
-artefacts of late access control enforcement — specifically, redirect
-responses with anomalously large bodies and patterns of repeated
-unauthenticated access to restricted endpoints. The vulnerability enables an
-adversary to exfiltrate protected content without valid credentials by
-intercepting the response body of redirect responses using tools that do not
-follow HTTP redirects.
-",1,2026-03-30,2026-03-30,"f798884c-46ea-424c-9958-45f2c4f8110a, 0770d2a4-9299-46d7-93f2-c3fff68aad26",0663c192-cdeb-49a2-994c-4cc8e98f764e,,,T1190
-3a73c153-abd7-40cd-86a5-4d57a42b9a44,Detect unauthorized account provisioning via exposed registration flow,Detection Objectives,clear,"Detect unauthorised account creation and premature activation through exposed registration,
-password reset, or token issuance workflows. The objective covers backend routes that remain
-reachable despite hidden registration UI, account records created before approval, and access
-granted to accounts that should still be pending approval or invitation validation.
-",1,2026-05-04,2026-05-04,"7f6d1aae-c807-42fb-8734-4d3c6c4e9670, d5906e6c-0f66-4dd6-8add-216a90b2b1f2, 958eeed6-43f6-43c8-8bb9-96397aab29a1",3d7dada6-5f9d-4f67-952e-faa2ab794fde,,,"T1190, T1136"
+d4c509d7-f9ab-452a-a91d-4da040095414,Detect acceptance of forged web session context,Detection Objectives,clear,"Detect cases where an application accepts caller-supplied state as an authentication or privilege
+context. The detection capability focuses on evidence that fabricated cookies, headers, or request
+variables change the server-side decision from unauthenticated to authenticated or from lower to
+higher privilege. It intentionally abstracts away from the exact TVM wording and frames what SOC,
+application security, and continuous assurance controls need to observe.
+",2,2026-05-04,2026-05-04,"9ba566b6-bfed-4059-bdb1-50bb3cac3c29, 9bfe87d7-c197-4893-b7e1-829ab6d1fcf5, 7ff9ea94-7bf4-4df5-83f1-7d3dc0174653",38adba1e-0961-4417-bd84-33fa9c42439f,,,T1190
+3a73c153-abd7-40cd-86a5-4d57a42b9a44,Detect premature account activation and restricted onboarding bypass,Detection Objectives,clear,"Detect account lifecycle control failures where an identity becomes usable before the intended
+approval, invitation, or eligibility gate is complete. The capability is broader than a single
+registration endpoint: it correlates account creation, approval state, password reset, token
+issuance, and first resource access. This gives analysts a lifecycle view of onboarding bypass
+rather than a simple route-hit alert.
+",2,2026-05-04,2026-05-04,"7f6d1aae-c807-42fb-8734-4d3c6c4e9670, d5906e6c-0f66-4dd6-8add-216a90b2b1f2, 958eeed6-43f6-43c8-8bb9-96397aab29a1",3d7dada6-5f9d-4f67-952e-faa2ab794fde,,,"T1190, T1136"
+f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,Detect protected content in abnormal redirect responses,Detection Objectives,clear,"Identify access-control defects where redirect responses carry more content than a redirect
+should reasonably contain. This objective is not a one-to-one restatement of the upstream threat
+vector; it defines the detection capability around abnormal HTTP response semantics, protected
+route access patterns, and differential validation of unauthenticated requests. The capability is
+useful for reverse proxies, WAFs, API gateways, and synthetic validation jobs that can observe
+response status, size, headers, and route sensitivity.
+",2,2026-03-30,2026-05-04,"f798884c-46ea-424c-9958-45f2c4f8110a, 0770d2a4-9299-46d7-93f2-c3fff68aad26, 077ee487-7694-4ed5-9a83-5ed36b4f31c5",0663c192-cdeb-49a2-994c-4cc8e98f764e,,,T1190
 f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b,Detect Abuse of Valid Azure Credentials,Detection Objectives,clear,"Detect when adversaries abuse valid Azure AD/Entra ID credentials to gain 
 unauthorized access to cloud resources. This detection objective focuses on 
 identifying anomalous authentication patterns, suspicious access behaviors, 

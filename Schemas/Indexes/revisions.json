@@ -3134,19 +3134,12 @@
                 "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
                 "author": "Behemoth Security",
                 "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
-            }
-        }
-    },
-    "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544": {
-        "name": "Detect late access control enforcement via redirect body leakage",
-        "object": "Detection Objectives",
-        "description": "Detect exploitation of a broken access control pattern where web application\nHTTP 302 redirect responses contain the full rendered protected page content\nin the response body. This detection objective targets the observable\nartefacts of late access control enforcement \u2014 specifically, redirect\nresponses with anomalously large bodies and patterns of repeated\nunauthenticated access to restricted endpoints. The vulnerability enables an\nadversary to exfiltrate protected content without valid credentials by\nintercepting the response body of redirect responses using tools that do not\nfollow HTTP redirects.\n",
-        "revisions": {
-            "1": {
+            },
+            "2": {
                 "date": "2026-05-04",
-                "message": "Add DOM for redirect body leakage detection\n\nAdds the detection objective for the merged late access control enforcement TVM and temporarily updates the generated DOM schema enum until regeneration.",
+                "message": "Refine DOM capability names and signal quality\n\nRenames and refactors the recent DOMs to express detection capabilities rather than mirroring TVM names, preserving UUIDs and improving signal implementation guidance.",
                 "author": "Behemoth Security",
-                "commit": "cd5acac53ab2ede410e6ee569eadac220b483a68"
+                "commit": "3829aa9e17c3b110ffe79078b641cd94c0efd8fc"
             }
         }
     },
@@ -3160,6 +3153,31 @@
                 "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
                 "author": "Behemoth Security",
                 "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
+            },
+            "2": {
+                "date": "2026-05-04",
+                "message": "Refine DOM capability names and signal quality\n\nRenames and refactors the recent DOMs to express detection capabilities rather than mirroring TVM names, preserving UUIDs and improving signal implementation guidance.",
+                "author": "Behemoth Security",
+                "commit": "3829aa9e17c3b110ffe79078b641cd94c0efd8fc"
+            }
+        }
+    },
+    "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544": {
+        "name": "Detect late access control enforcement via redirect body leakage",
+        "object": "Detection Objectives",
+        "description": "Detect exploitation of a broken access control pattern where web application\nHTTP 302 redirect responses contain the full rendered protected page content\nin the response body. This detection objective targets the observable\nartefacts of late access control enforcement \u2014 specifically, redirect\nresponses with anomalously large bodies and patterns of repeated\nunauthenticated access to restricted endpoints. The vulnerability enables an\nadversary to exfiltrate protected content without valid credentials by\nintercepting the response body of redirect responses using tools that do not\nfollow HTTP redirects.\n",
+        "revisions": {
+            "1": {
+                "date": "2026-05-04",
+                "message": "Add DOM for redirect body leakage detection\n\nAdds the detection objective for the merged late access control enforcement TVM and temporarily updates the generated DOM schema enum until regeneration.",
+                "author": "Behemoth Security",
+                "commit": "cd5acac53ab2ede410e6ee569eadac220b483a68"
+            },
+            "2": {
+                "date": "2026-05-04",
+                "message": "Refine DOM capability names and signal quality\n\nRenames and refactors the recent DOMs to express detection capabilities rather than mirroring TVM names, preserving UUIDs and improving signal implementation guidance.",
+                "author": "Behemoth Security",
+                "commit": "3829aa9e17c3b110ffe79078b641cd94c0efd8fc"
             }
         }
     },
