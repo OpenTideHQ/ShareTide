@@ -3792,6 +3792,7 @@
                     "type": "array",
                     "items": {
                         "enum": [
+                            "0663c192-cdeb-49a2-994c-4cc8e98f764e",
                             "394dde97-4a8c-4b6a-8f8b-c6bf18a7a87f",
                             "37381f28-ad9f-40c3-80f8-d8a82d6ce9a3",
                             "a5f631c3-6fb0-484f-89e4-c8b2e038db8f",
