@@ -5486,7 +5486,7 @@ exfiltrate content from all affected endpoints systematically.
 This aligns with OWASP Top 10 A01:2021 Broken Access Control and CWE-284
 Improper Access Control. The vulnerability represents a fundamental flaw in
 the application's security architecture rather than a simple misconfiguration.
-",1,2026-03-30,2026-03-30,,,,,T1190
+",1,2026-03-30,2026-03-30,f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,,,,T1190
 810057c6-cb84-41e4-add4-ae56b52c8ab7,authentication bypass on Ivanti Connect Secure appliances,Threat Vectors,clear,"### chained exploitation of CVE-2023-46805 or CVE-2024-21893 together with CVE-2024-21887.
 
 Attackers may chain exploits on vulnerabilities CVE-2023-46805 and 
@@ -11323,6 +11323,16 @@ Due to the critical nature of supply chain attacks and their potential for
 widespread impact, this objective is assigned Critical priority with High
 investment requirements for comprehensive detection coverage.
 ",1,2026-02-09,2026-02-09,"8d4f6b2e-9c7a-4e1f-8b3d-6a9c5e7f2b4d, 2f7c9b4e-8d3a-4e6f-9b1c-7a5d8e2f4b6c, 6c9f3e7b-4d2a-4e8f-9b6d-3a7c5e1f8b4d, 4e7b9d3f-6c2a-4e8f-9b1d-7a5c8e3f6b2d, 9b6e4d8f-7c3a-4e2f-8b1d-6a9c5e7f3b4d","8b7cae6f-b6cf-4414-9cdc-fe8c8ee7ee22, 52462685-bebb-4e86-94b0-fd46aeacb085, 23d06aa7-f6d5-44ee-be8f-e6de2f495bd9, bc365789-bdbb-4e78-b2ae-b097a7ccd35f, bc95c747-ede2-4c16-a6b4-506b305e744a, 7c4d9a2e-8f3b-4e6a-9d1c-5a7b8e2f4d3a, bee6e973-b0d0-4735-a26a-003f39b8c08d, bf30d882-9b96-403a-9a47-83a2981fc526, 55eaa437-5a25-4c29-b1fc-9c0fba4a18ad",,,"T1195.002, T1082, T1033, T1057, T1049, T1574, T1203, T1105, T1071.001, T1567"
+f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,Detect late access control enforcement via redirect body leakage,Detection Objectives,clear,"Detect exploitation of a broken access control pattern where web application
+HTTP 302 redirect responses contain the full rendered protected page content
+in the response body. This detection objective targets the observable
+artefacts of late access control enforcement — specifically, redirect
+responses with anomalously large bodies and patterns of repeated
+unauthenticated access to restricted endpoints. The vulnerability enables an
+adversary to exfiltrate protected content without valid credentials by
+intercepting the response body of redirect responses using tools that do not
+follow HTTP redirects.
+",1,2026-03-30,2026-03-30,"f798884c-46ea-424c-9958-45f2c4f8110a, 0770d2a4-9299-46d7-93f2-c3fff68aad26",0663c192-cdeb-49a2-994c-4cc8e98f764e,,,T1190
 f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b,Detect Abuse of Valid Azure Credentials,Detection Objectives,clear,"Detect when adversaries abuse valid Azure AD/Entra ID credentials to gain 
 unauthorized access to cloud resources. This detection objective focuses on 
 identifying anomalous authentication patterns, suspicious access behaviors, 

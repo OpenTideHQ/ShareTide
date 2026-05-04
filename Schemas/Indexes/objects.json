@@ -1728,6 +1728,29 @@
                 "criticality": "Critical",
                 "description": "Detects network communication to known Cobalt Strike C2 infrastructure\nassociated with the Notepad++ supply chain campaign. All observed infection\nchains ultimately deployed Cobalt Strike Beacon as the primary post-compromise\nC2 implant.\n\nNetwork indicators:\n\n**Known C2 Domains**:\n- cdncheck.it[.]com (Chain #1, July-August 2025)\n- self-dns.it[.]com (Chain #2, September-October 2025)\n- safe-dns.it[.]com (Chain #2, September-October 2025)\n- api.wiresguard[.]com (Chain #3, October 2025)\n- api.skycloudcenter[.]com (observed in later variants)\n\n**Download Infrastructure IPs**:\n- 45.77.31[.]210 (Cobalt Strike download: /users/admin)\n- 45.76.155[.]202 (update.exe distribution)\n- 45.32.144[.]255 (update.exe distribution)\n- 95.179.213[.]0 (update.exe, install.exe, AutoUpdater.exe)\n\nDetection criteria:\n- DNS queries or resolutions for listed domains\n- Outbound HTTPS (443) connections to listed domains/IPs\n- HTTP GET requests to paths like /users/admin or /update/*\n- TLS SNI fields matching C2 domains\n- Beacon-like traffic patterns: periodic HTTPS requests with consistent intervals\n\n**Behavioral indicators**:\n- Regular HTTPS beaconing from endpoints at fixed intervals (jitter may be present)\n- Outbound connections to domains mimicking legitimate services (CDN, DNS, VPN)\n- POST requests with encrypted payloads following GET requests\n- Network activity from processes executing from AppData directories\n\n**Configuration artifacts**:\n- XOR-encrypted Cobalt Strike configuration with key \"CRAZY\"\n- Memory strings matching listed domains in suspicious processes\n\nCritical severity due to confirmed C2 channel establishment indicating\nactive compromise and ongoing threat actor access to the environment.\n"
             },
+            "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544": {
+                "name": "Detect late access control enforcement via redirect body leakage",
+                "model": true,
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "Detect exploitation of a broken access control pattern where web application\nHTTP 302 redirect responses contain the full rendered protected page content\nin the response body. This detection objective targets the observable\nartefacts of late access control enforcement \u2014 specifically, redirect\nresponses with anomalously large bodies and patterns of repeated\nunauthenticated access to restricted endpoints. The vulnerability enables an\nadversary to exfiltrate protected content without valid credentials by\nintercepting the response body of redirect responses using tools that do not\nfollow HTTP redirects.\n"
+            },
+            "f798884c-46ea-424c-9958-45f2c4f8110a": {
+                "name": "Detect late access control enforcement via redirect body leakage::Anomalous HTTP 302 response body size",
+                "model": true,
+                "tide.object.parent": "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544",
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "Detect HTTP 302 redirect responses that contain unexpectedly large\nresponse bodies. Legitimate 302 redirects typically have minimal or no\nbody content (usually less than 500 bytes). A 302 response with a\nsubstantial body (e.g. greater than 1 kB) may indicate that the server is\nleaking protected page content in the redirect response. Monitor web\nserver access logs, reverse proxy logs, or WAF logs for 302 responses\nwhere the Content-Length or response_body_bytes exceeds a defined\nthreshold. This signal targets the core observable artefact of the\nvulnerability.\n"
+            },
+            "0770d2a4-9299-46d7-93f2-c3fff68aad26": {
+                "name": "Detect late access control enforcement via redirect body leakage::Repeated unauthenticated access attempts to restricted endpoints",
+                "model": true,
+                "tide.object.parent": "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544",
+                "tlp": "clear",
+                "criticality": "Medium",
+                "description": "Detect patterns where a client (identified by IP address or session)\nrepeatedly sends requests to authenticated or role-restricted endpoints\nand consistently receives HTTP 302 redirect responses. This pattern\nsuggests automated exploitation of the redirect body leakage\nvulnerability, where an adversary is systematically enumerating protected\nendpoints to exfiltrate content from the response bodies. Legitimate\nusers receiving a 302 redirect would typically follow it and\nauthenticate; repeated 302 responses to the same client for different\nprotected endpoints within a short timeframe is anomalous.\n"
+            },
             "f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b": {
                 "name": "Detect Abuse of Valid Azure Credentials",
                 "model": true,
