@@ -302,6 +302,13 @@
                 "criticality": "High",
                 "description": "Cookies contain information stored in a user browser, such as session state and\nuser preferences. There are multiple ways to retrieve browser cookies using Python.\n\nHere are several commonly used methods in Python to obtain browser cookies\nalong with example code:\n\n1. Use the Selenium library to retrieve browser cookies.\n  from selenium import webdriver\n  Initialize the browser driver  driver = webdriver.Chrome()\n  Open the webpage  driver.get(\"http://www.example.com\")\n  Retrieve browser cookies  cookies = driver.get_cookies()\n  Print the cookies  for cookie in cookies:      print(cookie)\n  Close the browser  driver.quit()  \n2. Using the browser developer tools to retrieve browser cookies\n  import requests\n  send HTTP requests  response = requests.get(\"http://www.example.com\")\n  get response about Cookies  cookies = response.cookies\n  print out Cookies  for cookie in cookies:      print(cookie.name, cookie.value)         \n3. Saving cookies from the browser developer tools as a HAR (HTTP Archive) file\n  In the Network panel of the browser developer tools, select a request, right-click,  and choose \u201cSave All as HAR with Content\u201d to save the request and response as a  HAR file. Then, use Python to parse the HAR file and extract the cookie information.\n  The following is an example code demonstrating how to parse browser cookies using a HAR file:\n  import json\n  read HAR file  with open(\"example.har\", \"r\") as file:      har_data = json.load(file)\n  extract Cookies information  cookies = har_data[\"log\"][\"entries\"][0][\"response\"][\"cookies\"]\n  print out Cookies  for cookie in cookies:      print(cookie[\"name\"], cookie[\"value\"])        \n4. Use the browsercookie Python module that loads cookies used by the web browser into a   cookiejar object. This can be useful to download the same content seen in the   web browser without needing to login.      import urllib.request  public\\_html = urllib.request.urlopen(url).read()  opener = urllib.request.build\\_opener(urllib.request.HTTPCookieProcessor(cj))  "
             },
+            "38adba1e-0961-4417-bd84-33fa9c42439f": {
+                "name": "Client-controlled session state authentication bypass",
+                "model": true,
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "An adversary bypasses authentication or authorisation by injecting or modifying client-controlled\nsession state in HTTP requests. The application treats cookies, Authorization headers, or other\nrequest variables as trusted authentication context even when values are arbitrary, unsigned, or\nuser-controlled.\n\nTypical vulnerable logic checks whether a value is present, whether a simple string equals an\nexpected flag such as Login=true, or whether an identifier such as AppUsername=Admin is supplied.\nThe server does not verify that the value was issued by the application, bound to a server-side\nsession, signed, protected by HMAC, or validated as a JWT or equivalent token. As a result, a\ncrafted request can be treated as an authenticated or privileged session.\n\nExploitation is low complexity. The adversary compares behaviour with no cookies or headers,\nthen resends the same request with injected or modified values. Indicators include access granted\nafter arbitrary values are supplied, privilege changes after cookie modification, or different\nprotected content returned based only on client-controlled values. The issue can be systemic\nbecause the same flawed session handling is reused across endpoints, roles, or application modules.\n\nThe threat should be confirmed by before/after request evidence showing authentication bypass,\nauthorisation bypass, or privilege escalation through crafted cookies or headers. Severity depends\non whether the trusted fields represent identity, role, login state, or access flags, and on the\nbreadth of affected endpoints.\n"
+            },
             "08b47a3b-fe90-4c9e-97f0-aa7bae361db1": {
                 "name": "Scheduled tasks to connect to adversarial infrastructure",
                 "model": true,
@@ -1163,6 +1170,13 @@
                 "criticality": "High",
                 "description": "The following threat vector deals with adversaries exploiting the soft-delete state \nof resources to restore sensitive or critical data that was intended for deletion. \nBelow is a detailed analysis including an example scenario, attack goals and impact, \nand attack flow.\n\n### Example Attack Scenario\n\nAn attacker obtains administrative access to an Azure subscription, targets a critical \nasset\u2014for example, a Key Vault, Storage Account, or a backed-up Virtual Machine\u2014and \ndeletes it from the environment. Because Azure\u2019s soft delete is enabled (default \nfor many services), the deleted resource enters a \"soft-deleted\" state rather than \nbeing permanently erased. The adversary, maintaining access, then restores the asset \nfrom its soft-deleted state at a later time, thus retrieving encryption keys, sensitive \nsecrets, storage blobs, or entire VM backup images. This could be leveraged for \nfurther compromise, data exfiltration, or extortion, such as during a ransomware \nattack where the goal is to restore and leak or manipulate sensitive data.\n\n### Attack Goals and Impact\n\n- The primary goal is to **retrieve or reinstate sensitive data or backup artifacts** \nwhich were meant to be irretrievably deleted, thus bypassing standard data sanitization \nor incident response clean-up.\n- Attackers may also restore resources to maintain persistence, retrieve secrets, \nor conduct business disruption by manipulating the retention window of these soft-deleted resources.\n- The impact includes:  - **Regaining access to critical secrets or data thought to be purged** (e.g.,   access keys in a Key Vault, confidential files in a Storage Account, or disk images   from VM backups).  - **Circumventing incident remediation efforts** (e.g., after a ransomware event   when defenders try to remove access, attackers reverse the cleanup).  - **Using restored data for secondary attacks**, such as extortion by leaking   previously \"deleted\" data, or using recovered credentials to move laterally within   or outside the environment.\n\n### Attack Flow and Methodology\n\n- **Resource Deletion**: The attacker deletes valuable resources (such as Key Vaults, \nStorage Accounts, or VM Backups).\n- **Soft Delete Retention**: Azure's soft-delete feature retains these resources \nfor a specified period (typically 14 days by default, extendable up to 180 days).\n- **Resource Recovery**: Using recovered or maintained admin access, the attacker \nissues recovery actions, restoring the soft-deleted objects back to an active state, \nand proceeds to exfiltrate or abuse the recovered data.\n- **Post-Exploitation**: Data is accessed, secrets are used for persistence or lateral \nmovement, or assets are further manipulated or exposed depending on the attacker\u2019s \nobjectives.\n"
             },
+            "3d7dada6-5f9d-4f67-952e-faa2ab794fde": {
+                "name": "Unauthorized account provisioning via exposed registration flow",
+                "model": true,
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "An adversary provisions an unauthorised account through exposed registration or account lifecycle\nendpoints despite intended onboarding restrictions. The application may hide or remove the\nregistration UI, but backend routes such as /register, /signup, API registration endpoints,\npassword reset, or token issuance flows remain active and insufficiently gated.\n\nThe flawed workflow creates an account object before approval, invite validation, or domain\neligibility is enforced. Approval may be implemented only as a notification to a reviewer or a\nmanual delete process rather than as a blocking state transition. Once the account exists, related\nflows may allow password reset, login, or token issuance for the unapproved account. Depending on\ndefault role assignment and access checks, the adversary may gain partial or full access to the\napplication UI or APIs.\n\nDetection and validation require replaying the lifecycle end to end: submit a registration request,\nconfirm account creation before approval, attempt password reset, and test whether a session or\ntoken can be issued. The exposure may be systemic across deployments because registration paths\nand account-state checks are reused across environments, cloud-hosted instances, or tenants.\n\nThe vector enables bypass of onboarding controls, internal enumeration from a trusted application\ncontext, and a foothold for additional abuse. Severity should be finalised from evidence of the\nendpoint, request and response pairs, reset behaviour, token issuance, and access level achieved.\n"
+            },
             "49625e57-94e0-4185-8466-ac68fe15b7e1": {
                 "name": "Abuse of Getsystem command for privilege escalation",
                 "model": true,
@@ -1728,6 +1742,37 @@
                 "criticality": "Critical",
                 "description": "Detects network communication to known Cobalt Strike C2 infrastructure\nassociated with the Notepad++ supply chain campaign. All observed infection\nchains ultimately deployed Cobalt Strike Beacon as the primary post-compromise\nC2 implant.\n\nNetwork indicators:\n\n**Known C2 Domains**:\n- cdncheck.it[.]com (Chain #1, July-August 2025)\n- self-dns.it[.]com (Chain #2, September-October 2025)\n- safe-dns.it[.]com (Chain #2, September-October 2025)\n- api.wiresguard[.]com (Chain #3, October 2025)\n- api.skycloudcenter[.]com (observed in later variants)\n\n**Download Infrastructure IPs**:\n- 45.77.31[.]210 (Cobalt Strike download: /users/admin)\n- 45.76.155[.]202 (update.exe distribution)\n- 45.32.144[.]255 (update.exe distribution)\n- 95.179.213[.]0 (update.exe, install.exe, AutoUpdater.exe)\n\nDetection criteria:\n- DNS queries or resolutions for listed domains\n- Outbound HTTPS (443) connections to listed domains/IPs\n- HTTP GET requests to paths like /users/admin or /update/*\n- TLS SNI fields matching C2 domains\n- Beacon-like traffic patterns: periodic HTTPS requests with consistent intervals\n\n**Behavioral indicators**:\n- Regular HTTPS beaconing from endpoints at fixed intervals (jitter may be present)\n- Outbound connections to domains mimicking legitimate services (CDN, DNS, VPN)\n- POST requests with encrypted payloads following GET requests\n- Network activity from processes executing from AppData directories\n\n**Configuration artifacts**:\n- XOR-encrypted Cobalt Strike configuration with key \"CRAZY\"\n- Memory strings matching listed domains in suspicious processes\n\nCritical severity due to confirmed C2 channel establishment indicating\nactive compromise and ongoing threat actor access to the environment.\n"
             },
+            "d4c509d7-f9ab-452a-a91d-4da040095414": {
+                "name": "Detect client-controlled session state authentication bypass",
+                "model": true,
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "Detect or continuously validate web applications that grant authentication or authorisation based on client-supplied\ncookies, Authorization headers, or request variables without verifying server-issued session state\nor token integrity. The objective focuses on differential request behaviour, privilege changes\ncaused by modified values, and anomalous acceptance of fabricated session indicators.\n"
+            },
+            "9ba566b6-bfed-4059-bdb1-50bb3cac3c29": {
+                "name": "Detect client-controlled session state authentication bypass::Protected resource access after fabricated session value",
+                "model": true,
+                "tide.object.parent": "d4c509d7-f9ab-452a-a91d-4da040095414",
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "Detect HTTP requests to protected endpoints where access is denied with no session state but\nsucceeds when the client supplies fabricated or generic state values such as Login=true,\nAppUsername=Admin, role=admin, or Authorization: Bearer test. This signal requires comparing\nresponse status, response body class, and returned content between baseline unauthenticated\nrequests and injected-state requests.\n"
+            },
+            "9bfe87d7-c197-4893-b7e1-829ab6d1fcf5": {
+                "name": "Detect client-controlled session state authentication bypass::Privilege shift after cookie or header modification",
+                "model": true,
+                "tide.object.parent": "d4c509d7-f9ab-452a-a91d-4da040095414",
+                "tlp": "clear",
+                "criticality": "Critical",
+                "description": "Detect cases where changing a client-controlled identity, username, role, or feature flag value\nresults in a higher-privilege response. Examples include AppUsername=UNKNOWN changing to\nAppUsername=Admin, role=user changing to role=admin, or arbitrary bearer values receiving access\nbeyond the baseline. Compare authorisation decisions and response content for the same source,\nendpoint, and request method across modified state values.\n"
+            },
+            "7ff9ea94-7bf4-4df5-83f1-7d3dc0174653": {
+                "name": "Detect client-controlled session state authentication bypass::Repeated enumeration of session variable names",
+                "model": true,
+                "tide.object.parent": "d4c509d7-f9ab-452a-a91d-4da040095414",
+                "tlp": "clear",
+                "criticality": "Medium",
+                "description": "Detect repeated attempts from the same source to discover accepted session variables by trying\nmany cookie or header names and simple values. This includes logout-flow enumeration followed by\nreplay attempts using discovered variable names, repeated 401-to-200 transitions, or clusters of\nrequests using likely authentication words such as login, user, username, role, admin, token, or\nbearer in cookie/header names.\n"
+            },
             "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544": {
                 "name": "Detect late access control enforcement via redirect body leakage",
                 "model": true,
@@ -1750,6 +1795,37 @@
                 "tlp": "clear",
                 "criticality": "Medium",
                 "description": "Detect patterns where a client (identified by IP address or session)\nrepeatedly sends requests to authenticated or role-restricted endpoints\nand consistently receives HTTP 302 redirect responses. This pattern\nsuggests automated exploitation of the redirect body leakage\nvulnerability, where an adversary is systematically enumerating protected\nendpoints to exfiltrate content from the response bodies. Legitimate\nusers receiving a 302 redirect would typically follow it and\nauthenticate; repeated 302 responses to the same client for different\nprotected endpoints within a short timeframe is anomalous.\n"
+            },
+            "3a73c153-abd7-40cd-86a5-4d57a42b9a44": {
+                "name": "Detect unauthorized account provisioning via exposed registration flow",
+                "model": true,
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "Detect unauthorised account creation and premature activation through exposed registration,\npassword reset, or token issuance workflows. The objective covers backend routes that remain\nreachable despite hidden registration UI, account records created before approval, and access\ngranted to accounts that should still be pending approval or invitation validation.\n"
+            },
+            "7f6d1aae-c807-42fb-8734-4d3c6c4e9670": {
+                "name": "Detect unauthorized account provisioning via exposed registration flow::Account created through hidden or restricted registration endpoint",
+                "model": true,
+                "tide.object.parent": "3a73c153-abd7-40cd-86a5-4d57a42b9a44",
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "Detect successful account creation through routes that should be disabled, invite-only, or\napproval-gated, such as /register, /signup, /api/register, or deployment-specific equivalents.\nAlert when an account is created without a matching invitation, approval record, authorised\ndomain, or expected onboarding source.\n"
+            },
+            "d5906e6c-0f66-4dd6-8add-216a90b2b1f2": {
+                "name": "Detect unauthorized account provisioning via exposed registration flow::Password reset or token issued for unapproved account",
+                "model": true,
+                "tide.object.parent": "3a73c153-abd7-40cd-86a5-4d57a42b9a44",
+                "tlp": "clear",
+                "criticality": "Critical",
+                "description": "Detect password reset, login, or token issuance for an account whose lifecycle state is pending,\nunapproved, unverified, pending invitation validation, or otherwise not allowed to authenticate. This\nsignal is the critical failure point where a provisioned but unapproved account becomes usable.\n"
+            },
+            "958eeed6-43f6-43c8-8bb9-96397aab29a1": {
+                "name": "Detect unauthorized account provisioning via exposed registration flow::New unapproved account accesses application resources",
+                "model": true,
+                "tide.object.parent": "3a73c153-abd7-40cd-86a5-4d57a42b9a44",
+                "tlp": "clear",
+                "criticality": "High",
+                "description": "Detect newly created accounts accessing UI pages or APIs before approval, invitation validation,\nor domain eligibility checks are complete. Prioritise access to restricted modules, internal\ndata, administrative paths, or endpoints that should require an established trusted account.\n"
             },
             "f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b": {
                 "name": "Detect Abuse of Valid Azure Credentials",

@@ -1665,6 +1665,28 @@ along with example code:
   public\_html = urllib.request.urlopen(url).read()
   opener = urllib.request.build\_opener(urllib.request.HTTPCookieProcessor(cj))
   ",1,2024-11-05,2024-11-05,,,"{'sequence::succeeds': ['ec8201d4-c135-406b-a3b5-4a070e80a2ee'], 'atomicity::implements': ['b0d6bf74-b204-4a48-9509-4499ed795771']}",,T1111
+38adba1e-0961-4417-bd84-33fa9c42439f,Client-controlled session state authentication bypass,Threat Vectors,clear,"An adversary bypasses authentication or authorisation by injecting or modifying client-controlled
+session state in HTTP requests. The application treats cookies, Authorization headers, or other
+request variables as trusted authentication context even when values are arbitrary, unsigned, or
+user-controlled.
+
+Typical vulnerable logic checks whether a value is present, whether a simple string equals an
+expected flag such as Login=true, or whether an identifier such as AppUsername=Admin is supplied.
+The server does not verify that the value was issued by the application, bound to a server-side
+session, signed, protected by HMAC, or validated as a JWT or equivalent token. As a result, a
+crafted request can be treated as an authenticated or privileged session.
+
+Exploitation is low complexity. The adversary compares behaviour with no cookies or headers,
+then resends the same request with injected or modified values. Indicators include access granted
+after arbitrary values are supplied, privilege changes after cookie modification, or different
+protected content returned based only on client-controlled values. The issue can be systemic
+because the same flawed session handling is reused across endpoints, roles, or application modules.
+
+The threat should be confirmed by before/after request evidence showing authentication bypass,
+authorisation bypass, or privilege escalation through crafted cookies or headers. Severity depends
+on whether the trusted fields represent identity, role, login state, or access flags, and on the
+breadth of affected endpoints.
+",1,2026-05-04,2026-05-04,d4c509d7-f9ab-452a-a91d-4da040095414,,"{'support::synergize': ['b0d6bf74-b204-4a48-9509-4499ed795771', '0663c192-cdeb-49a2-994c-4cc8e98f764e']}",,T1190
 08b47a3b-fe90-4c9e-97f0-aa7bae361db1,Scheduled tasks to connect to adversarial infrastructure,Threat Vectors,clear,"A scheduled task is a task that is set to run automatically at a specific
 time or interval. 
 
@@ -7817,6 +7839,27 @@ and proceeds to exfiltrate or abuse the recovered data.
 movement, or assets are further manipulated or exposed depending on the attacker’s 
 objectives.
 ",1,2025-09-18,2025-09-19,,,"{'support::enabled': ['53063205-4404-4e6d-a2f5-d566c6085d96', 'b1593e0b-1b3b-462d-9ab6-21d1c136469d', '4e7eae8e-6615-41f2-bfe1-21a04f7a6088', '81338b90-f80c-40cc-8a57-ba97cdf86948', '41f57a57-1ed6-407e-bb70-a0f6ab52af10', '2d7ed070-e5c5-4796-b150-ea1d02ed1785'], 'atomicity::implemented': ['2743bf18-3b86-4721-bf3e-153dcda0b149'], 'support::synergize': ['2c6058fb-21db-47fe-99bc-a07cb70c53e4'], 'support::enabling': ['37381f28-ad9f-40c3-80f8-d8a82d6ce9a3']}",,"T1530, T1490, T1485"
+3d7dada6-5f9d-4f67-952e-faa2ab794fde,Unauthorized account provisioning via exposed registration flow,Threat Vectors,clear,"An adversary provisions an unauthorised account through exposed registration or account lifecycle
+endpoints despite intended onboarding restrictions. The application may hide or remove the
+registration UI, but backend routes such as /register, /signup, API registration endpoints,
+password reset, or token issuance flows remain active and insufficiently gated.
+
+The flawed workflow creates an account object before approval, invite validation, or domain
+eligibility is enforced. Approval may be implemented only as a notification to a reviewer or a
+manual delete process rather than as a blocking state transition. Once the account exists, related
+flows may allow password reset, login, or token issuance for the unapproved account. Depending on
+default role assignment and access checks, the adversary may gain partial or full access to the
+application UI or APIs.
+
+Detection and validation require replaying the lifecycle end to end: submit a registration request,
+confirm account creation before approval, attempt password reset, and test whether a session or
+token can be issued. The exposure may be systemic across deployments because registration paths
+and account-state checks are reused across environments, cloud-hosted instances, or tenants.
+
+The vector enables bypass of onboarding controls, internal enumeration from a trusted application
+context, and a foothold for additional abuse. Severity should be finalised from evidence of the
+endpoint, request and response pairs, reset behaviour, token issuance, and access level achieved.
+",1,2026-05-04,2026-05-04,3a73c153-abd7-40cd-86a5-4d57a42b9a44,,"{'support::enabling': ['38adba1e-0961-4417-bd84-33fa9c42439f'], 'support::synergize': ['e2d8ce6b-f21e-4444-a828-0c6b722a9c93']}",,"T1190, T1136"
 49625e57-94e0-4185-8466-ac68fe15b7e1,Abuse of Getsystem command for privilege escalation,Threat Vectors,clear,"Use of Getsystem command to elevate from a local administrator to the SYSTEM user.
 There are different tools to do this, most popular are Cobalt Strike beacons and 
 Metasploit Meterpreter payload.
@@ -11323,6 +11366,11 @@ Due to the critical nature of supply chain attacks and their potential for
 widespread impact, this objective is assigned Critical priority with High
 investment requirements for comprehensive detection coverage.
 ",1,2026-02-09,2026-02-09,"8d4f6b2e-9c7a-4e1f-8b3d-6a9c5e7f2b4d, 2f7c9b4e-8d3a-4e6f-9b1c-7a5d8e2f4b6c, 6c9f3e7b-4d2a-4e8f-9b6d-3a7c5e1f8b4d, 4e7b9d3f-6c2a-4e8f-9b1d-7a5c8e3f6b2d, 9b6e4d8f-7c3a-4e2f-8b1d-6a9c5e7f3b4d","8b7cae6f-b6cf-4414-9cdc-fe8c8ee7ee22, 52462685-bebb-4e86-94b0-fd46aeacb085, 23d06aa7-f6d5-44ee-be8f-e6de2f495bd9, bc365789-bdbb-4e78-b2ae-b097a7ccd35f, bc95c747-ede2-4c16-a6b4-506b305e744a, 7c4d9a2e-8f3b-4e6a-9d1c-5a7b8e2f4d3a, bee6e973-b0d0-4735-a26a-003f39b8c08d, bf30d882-9b96-403a-9a47-83a2981fc526, 55eaa437-5a25-4c29-b1fc-9c0fba4a18ad",,,"T1195.002, T1082, T1033, T1057, T1049, T1574, T1203, T1105, T1071.001, T1567"
+d4c509d7-f9ab-452a-a91d-4da040095414,Detect client-controlled session state authentication bypass,Detection Objectives,clear,"Detect or continuously validate web applications that grant authentication or authorisation based on client-supplied
+cookies, Authorization headers, or request variables without verifying server-issued session state
+or token integrity. The objective focuses on differential request behaviour, privilege changes
+caused by modified values, and anomalous acceptance of fabricated session indicators.
+",1,2026-05-04,2026-05-04,"9ba566b6-bfed-4059-bdb1-50bb3cac3c29, 9bfe87d7-c197-4893-b7e1-829ab6d1fcf5, 7ff9ea94-7bf4-4df5-83f1-7d3dc0174653",38adba1e-0961-4417-bd84-33fa9c42439f,,,T1190
 f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,Detect late access control enforcement via redirect body leakage,Detection Objectives,clear,"Detect exploitation of a broken access control pattern where web application
 HTTP 302 redirect responses contain the full rendered protected page content
 in the response body. This detection objective targets the observable
@@ -11333,6 +11381,11 @@ adversary to exfiltrate protected content without valid credentials by
 intercepting the response body of redirect responses using tools that do not
 follow HTTP redirects.
 ",1,2026-03-30,2026-03-30,"f798884c-46ea-424c-9958-45f2c4f8110a, 0770d2a4-9299-46d7-93f2-c3fff68aad26",0663c192-cdeb-49a2-994c-4cc8e98f764e,,,T1190
+3a73c153-abd7-40cd-86a5-4d57a42b9a44,Detect unauthorized account provisioning via exposed registration flow,Detection Objectives,clear,"Detect unauthorised account creation and premature activation through exposed registration,
+password reset, or token issuance workflows. The objective covers backend routes that remain
+reachable despite hidden registration UI, account records created before approval, and access
+granted to accounts that should still be pending approval or invitation validation.
+",1,2026-05-04,2026-05-04,"7f6d1aae-c807-42fb-8734-4d3c6c4e9670, d5906e6c-0f66-4dd6-8add-216a90b2b1f2, 958eeed6-43f6-43c8-8bb9-96397aab29a1",3d7dada6-5f9d-4f67-952e-faa2ab794fde,,,"T1190, T1136"
 f4a8b3c2-7e5d-4f1a-bc8e-9d2a6e7c8f0b,Detect Abuse of Valid Azure Credentials,Detection Objectives,clear,"Detect when adversaries abuse valid Azure AD/Entra ID credentials to gain 
 unauthorized access to cloud resources. This detection objective focuses on 
 identifying anomalous authentication patterns, suspicious access behaviors, 

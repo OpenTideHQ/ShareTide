@@ -545,6 +545,19 @@
             }
         }
     },
+    "38adba1e-0961-4417-bd84-33fa9c42439f": {
+        "name": "Client-controlled session state authentication bypass",
+        "object": "Threat Vectors",
+        "description": "An adversary bypasses authentication or authorisation by injecting or modifying client-controlled\nsession state in HTTP requests. The application treats cookies, Authorization headers, or other\nrequest variables as trusted authentication context even when values are arbitrary, unsigned, or\nuser-controlled.\n\nTypical vulnerable logic checks whether a value is present, whether a simple string equals an\nexpected flag such as Login=true, or whether an identifier such as AppUsername=Admin is supplied.\nThe server does not verify that the value was issued by the application, bound to a server-side\nsession, signed, protected by HMAC, or validated as a JWT or equivalent token. As a result, a\ncrafted request can be treated as an authenticated or privileged session.\n\nExploitation is low complexity. The adversary compares behaviour with no cookies or headers,\nthen resends the same request with injected or modified values. Indicators include access granted\nafter arbitrary values are supplied, privilege changes after cookie modification, or different\nprotected content returned based only on client-controlled values. The issue can be systemic\nbecause the same flawed session handling is reused across endpoints, roles, or application modules.\n\nThe threat should be confirmed by before/after request evidence showing authentication bypass,\nauthorisation bypass, or privilege escalation through crafted cookies or headers. Severity depends\non whether the trusted fields represent identity, role, login state, or access flags, and on the\nbreadth of affected endpoints.\n",
+        "revisions": {
+            "1": {
+                "date": "2026-05-04",
+                "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
+                "author": "Behemoth Security",
+                "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
+            }
+        }
+    },
     "08b47a3b-fe90-4c9e-97f0-aa7bae361db1": {
         "name": "Scheduled tasks to connect to adversarial infrastructure",
         "object": "Threat Vectors",
@@ -2156,6 +2169,19 @@
             }
         }
     },
+    "3d7dada6-5f9d-4f67-952e-faa2ab794fde": {
+        "name": "Unauthorized account provisioning via exposed registration flow",
+        "object": "Threat Vectors",
+        "description": "An adversary provisions an unauthorised account through exposed registration or account lifecycle\nendpoints despite intended onboarding restrictions. The application may hide or remove the\nregistration UI, but backend routes such as /register, /signup, API registration endpoints,\npassword reset, or token issuance flows remain active and insufficiently gated.\n\nThe flawed workflow creates an account object before approval, invite validation, or domain\neligibility is enforced. Approval may be implemented only as a notification to a reviewer or a\nmanual delete process rather than as a blocking state transition. Once the account exists, related\nflows may allow password reset, login, or token issuance for the unapproved account. Depending on\ndefault role assignment and access checks, the adversary may gain partial or full access to the\napplication UI or APIs.\n\nDetection and validation require replaying the lifecycle end to end: submit a registration request,\nconfirm account creation before approval, attempt password reset, and test whether a session or\ntoken can be issued. The exposure may be systemic across deployments because registration paths\nand account-state checks are reused across environments, cloud-hosted instances, or tenants.\n\nThe vector enables bypass of onboarding controls, internal enumeration from a trusted application\ncontext, and a foothold for additional abuse. Severity should be finalised from evidence of the\nendpoint, request and response pairs, reset behaviour, token issuance, and access level achieved.\n",
+        "revisions": {
+            "1": {
+                "date": "2026-05-04",
+                "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
+                "author": "Behemoth Security",
+                "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
+            }
+        }
+    },
     "49625e57-94e0-4185-8466-ac68fe15b7e1": {
         "name": "Abuse of Getsystem command for privilege escalation",
         "object": "Threat Vectors",
@@ -3098,6 +3124,19 @@
             }
         }
     },
+    "d4c509d7-f9ab-452a-a91d-4da040095414": {
+        "name": "Detect client-controlled session state authentication bypass",
+        "object": "Detection Objectives",
+        "description": "Detect or continuously validate web applications that grant authentication or authorisation based on client-supplied\ncookies, Authorization headers, or request variables without verifying server-issued session state\nor token integrity. The objective focuses on differential request behaviour, privilege changes\ncaused by modified values, and anomalous acceptance of fabricated session indicators.\n",
+        "revisions": {
+            "1": {
+                "date": "2026-05-04",
+                "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
+                "author": "Behemoth Security",
+                "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
+            }
+        }
+    },
     "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544": {
         "name": "Detect late access control enforcement via redirect body leakage",
         "object": "Detection Objectives",
@@ -3108,6 +3147,19 @@
                 "message": "Add DOM for redirect body leakage detection\n\nAdds the detection objective for the merged late access control enforcement TVM and temporarily updates the generated DOM schema enum until regeneration.",
                 "author": "Behemoth Security",
                 "commit": "cd5acac53ab2ede410e6ee569eadac220b483a68"
+            }
+        }
+    },
+    "3a73c153-abd7-40cd-86a5-4d57a42b9a44": {
+        "name": "Detect unauthorized account provisioning via exposed registration flow",
+        "object": "Detection Objectives",
+        "description": "Detect unauthorised account creation and premature activation through exposed registration,\npassword reset, or token issuance workflows. The objective covers backend routes that remain\nreachable despite hidden registration UI, account records created before approval, and access\ngranted to accounts that should still be pending approval or invitation validation.\n",
+        "revisions": {
+            "1": {
+                "date": "2026-05-04",
+                "message": "Add web auth bypass TVMs and DOMs\n\nAdds TVMs and DOMs for client-controlled session state authentication bypass and unauthorized account provisioning, with minimal generated schema enum updates for referenced TVM UUIDs.",
+                "author": "Behemoth Security",
+                "commit": "66dd88bcfd660a5a6eeaf4d681c87f28de16bba2"
             }
         }
     },
