@@ -11,10 +11,12 @@ references:
 metadata:
   uuid: 0663c192-cdeb-49a2-994c-4cc8e98f764e
   schema: tvm::2.1
-  version: 1
+  version: 2
   created: 2026-03-30
-  modified: 2026-03-30
+  modified: 2026-05-04
   tlp: clear
+  contributors:
+    - Hold Security Threat Research
   organisation:
     uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
     name: EC DIGIT CSOC
