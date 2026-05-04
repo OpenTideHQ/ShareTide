@@ -3792,6 +3792,8 @@
                     "type": "array",
                     "items": {
                         "enum": [
+                            "38adba1e-0961-4417-bd84-33fa9c42439f",
+                            "3d7dada6-5f9d-4f67-952e-faa2ab794fde",
                             "394dde97-4a8c-4b6a-8f8b-c6bf18a7a87f",
                             "37381f28-ad9f-40c3-80f8-d8a82d6ce9a3",
                             "a5f631c3-6fb0-484f-89e4-c8b2e038db8f",
