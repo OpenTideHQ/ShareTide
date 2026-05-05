@@ -12,7 +12,7 @@
         {
             "techniqueID": "T1078",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Port Mapping, [TVM] Azure DevOps pipelines, [TVM] Azure - Virtual Machine Scripting, [TVM] Windows credential creation attempt, [TVM] iOS Trojan harvesting facial recognition data, [TVM] IP Discovery in Azure, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Azure - Unmanaged Scripting, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Azure - Storage blobs data collection, [TVM] MS 365 admin compromised account, [TVM] Azure - Privileged Identity Management Role, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Admin SMB shares privilege escalation exploit, [TVM] Azure - Managed Device Scripting",
+            "comment": "[TVM] Azure - Port Mapping, [TVM] Azure DevOps pipelines, [TVM] Azure - Virtual Machine Scripting, [TVM] Windows credential creation attempt, [TVM] iOS Trojan harvesting facial recognition data, [TVM] IP Discovery in Azure, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Azure - Unmanaged Scripting, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Axios npm supply chain compromise, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Azure - Storage blobs data collection, [TVM] MS 365 admin compromised account, [TVM] Azure - Privileged Identity Management Role, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Admin SMB shares privilege escalation exploit, [TVM] Azure - Managed Device Scripting",
             "enabled": true
         },
         {
@@ -72,7 +72,7 @@
         {
             "techniqueID": "T1566.004",
             "color": "#fc6b6b",
-            "comment": "[TVM] MFA Bypass Techniques, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access",
+            "comment": "[TVM] MFA Bypass Techniques, [TVM] Axios npm supply chain compromise, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access",
             "enabled": true
         },
         {
@@ -174,7 +174,7 @@
         {
             "techniqueID": "T1059.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] PowerShell usage for credential manipulation, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Obfuscate binaries through PowerShell commands, [TVM] Lateral movement using Impacket framework",
+            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] PowerShell usage for credential manipulation, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Obfuscate binaries through PowerShell commands, [TVM] Axios npm supply chain compromise, [TVM] Lateral movement using Impacket framework",
             "enabled": true
         },
         {
@@ -306,7 +306,7 @@
         {
             "techniqueID": "T1195.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure DevOps pipelines, [TVM] Legitimate software dependency injected with malicious code, [TVM] Use of a malicious lambda layer in AWS account lambda function",
+            "comment": "[TVM] Azure DevOps pipelines, [TVM] Legitimate software dependency injected with malicious code, [TVM] Axios npm supply chain compromise, [TVM] Use of a malicious lambda layer in AWS account lambda function",
             "enabled": true
         },
         {
@@ -318,7 +318,7 @@
         {
             "techniqueID": "T1059.005",
             "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Microsoft Office Applications",
+            "comment": "[TVM] Abuse of Microsoft Office Applications, [TVM] Axios npm supply chain compromise",
             "enabled": true
         },
         {
@@ -336,7 +336,7 @@
         {
             "techniqueID": "T1546.016",
             "color": "#fc6b6b",
-            "comment": "[TVM] Compromised software packages, [TVM] Adversary publishing malicious NPM packages to compromise software",
+            "comment": "[TVM] Compromised software packages, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] Axios npm supply chain compromise",
             "enabled": true
         },
         {
@@ -354,7 +354,7 @@
         {
             "techniqueID": "T1195.002",
             "color": "#fc6b6b",
-            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] Notepad++ supply chain attack",
+            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] Axios npm supply chain compromise, [TVM] Notepad++ supply chain attack",
             "enabled": true
         },
         {
@@ -486,7 +486,7 @@
         {
             "techniqueID": "T1082",
             "color": "#fc6b6b",
-            "comment": "[TVM] Host information gathering in Linux systems, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Azure - Key Vault reconnaissance, [TVM] LOLC2 service abuse via temp.sh, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] System reconnaissance via shell commands in supply chain attack, [TVM] VBS script creates a scheduled task",
+            "comment": "[TVM] Host information gathering in Linux systems, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Azure - Key Vault reconnaissance, [TVM] LOLC2 service abuse via temp.sh, [TVM] Axios npm supply chain compromise, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] System reconnaissance via shell commands in supply chain attack, [TVM] VBS script creates a scheduled task",
             "enabled": true
         },
         {
@@ -924,7 +924,7 @@
         {
             "techniqueID": "T1070.004",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Axios npm supply chain compromise",
             "enabled": true
         },
         {
@@ -996,7 +996,7 @@
         {
             "techniqueID": "T1071.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] LOLC2 service abuse via temp.sh, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] Reverse shell or remote session from compromised host, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader",
+            "comment": "[TVM] LOLC2 service abuse via temp.sh, [TVM] Axios npm supply chain compromise, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] Reverse shell or remote session from compromised host, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader",
             "enabled": true
         },
         {
@@ -1015,6 +1015,48 @@
             "techniqueID": "T1588.005",
             "color": "#fc6b6b",
             "comment": "[TVM] Apple WebKit exploited for arbitrary code execution",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1027.014",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.006",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1036.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1036.005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1102.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1219",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] MoonTag backdoor",
             "enabled": true
         },
         {
@@ -1195,12 +1237,6 @@
             "techniqueID": "T1033",
             "color": "#fc6b6b",
             "comment": "[TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] System reconnaissance via shell commands in supply chain attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1219",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] MoonTag backdoor",
             "enabled": true
         },
         {

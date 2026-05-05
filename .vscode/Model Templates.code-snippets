@@ -226,45 +226,6 @@
             "  #crowdstrike: "
         ]
     },
-    "\ud83c\udfdb\ufe0f Business Requests Template": {
-        "prefix": "\ud83c\udfdb\ufe0f Business Requests Template",
-        "body": [
-            "name: ",
-            "criticality: ",
-            "#references:",
-            "  #public:",
-            "    #1: ",
-            "  #internal:",
-            "    #a: ",
-            "",
-            "metadata:",
-            "  uuid: ",
-            "  schema: bdr::2.0",
-            "  version: ",
-            "  created: YYYY-MM-DD",
-            "  modified: YYYY-MM-DD",
-            "  tlp: ",
-            "  #author: ",
-            "  #contributors:",
-            "    #-",
-            "  #organisation:",
-            "    #uuid: ",
-            "    #name: ",
-            "",
-            "request:",
-            "  domains:",
-            "    - ",
-            "  #targets:",
-            "    #-",
-            "  #platforms:",
-            "    #-",
-            "  violation: ",
-            "  justification: |",
-            "    ...",
-            "  description: |",
-            "    ..."
-        ]
-    },
     "\ud83d\udd23 Lookup Metadata Template": {
         "prefix": "\ud83d\udd23 Lookup Metadata Template",
         "body": [
