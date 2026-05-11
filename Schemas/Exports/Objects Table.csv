@@ -436,7 +436,7 @@ param(
 
 Write-Host ""Username: $Username""
 Write-Host ""Password: $Password""
-",1,2024-04-23,2024-04-24,,,,"[Mobile] APT28, APT28, [Enterprise] Threat Group-3390, APT27","T1027.010, T1059, T1059.001, T1140, T1068"
+",1,2024-04-23,2024-04-24,bfeb24bf-8a17-4ccc-8aec-91721743153d,,,"[Mobile] APT28, APT28, [Enterprise] Threat Group-3390, APT27","T1027.010, T1059, T1059.001, T1140, T1068"
 437a43b9-6344-45a9-915b-d733d23173ae,Scheduled task manipulation using Azure Portal,Threat Vectors,clear,"Scheduled tasks in Azure, often called ""WebJobs"" or ""Azure Functions"" with timer 
 triggers, are automated processes set to run at specific times or intervals. They 
 are used for maintenance, backups, data processing, and other routine operations.
@@ -11665,6 +11665,10 @@ registration endpoint: it correlates account creation, approval state, password 
 issuance, and first resource access. This gives analysts a lifecycle view of onboarding bypass
 rather than a simple route-hit alert.
 ",3,2026-05-04,2026-05-04,"7f6d1aae-c807-42fb-8734-4d3c6c4e9670, d5906e6c-0f66-4dd6-8add-216a90b2b1f2, 958eeed6-43f6-43c8-8bb9-96397aab29a1",3d7dada6-5f9d-4f67-952e-faa2ab794fde,,,"T1190, T1136"
+bfeb24bf-8a17-4ccc-8aec-91721743153d,Powershell encoded payload to start new process,Detection Objectives,clear,"Detect and alert on powershell encoded payload to start new process activity.
+
+This detection objective was migrated from a Cyber Detection Model (CDM).
+",1,2026-03-24,2026-03-24,cf9c69a2-9317-4f0f-9506-fbeeb1c73ff0,bdc58fee-8da6-4fc9-8fbd-30f8fd156bc7,,,
 f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544,Detect protected content in abnormal redirect responses,Detection Objectives,clear,"Identify access-control defects where redirect responses carry more content than a redirect
 should reasonably contain. This objective is not a one-to-one restatement of the upstream threat
 vector; it defines the detection capability around abnormal HTTP response semantics, protected

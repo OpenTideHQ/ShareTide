@@ -3218,6 +3218,19 @@
             }
         }
     },
+    "bfeb24bf-8a17-4ccc-8aec-91721743153d": {
+        "name": "Powershell encoded payload to start new process",
+        "object": "Detection Objectives",
+        "description": "Detect and alert on powershell encoded payload to start new process activity.\n\nThis detection objective was migrated from a Cyber Detection Model (CDM).\n",
+        "revisions": {
+            "1": {
+                "date": "2026-05-11",
+                "message": "Merge pull request #20 from remg427/main\n\nAdd DOM: Powershell encoded payload to start new process",
+                "author": "Remi",
+                "commit": "3d2c4b00fabd9ce77dd6bb16f11a68e97ffce2f7"
+            }
+        }
+    },
     "f8a95fcf-c5b0-4db0-bb8b-78e4edaa0544": {
         "name": "Detect late access control enforcement via redirect body leakage",
         "object": "Detection Objectives",
