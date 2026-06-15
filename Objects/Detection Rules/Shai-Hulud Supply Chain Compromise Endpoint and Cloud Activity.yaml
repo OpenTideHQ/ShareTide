@@ -1,0 +1,248 @@
+name: "Shai-Hulud Supply Chain Compromise — Endpoint and Cloud Activity"
+references:
+  public:
+    1: https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised
+    2: https://www.aikido.dev/blog/mini-shai-hulud-is-back-tanstack-compromised
+    3: https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
+    4: https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem
+
+metadata:
+  uuid: bf415983-8e2b-444f-b22f-4bc2f59e1cae
+  schema: mdr::2.1
+  version: 1
+  created: 2026-06-16
+  modified: 2026-06-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
+
+description: |
+  Managed detection content for the Shai-Hulud / mini Shai-Hulud npm and
+  PyPI supply-chain campaign (May 2026). Implements DOM signals:
+
+  - `a3f7d796-146c-44b0-8d22-7a08daa0d963` — package-manager install
+    spawning unexpected download / scripting child processes (MDE).
+  - `365e23e8-0367-4adf-b18a-f1440cc66005` — secret-file access followed
+    by outbound egress (MDE).
+  - `678d0786-dfd7-40fb-ba90-3c368ed00342` — known on-disk and network
+    IOC match (MDE).
+  - `287114bd-7d58-422d-9711-f5516900b9ce` — unexpected GitHub repository
+    or workflow creation / dead-drop markers (Sentinel).
+
+  Microsoft Defender for Endpoint query focuses on developer and CI
+  endpoint telemetry. Microsoft Sentinel query focuses on GitHub audit
+  and cloud application activity for worm propagation indicators.
+
+response:
+  alert_severity: High
+  procedure:
+    analysis: |
+      1. Confirm whether the host resolved a listed compromised package
+         version (lockfile / SBOM / registry metadata).
+      2. Check for persistence (`gh-token-monitor` LaunchAgent or systemd
+         unit) **before** revoking GitHub tokens.
+      3. Hunt for `router_init.js`, `setup.mjs`, and IDE-resident
+         `router_runtime.js` under `node_modules/`, `.claude/`, `.vscode/`.
+      4. Review GitHub audit logs for dead-drop repositories and anomalous
+         package publishes from the same identity.
+      5. Rotate npm, GitHub, cloud, Vault, Kubernetes, and SSH credentials
+         reachable from the affected host; regenerate lockfiles from clean
+         state.
+    containment: |
+      - Isolate affected developer or CI endpoints pending credential
+        rotation.
+      - Block egress to `git-tanstack.com` and `*.getsession.org`.
+      - Remove malicious package versions from internal mirrors; deprecate
+        any worm-republished packages under your maintainer scope.
+      - Engage package maintainers and npm security if your organisation
+        publishes affected namespaces.
+
+configurations:
+  defender_for_endpoint:
+    schema: defender_for_endpoint::2.1
+    status: REVIEW
+    scheduling: "1H"
+    alert:
+      title: Shai-Hulud supply-chain activity on endpoint
+      category: Execution
+      techniques:
+        - T1195.002
+        - T1546.016
+        - T1059.007
+        - T1552.001
+        - T1071.001
+      recommendation: |
+        Treat the device as potentially compromised if this alert fires
+        during or after package installation. Remove `gh-token-monitor`
+        persistence before revoking GitHub tokens. Rotate all developer
+        and CI secrets reachable from the host.
+    impacted_entities:
+      device: DeviceName
+    scope:
+      selection: All
+    query: |
+      let PackageManagers = dynamic([
+          "node", "node.exe", "npm", "npm.cmd", "pnpm", "pnpm.cmd",
+          "yarn", "yarn.cmd", "npx", "corepack", "pip", "pip3",
+          "python", "python3", "python.exe"
+      ]);
+      let SuspiciousChildren = dynamic([
+          "curl", "curl.exe", "wget", "wget.exe", "bash", "sh", "zsh",
+          "bun", "bun.exe", "powershell.exe", "cscript.exe", "wscript.exe"
+      ]);
+      let SecretMarkers = dynamic([
+          ".npmrc", ".env", ".git-credentials", "id_rsa", "id_ed25519",
+          ".aws", "credentials", "serviceaccount", ".vault-token", "token"
+      ]);
+      let IocDomains = dynamic([
+          "git-tanstack.com", "getsession.org", "filev2.getsession.org",
+          "seed1.getsession.org", "seed2.getsession.org", "seed3.getsession.org"
+      ]);
+      let IocFiles = dynamic([
+          "router_init.js", "setup.mjs", "router_runtime.js",
+          "tanstack_runner.js", "gh-token-monitor",
+          "com.user.gh-token-monitor.plist", "transformers.pyz"
+      ]);
+      let InstallChildAnomaly =
+      DeviceProcessEvents
+      | where Timestamp > ago(4h)
+      | where InitiatingProcessFileName in~ (PackageManagers)
+          or FileName in~ (PackageManagers)
+      | where InitiatingProcessCommandLine has_any ("install", " ci", "add ", "update")
+          or ProcessCommandLine has_any ("install", " ci")
+      | where FileName in~ (SuspiciousChildren)
+      | project Timestamp, DeviceId, ReportId, DeviceName, AccountName,
+          InitiatingProcessFileName, InitiatingProcessCommandLine,
+          FileName, ProcessCommandLine,
+          Signal = "install_child_anomaly",
+          SignalUuid = "a3f7d796-146c-44b0-8d22-7a08daa0d963";
+      let SecretReads =
+      DeviceFileEvents
+      | where Timestamp > ago(4h)
+      | where ActionType in ("FileCreated", "FileModified")
+          or ActionType has "Read"
+      | where FolderPath has_any (SecretMarkers) or FileName has_any (SecretMarkers)
+      | summarize SecretReadTime = min(Timestamp),
+          SecretPaths = make_set(strcat(FolderPath, "\\", FileName), 20)
+          by DeviceId, InitiatingProcessId, InitiatingProcessFileName;
+      let SecretEgress =
+      DeviceNetworkEvents
+      | where Timestamp > ago(4h)
+      | where ActionType == "ConnectionSuccess"
+      | where RemoteUrl has_any (IocDomains)
+          or RemoteIP == "83.142.209.194"
+      | project Timestamp, DeviceId, ReportId, DeviceName,
+          InitiatingProcessId, InitiatingProcessFileName,
+          RemoteUrl, RemoteIP, RemotePort;
+      let SecretAccessEgress =
+      SecretReads
+      | join kind=inner SecretEgress on DeviceId, InitiatingProcessId
+      | where SecretEgress.Timestamp between (SecretReads.SecretReadTime .. (SecretReads.SecretReadTime + 5m))
+      | project Timestamp = SecretEgress.Timestamp, DeviceId, ReportId, DeviceName,
+          AccountName = "", InitiatingProcessFileName,
+          InitiatingProcessCommandLine = strcat("secret_paths=", tostring(SecretPaths)),
+          FileName = "", ProcessCommandLine = strcat(RemoteUrl, ":", RemotePort),
+          Signal = "secret_access_egress",
+          SignalUuid = "365e23e8-0367-4adf-b18a-f1440cc66005";
+      let IocFileMatch =
+      DeviceFileEvents
+      | where Timestamp > ago(4h)
+      | where FileName in~ (IocFiles)
+          or SHA256 in (
+              "ab4fcadaec49c03278063dd269ea5eef82d24f2124a8e15d7b90f2fa8601266c",
+              "2ec78d556d696e208927cc503d48e4b5eb56b31abc2870c2ed2e98d6be27fc96",
+              "2258284d65f63829bd67eaba01ef6f1ada2f593f9bbe41678b2df360bd90d3df"
+          )
+      | project Timestamp, DeviceId, ReportId, DeviceName, AccountName,
+          InitiatingProcessFileName, InitiatingProcessCommandLine = FolderPath,
+          FileName, ProcessCommandLine = SHA256,
+          Signal = "ioc_file_match",
+          SignalUuid = "678d0786-dfd7-40fb-ba90-3c368ed00342";
+      let IocNetworkMatch =
+      DeviceNetworkEvents
+      | where Timestamp > ago(4h)
+      | where RemoteUrl has_any (IocDomains)
+          or RemoteIP == "83.142.209.194"
+      | where InitiatingProcessFileName in~ (PackageManagers)
+          or InitiatingProcessCommandLine has_any (IocFiles)
+      | project Timestamp, DeviceId, ReportId, DeviceName,
+          AccountName = InitiatingProcessAccountName,
+          InitiatingProcessFileName, InitiatingProcessCommandLine,
+          FileName = RemoteUrl, ProcessCommandLine = RemoteIP,
+          Signal = "ioc_network_match",
+          SignalUuid = "678d0786-dfd7-40fb-ba90-3c368ed00342";
+      union InstallChildAnomaly, SecretAccessEgress, IocFileMatch, IocNetworkMatch
+      | order by Timestamp desc
+
+  sentinel:
+    schema: sentinel::2.4
+    status: REVIEW
+    trigger:
+      operator: GreaterThan
+      threshold: 0
+    scheduling:
+      frequency: 1h
+      lookback: 1h
+    alert:
+      create_incident: true
+      suppression: false
+      title: Shai-Hulud GitHub dead-drop or anomalous publish activity
+      description: |
+        Detects GitHub audit and cloud application events consistent with
+        Shai-Hulud worm propagation — dead-drop repository markers, suspicious
+        workflow activity, and package publish anomalies.
+      tactics:
+        - InitialAccess
+        - Persistence
+        - Exfiltration
+        - Impact
+      techniques:
+        - T1195.002
+        - T1078
+        - T1567.002
+        - T1485
+    grouping:
+      event: SingleAlert
+      alert:
+        enabled: false
+    entities:
+      - entity: Account
+        mappings:
+          - identifier: Name
+            column: Actor
+      - entity: IP
+        mappings:
+          - identifier: Address
+            column: IPAddress
+    query: |
+      let ShaiHuludMarkers = dynamic([
+          "Shai-Hulud: Here We Go Again",
+          "PUSH UR T3MPRR",
+          "IfYouRevokeThisTokenItWillWipeTheComputerOfTheOwner"
+      ]);
+      let GitHubAudit =
+      GitHubAuditLog
+      | where TimeGenerated > ago(1h)
+      | extend DataStr = tostring(Data)
+      | where Action has_any ("repo.", "workflows.", "packages.")
+      | where DataStr has_any (ShaiHuludMarkers)
+          or Repository has "dune"
+      | project TimeGenerated, Actor, Action, Repository, DataStr,
+          IPAddress = tostring(Country), Source = "GitHubAuditLog",
+          SignalUuid = "287114bd-7d58-422d-9711-f5516900b9ce";
+      let CloudAppGitHub =
+      CloudAppEvents
+      | where TimeGenerated > ago(1h)
+      | where Application has "GitHub"
+      | where ActionType has_any ("Create", "Publish", "Push", "Commit")
+      | where tostring(RawEventData) has_any (ShaiHuludMarkers)
+          or ObjectName has_any ("router_init.js", "setup.mjs", ".github/workflows")
+      | project TimeGenerated, Actor = AccountDisplayName, Action = ActionType,
+          Repository = ObjectName, DataStr = tostring(RawEventData),
+          IPAddress = IPAddress, Source = "CloudAppEvents",
+          SignalUuid = "287114bd-7d58-422d-9711-f5516900b9ce";
+      union GitHubAudit, CloudAppGitHub
+      | order by TimeGenerated desc
