@@ -18,7 +18,7 @@ metadata:
     uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
     name: EC DIGIT CSOC
 
-detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897 # Detect Shai-Hulud npm and PyPI Supply Chain Compromise Activity
+detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
 
 description: |
   #### MDR Technical Details
@@ -56,7 +56,7 @@ response:
 configurations:
   defender_for_endpoint:
     schema: defender_for_endpoint::2.1
-    status: REVIEW
+    status: DEVELOPMENT
     scheduling: "1H"
     alert:
       title: Shai-Hulud large outbound transfer to {{FileName}} from {{DeviceName}}

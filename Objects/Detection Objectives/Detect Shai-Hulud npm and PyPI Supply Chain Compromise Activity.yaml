@@ -450,7 +450,6 @@ objective:
         - host::File
         - host::File Hash
         - host::Software
-        - host::Domain
         - network::DNS Query
         - network::URL
         - host::Hostname
