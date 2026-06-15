@@ -1,0 +1,98 @@
+name: MDE Shai-Hulud Large Encoded Payload Outbound HTTP Exfiltration
+
+references:
+  public:
+    1: https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised
+    2: https://www.aikido.dev/blog/mini-shai-hulud-is-back-tanstack-compromised
+    3: https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
+    4: https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem
+
+metadata:
+  uuid: 0924c742-8fdb-4ee2-95fe-91d2e5725a90
+  schema: mdr::2.1
+  version: 1
+  created: 2026-06-16
+  modified: 2026-06-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897 # Detect Shai-Hulud npm and PyPI Supply Chain Compromise Activity
+
+description: |
+  #### MDR Technical Details
+  Microsoft Defender for Endpoint custom detection implementing DOM signal
+  `21a527de-8635-4187-87d4-c9e5f5c1badc` (Large Encoded Payload in Outbound
+  HTTP from Developer or Build Hosts). Flags high-volume outbound connections
+  from package-runtime processes to Shai-Hulud exfiltration destinations in
+  `DeviceNetworkEvents`, using `SentBytes` as a proxy for encoded credential
+  blob uploads where HTTP body inspection is unavailable.
+
+  #### Detection Criteria
+  - `SentBytes >= 50000` to IOC destinations (`git-tanstack.com`,
+    `filev2.getsession.org`, `api.github.com`, or `83.142.209.194`).
+  - Initiating process is node, python, bun, curl, or npm family.
+  - Frequency: 1 hour; severity Medium.
+
+  #### Exclusion Criteria
+  - Legitimate artefact uploads to internal registries — exclude corporate
+    registry hostnames per deployment.
+  - Crash-dump and telemetry uploads — require IOC destination match.
+
+response:
+  alert_severity: Medium
+  responders: CSIRC
+  procedure:
+    analysis: |
+      1. Review bytes sent and destination host.
+      2. Correlate with recent package install activity on the device.
+      3. Check for preceding bulk secret-file access signals.
+      4. Inspect proxy logs if available for request body encoding patterns.
+    containment: |
+      Block egress to campaign IOC domains and rotate credentials if
+      exfiltration coincides with secret-file access.
+
+configurations:
+  defender_for_endpoint:
+    schema: defender_for_endpoint::2.1
+    status: REVIEW
+    scheduling: "1H"
+    alert:
+      title: Shai-Hulud large outbound transfer to {{FileName}} from {{DeviceName}}
+      category: Exfiltration
+      techniques:
+        - T1567.002
+        - T1071.001
+        - T1027
+      recommendation: |
+        A package-runtime process sent a large payload to a Shai-Hulud
+        exfiltration destination. Correlate with secret harvesting signals.
+    impacted_entities:
+      device: DeviceName
+    scope:
+      selection: All
+    query: |
+      // Detection: Shai-Hulud large encoded outbound HTTP exfiltration
+      // DOM signal: 21a527de-8635-4187-87d4-c9e5f5c1badc
+      // MITRE ATT&CK: T1567.002, T1071.001
+      // Platform: DEFENDER
+      let IocDomains = dynamic([
+          "git-tanstack.com", "filev2.getsession.org", "api.github.com"
+      ]);
+      let ExfilIp = "83.142.209.194";
+      let MinSentBytes = 50000;
+      let PackageRuntimes = dynamic([
+          "node", "node.exe", "npm", "npm.cmd", "pnpm", "python", "python3",
+          "bun", "bun.exe", "curl", "curl.exe"
+      ]);
+      DeviceNetworkEvents
+      | where ActionType == "ConnectionSuccess"
+      | where RemoteUrl has_any (IocDomains) or RemoteIP == ExfilIp
+      | where SentBytes >= MinSentBytes
+      | where InitiatingProcessFileName in~ (PackageRuntimes)
+      | project Timestamp, DeviceId, ReportId, DeviceName,
+          AccountName = InitiatingProcessAccountName, AccountSid = "",
+          InitiatingProcessFileName, InitiatingProcessCommandLine,
+          FileName = RemoteUrl, ProcessCommandLine = RemoteIP,
+          SentBytes, RemotePort
