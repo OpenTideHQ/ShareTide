@@ -96,7 +96,7 @@ threat:
     redundant channels, and **self-propagate** by republishing poisoned
     versions of other packages the victim can write to.
 
-  ## Attack Timeline (UTC) — TanStack anchor incident
+    ## Attack Timeline (UTC) — TanStack anchor incident
 
     - **2026-05-10 17:16** — Attacker forks `TanStack/router` to
       `zblgg/configuration` (renamed to evade fork searches).
@@ -116,7 +116,7 @@ threat:
       `@mistralai/*`, and additional npm namespaces; PyPI trojans for
       `guardrails-ai` and `mistralai` observed the same week.
 
-  ## Initial Access and Delivery Vectors
+    ## Initial Access and Delivery Vectors
 
     ### TanStack — GitHub Actions cache poisoning + OIDC abuse
 
@@ -147,7 +147,7 @@ threat:
     `https://git-tanstack[.]com/tmp/transformers.pyz` — a modular Linux-
     only credential stealer (also targets 1Password / Bitwarden vaults).
 
-  ## Payload Behaviour (defender-relevant)
+    ## Payload Behaviour (defender-relevant)
 
     When lifecycle hooks run during package install, the payload typically:
 
@@ -171,7 +171,7 @@ threat:
     5. Checks for Russian locale and exits without exfiltration (noise
        reduction for the operator).
 
-  ## Affected Packages and Versions (representative — not exhaustive)
+    ## Affected Packages and Versions (representative — not exhaustive)
 
     ### High-visibility npm namespaces
 
@@ -190,7 +190,7 @@ threat:
     - `guardrails-ai@0.10.1`
     - `mistralai@2.4.6`
 
-  ## Indicators of Compromise (IOCs)
+    ## Indicators of Compromise (IOCs)
 
     ### File artefacts
 
@@ -234,7 +234,7 @@ threat:
     - Repository description: `PUSH UR T3MPRR` (PyPI variant)
     - Commit message: `IfYouRevokeThisTokenItWillWipeTheComputerOfTheOwner`
 
-  ## Impacted Telemetry / Log Sources
+    ## Impacted Telemetry / Log Sources
 
     - Endpoint: process creation with npm/pnpm/yarn/pip parent chains;
       file reads of `.npmrc`, `.env`, cloud credential paths; outbound
@@ -244,9 +244,9 @@ threat:
     - Cloud / identity: GitHub audit logs (repo creation, workflow changes,
       package publish); cloud metadata access from build agents.
     - Source control: lockfile / SBOM diffs showing affected versions;
-      presence of `router_init.js` or `setup.mjs` at package roots.
+         presence of `router_init.js` or `setup.mjs` at package roots.
 
-  ## Mitigation and Hardening Recommendations
+    ## Mitigation and Hardening Recommendations
 
     1. **Immediate**
        - Search lockfiles, SBOMs, and CI logs for affected package versions;
@@ -270,7 +270,7 @@ threat:
        - Subscribe to registry change alerts for packages your organisation
          maintains or depends on critically.
 
-  ## Key Takeaways for Defenders
+    ## Key Takeaways for Defenders
 
     - This campaign is **worm-capable**: compromise of one maintainer or CI
       runner can cascade into additional poisoned packages without further
