@@ -1,0 +1,139 @@
+name: MDE Shai-Hulud Package Manager Install Spawning Suspicious Child Processes
+
+references:
+  public:
+    1: https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised
+    2: https://www.aikido.dev/blog/mini-shai-hulud-is-back-tanstack-compromised
+    3: https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
+    4: https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem
+
+metadata:
+  uuid: bfae62bb-7ce1-46cd-a131-39803832fa9d
+  schema: mdr::2.1
+  version: 1
+  created: 2026-06-16
+  modified: 2026-06-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
+
+description: |
+  #### MDR Technical Details
+  Microsoft Defender for Endpoint custom detection implementing DOM signal
+  `a3f7d796-146c-44b0-8d22-7a08daa0d963` (Package Manager Install Spawning
+  Unexpected Download or Scripting Child Processes). Correlates
+  `DeviceProcessEvents` for package-manager install trees spawning download
+  utilities, shells, Bun, or hidden-window PowerShell, and `DeviceFileEvents`
+  for campaign artefact drops (`router_init.js`, `setup.mjs`, etc.).
+
+  #### Detection Criteria
+  - Parent is npm, pnpm, yarn, pip, python, or node with install/ci/add/update
+    in the command line.
+  - Child within the engine lookback is curl, wget, bash, sh, zsh, bun,
+    powershell (hidden/bypass flags), or cscript/wscript.
+  - OR file create of known Shai-Hulud hook files outside npm cache paths.
+  - Frequency: 1 hour; severity High.
+
+  #### Exclusion Criteria
+  - Native module builds (`node-gyp`, `esbuild`) excluded by initiating process.
+  - Files under npm cache / temp paths excluded for artefact drops.
+  - Legitimate postinstall (husky, esbuild fetch) may fire — correlate with
+    secret-file access or IOC signals before escalation.
+
+response:
+  alert_severity: High
+  responders: CSIRC
+  procedure:
+    analysis: |
+      1. Confirm package manager parent command line references install, ci,
+         add, or update.
+      2. Inspect child process command line for remote fetch or pipe-to-shell.
+      3. Search the device for `router_init.js`, `setup.mjs`, and lockfile
+         entries for `@tanstack/*` compromised versions.
+      4. Correlate with other Shai-Hulud DOM signals on the same host.
+    searches:
+      - purpose: Hunt related file and network IOC activity on the device
+        system: defender_for_endpoint
+        query: |
+          let IocFiles = dynamic(["router_init.js", "setup.mjs", "gh-token-monitor"]);
+          union (
+              DeviceFileEvents
+              | where DeviceId == "{{DeviceId}}"
+              | where FileName in~ (IocFiles)
+          ), (
+              DeviceNetworkEvents
+              | where DeviceId == "{{DeviceId}}"
+              | where RemoteUrl has "git-tanstack"
+          )
+    containment: |
+      Isolate the endpoint if install-time child spawning coincides with IOC
+      file creation. Remove malicious packages and persistence before token
+      revocation.
+
+configurations:
+  defender_for_endpoint:
+    schema: defender_for_endpoint::2.1
+    status: DEVELOPMENT
+    scheduling: "1H"
+    alert:
+      title: Shai-Hulud install hook spawned {{FileName}} on {{DeviceName}}
+      category: Execution
+      techniques:
+        - T1195.002
+        - T1546.016
+        - T1059.007
+        - T1059.006
+      recommendation: |
+        Package installation spawned an unexpected child process consistent
+        with Shai-Hulud lifecycle hooks. Treat the host as potentially
+        compromised and inspect for stealer activity and worm propagation.
+    impacted_entities:
+      device: DeviceName
+    scope:
+      selection: All
+    query: |
+      // Detection: Shai-Hulud package manager install child process anomaly
+      // DOM signal: a3f7d796-146c-44b0-8d22-7a08daa0d963
+      // MITRE ATT&CK: T1195.002, T1546.016
+      // Platform: DEFENDER
+      let PackageManagers = dynamic([
+          "node", "node.exe", "npm", "npm.cmd", "pnpm", "pnpm.cmd",
+          "yarn", "yarn.cmd", "npx", "corepack", "pip", "pip3",
+          "python", "python3", "python.exe"
+      ]);
+      let SuspiciousChildren = dynamic([
+          "curl", "curl.exe", "wget", "wget.exe", "bash", "sh", "zsh",
+          "bun", "bun.exe", "cscript.exe", "wscript.exe"
+      ]);
+      let InstallVerbs = dynamic(["install", " ci", "add ", "update"]);
+      let MaliciousArtifacts = dynamic([
+          "router_init.js", "setup.mjs", "router_runtime.js", "tanstack_runner.js"
+      ]);
+      let ChildFromInstall =
+      DeviceProcessEvents
+      | where InitiatingProcessFileName in~ (PackageManagers)
+          or FileName in~ (PackageManagers)
+      | where InitiatingProcessCommandLine has_any (InstallVerbs)
+          or ProcessCommandLine has_any (InstallVerbs)
+      | where FileName in~ (SuspiciousChildren)
+          or (FileName =~ "powershell.exe"
+              and ProcessCommandLine has_any (
+                  "-w hidden", "-windowstyle hidden", "-ep bypass",
+                  "-executionpolicy bypass", "-EncodedCommand"))
+      | where not(InitiatingProcessFileName in~ ("node-gyp", "esbuild"))
+      | project Timestamp, DeviceId, ReportId, DeviceName, AccountName, AccountSid,
+          InitiatingProcessFileName, InitiatingProcessCommandLine,
+          FileName, ProcessCommandLine, DetectionPath = "child_process";
+      let ArtifactDrop =
+      DeviceFileEvents
+      | where ActionType == "FileCreated"
+      | where FileName in~ (MaliciousArtifacts)
+      | where not(FolderPath has_any ("\\npm\\cache\\", "/.npm/", "/tmp/npm-", "\\AppData\\Local\\npm-cache\\"))
+      | project Timestamp, DeviceId, ReportId, DeviceName,
+          AccountName = InitiatingProcessAccountName, AccountSid = "",
+          InitiatingProcessFileName, InitiatingProcessCommandLine = FolderPath,
+          FileName, ProcessCommandLine = SHA256, DetectionPath = "artifact_drop";
+      union ChildFromInstall, ArtifactDrop

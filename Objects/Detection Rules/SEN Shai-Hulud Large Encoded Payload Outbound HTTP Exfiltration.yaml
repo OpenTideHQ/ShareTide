@@ -1,0 +1,106 @@
+name: SEN Shai-Hulud Large Encoded Payload Outbound HTTP Exfiltration
+
+references:
+  public:
+    1: https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised
+    2: https://www.aikido.dev/blog/mini-shai-hulud-is-back-tanstack-compromised
+    3: https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
+    4: https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem
+
+metadata:
+  uuid: bd5c57f3-bbb1-441f-8934-7a9b13c73f67
+  schema: mdr::2.1
+  version: 1
+  created: 2026-06-16
+  modified: 2026-06-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
+
+description: |
+  #### MDR Technical Details
+  Microsoft Sentinel scheduled analytic rule implementing DOM signal
+  `21a527de-8635-4187-87d4-c9e5f5c1badc` (Large Encoded Payload in Outbound
+  HTTP from Developer or Build Hosts). Uses corporate web-proxy
+  `CommonSecurityLog` entries for large POST/PUT requests to Shai-Hulud IOC
+  destinations, complementing the MDE endpoint-network variant.
+
+  #### Detection Criteria
+  - HTTP POST or PUT to `git-tanstack.com` or `filev2.getsession.org`.
+  - Request or response bytes ≥ 50 KB (proxy-dependent field availability).
+  - Frequency: 1 hour; severity Medium.
+
+  #### Exclusion Criteria
+  - Internal artefact registry uploads — exclude known internal registry
+    hostnames via deployment-specific `let` block.
+  - Requires web-proxy connector with body-size or byte-count fields.
+
+response:
+  alert_severity: Medium
+  responders: CSIRC
+  procedure:
+    analysis: |
+      1. Review proxy log fields for source host and destination URL.
+      2. Correlate source IP with developer workstation or CI runner inventory.
+      3. Hunt endpoint telemetry for preceding package install activity.
+    containment: |
+      Block IOC domains at the proxy and rotate credentials if the source
+      host matches a developer or CI asset.
+
+configurations:
+  sentinel:
+    schema: sentinel::2.4
+    status: DEVELOPMENT
+    trigger:
+      operator: GreaterThan
+      threshold: 0
+    scheduling:
+      frequency: 1h
+      lookback: 1h
+    alert:
+      create_incident: true
+      suppression: false
+      title: Shai-Hulud large HTTP exfil to {{DestinationHostName}}
+      description: |
+        Web proxy telemetry shows a large POST/PUT to a Shai-Hulud
+        exfiltration destination from a developer or build-network host.
+      tactics:
+        - Exfiltration
+      techniques:
+        - T1567.002
+        - T1071.001
+        - T1027
+    grouping:
+      event: AlertPerResult
+      alert:
+        enabled: false
+    entities:
+      - entity: IP
+        mappings:
+          - identifier: Address
+            column: SourceIP
+      - entity: URL
+        mappings:
+          - identifier: Url
+            column: RequestURL
+    query: |
+      // Detection: Shai-Hulud large encoded outbound HTTP exfiltration (proxy)
+      // DOM signal: 21a527de-8635-4187-87d4-c9e5f5c1badc
+      // MITRE ATT&CK: T1567.002, T1071.001
+      // Platform: SENTINEL
+      let IocDomains = dynamic([
+          "git-tanstack.com", "filev2.getsession.org"
+      ]);
+      let MinBytes = 50000;
+      CommonSecurityLog
+      | where TimeGenerated > ago(1h)
+      | where RequestMethod in ("POST", "PUT")
+      | where DestinationHostName has_any (IocDomains)
+          or DestinationIP == "83.142.209.194"
+      | where ReceivedBytes >= MinBytes or SentBytes >= MinBytes
+      | extend RequestURL = strcat(RequestMethod, " ", DestinationHostName, DestinationURL)
+      | project TimeGenerated, SourceIP, DestinationHostName, RequestURL,
+          ReceivedBytes, SentBytes, DeviceVendor, DeviceProduct
