@@ -10,6 +10,9 @@ metadata:
   version: 1
   created: "2026-06-18"
   modified: "2026-06-18"
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
   tlp: clear
 
 threat:
