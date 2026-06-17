@@ -1,5 +1,5 @@
 [platform]
-enabled = false
+enabled = true
 identifier = "sentinel_one"
 name = "Sentinel One"
 subschema = "Sentinel One"

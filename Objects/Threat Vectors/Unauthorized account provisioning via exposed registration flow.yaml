@@ -1,0 +1,79 @@
+name: Unauthorized account provisioning via exposed registration flow
+criticality: High
+references:
+  public:
+    1: https://owasp.org/Top10/A01_2021-Broken_Access_Control/
+    2: https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/
+    3: https://cwe.mitre.org/data/definitions/306.html
+    4: https://cwe.mitre.org/data/definitions/287.html
+    5: https://cwe.mitre.org/data/definitions/284.html
+
+metadata:
+  uuid: 3d7dada6-5f9d-4f67-952e-faa2ab794fde
+  schema: tvm::2.1
+  version: 2
+  created: 2026-05-04
+  modified: 2026-05-04
+  tlp: clear
+  contributors:
+    - Hold Security Threat Research
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+threat:
+  killchain: Exploitation
+  att&ck:
+    - T1190 #Exploit Public-Facing Application
+    - T1136 #Create Account
+  chaining:
+    - relation: support::enabling
+      vector: 38adba1e-0961-4417-bd84-33fa9c42439f #Client-controlled session state authentication bypass
+      description: |
+        Client-controlled session-state trust can allow an unapproved or partially provisioned account
+        to become usable by bypassing the server-side approval state that should block authentication
+        or token issuance.
+    - relation: support::synergize
+      vector: e2d8ce6b-f21e-4444-a828-0c6b722a9c93 #Local user account added
+      description: |
+        Both vectors involve unauthorised account creation, but at different layers. This vector is a
+        web-application business-logic failure, while the linked vector covers host-local account
+        creation after administrative compromise.
+  terrain: |
+    External web applications with registration, signup, password-reset, or token issuance endpoints
+    that remain reachable even when the user interface is hidden or onboarding is intended to be
+    invite-only, partner-only, domain-restricted, or approval-based. The weak terrain is account
+    lifecycle logic where account records are created before approval is enforced and downstream
+    authentication, password reset, or session issuance does not consistently check approval state.
+  severity: Substantial incident
+  leverage:
+    - New Accounts
+    - Elevation of privilege
+    - Information Disclosure
+  impact:
+    - Data Breach
+    - Identity Theft
+    - Business disruption
+    - Legal and regulatory
+  viability: Likely
+  description: |
+    An adversary provisions an unauthorised account through exposed registration or account lifecycle
+    endpoints despite intended onboarding restrictions. The application may hide or remove the
+    registration UI, but backend routes such as /register, /signup, API registration endpoints,
+    password reset, or token issuance flows remain active and insufficiently gated.
+
+    The flawed workflow creates an account object before approval, invite validation, or domain
+    eligibility is enforced. Approval may be implemented only as a notification to a reviewer or a
+    manual delete process rather than as a blocking state transition. Once the account exists, related
+    flows may allow password reset, login, or token issuance for the unapproved account. Depending on
+    default role assignment and access checks, the adversary may gain partial or full access to the
+    application UI or APIs.
+
+    Detection and validation require replaying the lifecycle end to end: submit a registration request,
+    confirm account creation before approval, attempt password reset, and test whether a session or
+    token can be issued. The exposure may be systemic across deployments because registration paths
+    and account-state checks are reused across environments, cloud-hosted instances, or tenants.
+
+    The vector enables bypass of onboarding controls, internal enumeration from a trusted application
+    context, and a foothold for additional abuse. Severity should be finalised from evidence of the
+    endpoint, request and response pairs, reset behaviour, token issuance, and access level achieved.

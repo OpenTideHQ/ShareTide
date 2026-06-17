@@ -68,7 +68,6 @@ threat:
   targets:
     - System admin
   platforms:
-    - EU Login
     - Office 365
   severity: Significant incident
   leverage:

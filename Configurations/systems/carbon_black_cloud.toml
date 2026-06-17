@@ -1,5 +1,5 @@
 [tide]
-#enabled = false
+enabled = true
 #identifier = "carbon_black_cloud"
 #name = "Carbon Black Cloud Enterprise EDR"
 #subschema = "CBC EDR Sub Schema"
@@ -12,7 +12,7 @@
 #url = "$CBC_URL"
 #watchlist = "" #Can be overriden by MDR schema
 ##Default organizations the MDR can deploy to. Can be overriden by MDR schema
-#organizations = [] 
+organizations = ["Placeholder"] 
 
 [secrets]
 # For every organization, add org.org_key and org.token pointing to envvars

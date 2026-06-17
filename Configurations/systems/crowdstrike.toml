@@ -1,5 +1,5 @@
 [platform]
-enabled = false
+enabled = true
 identifier = "crowdstrike"
 name = "Crowdstrike Falcon"
 subschema = "Crowdstrike"
@@ -18,14 +18,14 @@ flags = [""]
 #alert.severity = "Informational"
 #alert.title = "prefix::Staging "
 
-#[[tenants]]
-#name = "Name"
-#description = "Tenant Description"
-#deployment = "ALWAYS" #STAGING, PRODUCTION, MANUAL (only when defined in MDR) or ALWAYS
-#[tenants.setup]
-#proxy = false
-#ssl = true
-#api = ""
-#customer_id = ""
-#client_id = ""
-#client_secret = ""
+[[tenants]]
+name = "Placeholder"
+description = "Used to generate schema in ShareTide, not used for actual deployments"
+deployment = "ALWAYS" #STAGING, PRODUCTION, MANUAL (only when defined in MDR) or ALWAYS
+[tenants.setup]
+proxy = false
+ssl = true
+api = ""
+customer_id = ""
+client_id = ""
+client_secret = ""

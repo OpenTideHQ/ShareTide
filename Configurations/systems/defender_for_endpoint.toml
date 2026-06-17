@@ -1,5 +1,5 @@
 [platform]
-enabled = false
+enabled = true
 identifier = "defender_for_endpoint"
 name = "Microsoft Defender for Endpoint"
 subschema = "Defender for Endpoint"

@@ -55,7 +55,6 @@ threat:
     - Identity Services
     - Mobile phone
   platforms:
-    - EU Login
     - Android
     - iOS
   severity: Moderate incident
