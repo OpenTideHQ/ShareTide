@@ -56,7 +56,6 @@ threat:
     - End-user
     - Identity Services
   platforms:
-    - EU Login
     - Office 365
     - Azure AD
   severity: Moderate incident

@@ -1,0 +1,120 @@
+name: Detect premature account activation and restricted onboarding bypass
+
+references:
+  public:
+    1: https://owasp.org/Top10/A01_2021-Broken_Access_Control/
+    2: https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/
+    3: https://cwe.mitre.org/data/definitions/306.html
+
+metadata:
+  uuid: 3a73c153-abd7-40cd-86a5-4d57a42b9a44
+  schema: dom::1.0
+  version: 3
+  created: 2026-05-04
+  modified: 2026-05-04
+  tlp: clear
+  contributors:
+    - Hold Security Threat Research
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+objective:
+  priority: High
+  att&ck:
+    - T1190
+    - T1136
+  type: Threat
+  threats:
+    - 3d7dada6-5f9d-4f67-952e-faa2ab794fde
+  investment: Moderate
+  description: |
+    Detect account lifecycle control failures where an identity becomes usable before the intended
+    approval, invitation, or eligibility gate is complete. The capability is broader than a single
+    registration endpoint: it correlates account creation, approval state, password reset, token
+    issuance, and first resource access. This gives analysts a lifecycle view of onboarding bypass
+    rather than a simple route-hit alert.
+
+  composition:
+    strategy: Sequence
+    description: |
+      Correlate account lifecycle events in order: registration attempt, account object creation,
+      approval or invitation state, password reset, login or token issuance, and first UI/API access.
+      The highest-confidence condition is a newly created account receiving reset capability, session
+      material, or protected resource access before its approval state permits authentication.
+
+  signals:
+    - name: Account created without required invitation or approval context
+      uuid: 7f6d1aae-c807-42fb-8734-4d3c6c4e9670
+      description: |
+        Alert when a registration endpoint creates an account without a valid invitation, approved
+        domain, reviewer approval, or expected onboarding source. Required fields include account ID,
+        registration path, source IP, tenant/environment, invitation or approval identifier, account
+        state, and initial role. Tune out legitimate self-service flows by comparing with a maintained
+        list of public registration routes and approved domains.
+        Triage by confirming the expected onboarding policy for the tenant or application module and
+        verifying whether an invitation, reviewer action, or domain eligibility check existed.
+      severity: High
+      effort: 4
+      methodology: Event Search
+      data:
+        availability: Partial
+        requirements: |
+          Requires application audit logs for registration attempts, account-created events, approval
+          records, invitation records, source IP, request path, tenant or environment, and initial role.
+          API gateway or web logs help identify direct backend access when the UI is hidden.
+      entities:
+        - host::Account
+        - network::IP Address
+        - network::URL
+        - network::API Call
+
+    - name: Authentication material issued while account approval is pending
+      uuid: d5906e6c-0f66-4dd6-8add-216a90b2b1f2
+      description: |
+        Alert when password reset, login, session creation, or token issuance succeeds for an account
+        whose lifecycle state is pending, unapproved, unverified, pending invitation validation, or
+        otherwise not allowed to authenticate. Required fields include account ID, lifecycle state at
+        decision time, reset outcome, token/session identifier, source IP, and timestamp. This is the
+        principal signal that a provisioned but unapproved account has become usable.
+        Triage by preserving the account lifecycle state at decision time and confirming whether the
+        password reset, login, or token service incorrectly ignored that state.
+      severity: Critical
+      effort: 5
+      methodology: Event Search
+      data:
+        availability: Partial
+        requirements: |
+          Requires identity, application, and token service logs with account state at decision time,
+          reset request outcome, token issuance outcome, session creation, source IP, user identifier,
+          and timestamps. Correlation must preserve historical account state, not only current state.
+      entities:
+        - host::Account
+        - cloud::Authentication
+        - host::Token
+        - network::Session
+
+    - name: Pre-approval account accesses restricted application resources
+      uuid: 958eeed6-43f6-43c8-8bb9-96397aab29a1
+      description: |
+        Alert when a newly created account accesses UI pages or APIs before approval, invitation
+        validation, or domain eligibility checks are complete. Required fields include account ID,
+        account creation time, approval state, request path, response status, role, source IP, and
+        first-access timestamp. Prioritise access to restricted modules, internal data, administrative
+        paths, or endpoints that should require an established trusted account.
+        Triage by comparing first-access time with approval and activation timestamps, then assessing
+        which data or functions were exposed before the account became eligible.
+      severity: High
+      effort: 5
+      methodology: Behavioural
+      data:
+        availability: Partial
+        requirements: |
+          Requires account lifecycle events, authentication events, web or API access logs, account
+          approval state, role assignment, request path, response status, and source IP. The detection
+          should compare first resource access with approval or activation timestamps.
+      entities:
+        - host::Account
+        - network::URL
+        - network::API Call
+        - network::Session

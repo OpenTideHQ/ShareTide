@@ -39,14 +39,10 @@ threat:
     #-
   #misp:
     #-
-  domains:
-    - 
+  #surface:
+    #-
   terrain: |
     ...
-  targets:
-    - 
-  platforms:
-    - 
   severity: 
   leverage:
     - 
