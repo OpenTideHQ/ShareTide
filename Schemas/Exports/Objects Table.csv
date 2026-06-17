@@ -778,6 +778,115 @@ keys related to scheduled tasks to evade detection.
 5. **Masquerading**: Malicious tasks can be disguised as legitimate system processes 
 or software updates to avoid suspicion.
 ",1,2024-12-18,2024-12-19,,,"{'support::enabled': ['670504aa-cfb8-4d1f-a5ad-16193822085f'], 'support::synergize': ['5e66f826-4c4b-4357-b9c5-2f40da207f34'], 'sequence::preceeds': ['60c5b065-7d06-4697-850f-c2f80765f10b']}",,"T1053, T1053.005, T1053.003, T1059, T1078, T1136"
+2a5faf22-c526-4d49-81b9-6a7b895de58b,ICMP tasking with TCP response on network devices,Threat Vectors,clear,"LINE VIPER implements a sophisticated alternative command and
+control mechanism that uses ICMP (Internet Control Message Protocol)
+for receiving tasking commands and raw TCP connections for
+responding with results [1]. This dual-protocol approach provides
+operational flexibility and defence evasion capabilities.
+
+#### Protocol Design
+
+The ICMP-based C2 channel operates through a split-protocol design
+where incoming tasking and outgoing responses use different network
+protocols [1]:
+
+**Incoming Tasking (ICMP):** The malware monitors for specially
+crafted ICMP packets that contain encrypted tasking commands. ICMP
+is commonly used for network diagnostics (ping, traceroute) and is
+typically allowed through firewalls, making it an ideal covert
+channel. The use of ICMP for tasking allows the attacker to send
+commands without establishing TCP connections, reducing the network
+footprint.
+
+**Outgoing Responses (Raw TCP):** Rather than responding via ICMP,
+LINE VIPER sends results back over raw TCP connections. This
+asymmetric approach provides several advantages:
+- TCP provides reliable delivery for potentially large result sets
+- Raw TCP sockets allow arbitrary port selection
+- Separation of inbound and outbound protocols complicates analysis
+
+#### Port Usage and Network Behaviour
+
+LINE VIPER responds to ICMP tasking via raw TCP using
+high-ephemeral ports [1]. Ephemeral ports are typically in the
+range 32768-65535 on Linux systems. The use of high-ephemeral ports
+provides several operational security benefits:
+
+- **Dynamic Selection:** Different ephemeral ports can be used for
+  each response, avoiding patterns that could be detected through
+  long-term network monitoring.
+
+- **Legitimate Appearance:** High-ephemeral ports are commonly used
+  for outbound connections from network devices, making the traffic
+  appear normal.
+
+- **Firewall Traversal:** Most firewall configurations allow
+  outbound connections on ephemeral ports, as blocking them would
+  break legitimate functionality.
+
+#### Encryption and Authentication
+
+Like the WebVPN-based C2 channel, the ICMP/TCP method implements
+strong cryptographic protections [1]:
+
+- **Per-Request AES Encryption:** Tasking commands received via
+  ICMP are encrypted using AES with unique symmetric keys for each
+  request. This prevents replay attacks and ensures confidentiality.
+
+- **RSA Key Exchange:** LINE VIPER uses per-victim RSA public keys
+  to perform symmetric key exchange. This ensures that only the
+  actor with the corresponding private key can decrypt and verify
+  tasking commands.
+
+- **Victim-Specific Tokens:** Environmental keying through
+  victim-specific tokens ensures that captured ICMP tasking packets
+  cannot be replayed against different devices or at different
+  times.
+
+#### Operational Advantages
+
+The ICMP-based tasking mechanism provides several advantages for
+the attacker [1]:
+
+- **Stealth:** ICMP traffic is common in networks and often not
+  logged or inspected as thoroughly as application-layer protocols.
+
+- **Resilience:** Provides an alternative C2 channel if WebVPN-
+  based communication is detected or blocked.
+
+- **Flexibility:** ICMP packets can often reach devices even when
+  normal network access is restricted, as ICMP is essential for
+  network diagnostics.
+
+- **Protocol Confusion:** The split-protocol design (ICMP in, TCP
+  out) makes it difficult to correlate incoming commands with
+  outgoing responses, complicating network forensics.
+
+#### Detection Challenges
+
+The ICMP/TCP C2 mechanism presents significant detection challenges:
+
+- **Volume Analysis Limitations:** ICMP is frequently used for
+  legitimate purposes, making volume-based detection unreliable
+  without baseline understanding of normal ICMP patterns.
+
+- **Payload Encryption:** The encrypted nature of tasking commands
+  prevents signature-based detection of malicious ICMP packets.
+
+- **Dynamic Ports:** The use of varying high-ephemeral ports for
+  TCP responses makes connection tracking difficult without
+  comprehensive network visibility.
+
+- **Protocol Legitimacy:** Both ICMP and high-port TCP connections
+  are legitimate network behaviours, requiring behavioural analysis
+  to identify anomalies.
+
+This dual-protocol C2 mechanism demonstrates sophisticated
+understanding of network protocols and operational security. The
+technique represents an evolution in network device implant
+communication methods, moving beyond simple HTTP/HTTPS-based C2 to
+leverage lower-layer protocols for increased stealth and resilience.
+",1,2026-06-18,2026-06-18,d8372ac1-2740-4cb2-b834-2e1622380b7b,,{'support::enabled': ['b6175f16-2b61-4116-bd97-de54b02b197e']},,"T1095, T1571, T1573.001, T1573.002, T1480.001"
 596d294a-9aa8-41b2-9507-5c9d605de6b4,Use Windows utilities to manipulate a local account or group,Threat Vectors,clear,"Local account manipulation involves creating, modifying, or exploiting local 
 user accounts on a computer system, typically for malicious purposes. Local 
 accounts are user accounts stored and managed locally on a specific computer 
@@ -2993,6 +3102,88 @@ LD_PRELOAD=/tmp/malicious.so /usr/bin/anyApp
 This indicates that a potentially unauthorized library (`/tmp/malicious.so`) is being 
 force-loaded into `anyApp`.  
 ",1,2025-01-10,2025-01-10,,,,"[Enterprise] TeamTNT, TeamTNT, [Enterprise] APT37, APT37",T1574.006
+7290ceff-561d-49e2-b5a4-c4cfd29c09f7,Supply chain compromise via software update mechanism,Threat Vectors,clear,"The SolarWinds supply chain attack, also known as SUNBURST or Solorigate, represents one of the 
+most sophisticated cyber espionage campaigns in history. Between March and June 2020, threat actors 
+compromised the software build and distribution system of SolarWinds, a major IT management software 
+provider. The attackers injected malicious code into legitimate software updates of the SolarWinds 
+Orion Platform, affecting approximately 18,000 customers worldwide.
+
+## Attack Methodology
+
+The attack unfolded in multiple sophisticated stages:
+
+### Initial Compromise
+Threat actors gained access to SolarWinds' software development environment, potentially through
+compromised credentials or exploitation of vulnerabilities. This initial access provided the attackers
+with the ability to modify the Orion Platform source code during the build process.
+
+### Malicious Code Injection
+The attackers injected a backdoor (dubbed SUNBURST/Solorigate) into the SolarWinds.Orion.Core.BusinessLayer.dll
+dynamic link library. The malicious code was designed to:
+- Remain dormant for approximately 12-14 days after installation
+- Masquerade as legitimate Orion Improvement Program (OIP) functionality
+- Use domain generation algorithms (DGA) to resolve command and control infrastructure
+- Employ multiple evasion techniques to avoid detection
+
+### Distribution via Legitimate Updates
+The trojanized updates were digitally signed with SolarWinds' legitimate code-signing certificate,
+lending credibility to the malicious packages. Organizations that automatically applied updates or
+manually installed updates between versions 2019.4 through 2020.2.1 HF1 unknowingly deployed the backdoor.
+
+### Command and Control
+SUNBURST used sophisticated C2 mechanisms:
+- DNS requests to avsvmcloud[.]com to resolve actual C2 servers
+- HTTP/HTTPS communications disguised as Orion Improvement Program traffic
+- Multiple C2 domains using cloud and content delivery networks
+- Victim-specific C2 infrastructure allocation
+
+### Post-Exploitation Activities
+After establishing persistent access, attackers:
+- Conducted extensive reconnaissance of victim networks
+- Moved laterally to cloud environments (Azure, Microsoft 365)
+- Stole authentication credentials and certificates
+- Accessed sensitive email communications
+- Deployed additional backdoors and tools (TEARDROP, RAINDROP, etc.)
+- Maintained long-term persistent access
+
+## Impact and Scope
+
+The campaign affected numerous high-value targets including:
+- U.S. government agencies (Treasury, State, Commerce, Homeland Security, Energy, NIH)
+- Critical infrastructure organizations
+- Technology companies (Microsoft, Cisco, Intel, VMware, Palo Alto Networks)
+- Telecommunications providers
+- Think tanks and consulting firms
+- Over 100 private sector companies
+
+## Detection Challenges
+
+The attack was particularly difficult to detect due to:
+- Use of legitimate, signed software updates
+- Sophisticated operational security practices
+- Low-and-slow approach to avoid anomaly detection
+- Use of victim infrastructure for C2 communications
+- Minimal forensic artifacts
+- Encrypted communications
+- Integration with legitimate network management tools
+
+## Defense Recommendations
+
+Organizations should implement multiple layers of defense:
+- Enhanced supply chain security assessment
+- Software composition analysis
+- Code signing verification and monitoring
+- Network traffic analysis for anomalous patterns
+- Enhanced endpoint detection and response (EDR)
+- Privileged access management
+- Zero-trust architecture implementation
+- Regular security audits of third-party software
+- Incident response planning for supply chain compromises
+
+This threat vector demonstrates the catastrophic potential of supply chain compromises and the
+need for comprehensive security measures that extend beyond traditional perimeter defenses to
+encompass the entire software development and distribution lifecycle.
+",1,2025-10-15,2025-10-15,,,,[Enterprise] APT29,"T1195.002, T1195, T1199, T1078, T1218.011, T1027, T1140, T1071, T1071.001, T1095, T1571, T1573, T1070, T1070.004, T1070.006, T1562.001, T1562, T1036.005, T1036"
 b6887f4b-eeae-462c-a2ac-7454efb5eabc,Legitimate software dependency injected with malicious code,Threat Vectors,clear,"Legitimate software dependency injected with malicious code refers
 to a type of attack where an adversary compromises a legitimate software
 dependency, such as a library or framework, by injecting malicious code
@@ -3582,6 +3773,100 @@ of the VPN.
   access to internal networks or exfiltrate data. While certificate revocation and 
   account disabling can mitigate this, there is a window of risk before such actions are taken.
   ",1,2025-04-23,2025-04-23,,,,,"T1133, T1078, T1195, T1199"
+53389577-fd8d-4ce6-9852-8365ed947c17,AAA bypass for unauthorized access on network devices,Threat Vectors,clear,"LINE VIPER implements a critical capability to bypass
+Authentication, Authorization, and Accounting (AAA) mechanisms on
+compromised Cisco ASA devices [1]. This allows actor-controlled
+devices to access the network infrastructure without proper
+authentication and without generating audit logs that would normally
+record access attempts.
+
+#### AAA Mechanisms on Cisco ASA
+
+Cisco ASA devices implement AAA as a fundamental security control
+for managing access to network resources. The three components work
+together to:
+
+- **Authentication:** Verify the identity of users and devices
+  attempting to access the network or device management interfaces.
+
+- **Authorization:** Determine what authenticated users and devices
+  are permitted to access, based on defined policies and access
+  control lists.
+
+- **Accounting:** Record access attempts, commands executed, and
+  other activities for audit and compliance purposes.
+
+Bypassing AAA effectively removes all three layers of this security
+control, providing unfettered access to the network infrastructure.
+
+#### Implementation and Impact
+
+LINE VIPER's AAA bypass capability operates at the system level
+within the compromised Cisco ASA device [1]. The malware modifies
+authentication processing to recognise actor-controlled devices and
+grant them access without proper validation.
+
+**No Authentication Logs:** A critical aspect of this bypass is that
+it prevents the generation of authentication logs for actor devices.
+This provides significant operational security benefits:
+
+- **Stealth Access:** Administrators reviewing authentication logs
+  will not see any suspicious access attempts or successful logins
+  from attacker infrastructure.
+
+- **Audit Trail Evasion:** Compliance and security audits that rely
+  on AAA logs will not detect unauthorised access.
+
+- **Incident Response Blindness:** During incident response
+  activities, investigators cannot rely on authentication logs to
+  understand the scope of compromise or identify attacker
+  infrastructure.
+
+- **Forensic Analysis Degradation:** The lack of authentication logs
+  significantly impairs forensic timeline construction and
+  attribution efforts.
+
+#### Operational Advantages
+
+The AAA bypass provides multiple advantages for maintaining
+persistent access to compromised network infrastructure [1]:
+
+- **Persistent Administrative Access:** Actor-controlled devices can
+  access management interfaces without authentication, enabling
+  configuration changes, command execution, and data collection.
+
+- **Network Pivoting:** Bypassing AAA on network security devices
+  allows attackers to pivot through the network infrastructure
+  without triggering authentication failures or alerts.
+
+- **Policy Circumvention:** Authorisation policies that would
+  normally restrict access to sensitive network segments or
+  configurations can be completely bypassed.
+
+- **Detection Evasion:** The absence of failed authentication
+  attempts removes a common indicator of malicious activity that
+  security monitoring systems typically alert on.
+
+#### Context within LINE VIPER Capabilities
+
+The AAA bypass capability is part of a broader set of defence
+evasion and system tampering capabilities in LINE VIPER [1]:
+
+- Works in conjunction with syslog suppression to prevent detection
+  of unauthorised access and malicious activities.
+
+- Complements the rootkit functionality that patches system
+  integrity checks to hide the malware's presence.
+
+- Enables the CLI command execution capability to operate with
+  administrative privileges without authentication barriers.
+
+The combination of AAA bypass with other LINE VIPER capabilities
+creates a comprehensive compromise of the network security device,
+effectively turning it into an attacker-controlled platform while
+maintaining the appearance of normal operation to administrators and
+security monitoring systems.
+",1,2026-06-18,2026-06-18,7c0f2788-690e-4d34-b9eb-5f76e7363ccc,,{'support::enabled': ['b6175f16-2b61-4116-bd97-de54b02b197e']},,"T1562.001, T1562, T1556, T1550"
 d5892ae6-d022-4ac8-858c-c2756067cdac,Malicious Code Execution with Windows Utilities,Threat Vectors,clear,"### 1. Msxsl.exe
 
 **Description**: A command-line XSLT processor that can transform XML data using 
@@ -4784,6 +5069,99 @@ metadata within a file. Attackers can abuse ADS to hide malicious code or sensit
 information within an innocent-looking file. When the file is accessed, the malicious 
 content in the ADS is executed without the user's knowledge.  
 ",1,2024-04-24,2024-06-25,,,,,"T1562, T1027.012"
+b6175f16-2b61-4116-bd97-de54b02b197e,LINE VIPER shellcode loader on Cisco ASA,Threat Vectors,clear,"LINE VIPER is a sophisticated user-mode shellcode loader with
+associated modules that targets Cisco ASA (Adaptive Security
+Appliance) devices. It represents a significant advancement over
+previous malware families LINE DANCER and LINE RUNNER [1].
+
+The analysed versions target Cisco ASA devices running firmware
+versions 9.12(4)67 and 9.14(4)24, which at the time of
+investigation were fully patched. LINE VIPER is loaded into memory
+by the RayInitiator bootkit from a WebVPN client authentication
+request containing a partial PKCS7 certificate followed by
+shellcode [1].
+
+#### Tasking Methods
+
+LINE VIPER can be tasked via two distinct methods [1]:
+
+1. **WebVPN Client Authentication Sessions over HTTPS:** The
+   primary tasking method leverages the WebVPN authentication
+   mechanism. Tasking payloads are delivered through specially
+   crafted HTTPS requests to the WebVPN endpoint.
+
+2. **ICMP with Responses over Raw TCP:** An alternative method
+   receives tasking via ICMP packets and responds over raw TCP
+   connections using high-ephemeral ports.
+
+#### Security Mechanisms
+
+LINE VIPER employs multiple security mechanisms to protect its
+operations [1]:
+
+- **Victim-Specific Tokens:** Utilises victim-specific tokens for
+  authentication, a method previously observed in LINE DANCER and
+  LINE RUNNER. Tasking payloads are checked for multiple
+  victim-specific tokens before execution.
+
+- **Per-Victim RSA Keys:** Uses per-victim RSA public keys to
+  perform symmetric key exchange for securing tasking and
+  exfiltration via the WebVPN client authentication method.
+
+- **Environmental Keying:** Implements execution guardrails by
+  validating environmental conditions before running tasked
+  payloads.
+
+#### Capabilities
+
+LINE VIPER provides extensive capabilities for post-compromise
+operations [1]:
+
+- **CLI Command Execution:** Ability to execute arbitrary CLI
+  commands on the compromised device, enabling full control over
+  device configuration and operation.
+
+- **Packet Capture:** Performs network packet captures and has been
+  observed collecting protocols with plaintext credentials,
+  supporting credential harvesting operations.
+
+- **AAA Bypass:** Bypasses Authentication, Authorization, and
+  Accounting (AAA) mechanisms for actor-controlled devices,
+  allowing unauthorised access without generating authentication
+  logs.
+
+- **Syslog Suppression:** Suppresses specific syslog messages to
+  hide malware behaviour and evade detection by security monitoring
+  systems.
+
+- **CLI Command Harvesting:** Harvests and monitors user CLI
+  commands executed on the device, enabling intelligence gathering
+  on administrator activities.
+
+- **Delayed Reboot:** Forces a delayed reboot of the device,
+  potentially serving as an anti-forensic capability or to clean up
+  traces of malicious activity.
+
+#### Defense Evasion
+
+LINE VIPER implements multiple defence evasion techniques [1]:
+
+- **System Integrity Check Patching:** Patches system integrity
+  checks and returns results as if the device was not compromised,
+  defeating built-in security validation mechanisms.
+
+- **Heap Integrity Verification Disabling:** Disables heap
+  integrity verification functionality to prevent detection of
+  memory manipulation.
+
+- **Immediate Reboot Capability:** Implements an anti-forensic
+  capability to immediately reboot the device when certain CLI
+  commands are executed, potentially destroying volatile evidence.
+
+The combination of advanced persistence, multiple C2 channels,
+encryption, and extensive defence evasion makes LINE VIPER a highly
+sophisticated threat to network infrastructure.
+",1,2026-06-18,2026-06-18,"7c0f2788-690e-4d34-b9eb-5f76e7363ccc, 8546b0d8-c9e1-4a51-bf64-2b93c4159ebf",,"{'sequence::succeeds': ['a6f331e0-292d-4d83-87a9-46aa149555dd'], 'support::enabling': ['fcc552fb-b4d1-4b47-b366-104ec4d806ef', '2a5faf22-c526-4d49-81b9-6a7b895de58b', '53389577-fd8d-4ce6-9852-8365ed947c17']}",,"T1059.008, T1014, T1562.001, T1562, T1202, T1040, T1480.001"
 dcccd7e5-9d3f-4b36-853a-5cd18a7ef752,Linux kernel module injection from container,Threat Vectors,clear,"Loadable Kernel Modules (LKM) can be used by adversaries to deliver 
 sophisticated and hard to detect rootkits. Each event where kernel modules 
 are loaded from a container should be investigated with the exeption of 
@@ -8636,6 +9014,61 @@ applications. Permissions are usually, but not always, AppOnly.
 The actor may use their administrator privileges to grant additional
 permissions to the target Application or Service Principal (e.g.  Mail.Read,
 Mail.ReadWrite).",4,2022-02-21,2025-01-01,,,,"[Enterprise] APT29, UNC2452",T1098.001
+a6f331e0-292d-4d83-87a9-46aa149555dd,RayInitiator GRUB bootkit persistence on Cisco ASA,Threat Vectors,clear,"RayInitiator is a sophisticated persistent multi-stage bootkit that
+facilitates the deployment of LINE VIPER malware to Cisco ASA
+(Adaptive Security Appliance) 5500-X series devices without secure
+boot technology [1].
+
+The bootkit is flashed directly to the compromised device's GRUB
+bootloader and survives both reboots and firmware upgrades. The
+targeted models were released in 2012, with an End of Life (EoL)
+notice issued by Cisco in 2020. These older models lack
+cryptographic verification of early boot software, making them
+vulnerable to this type of attack [1].
+
+#### Technical Implementation
+
+RayInitiator operates through multiple stages to establish
+persistence and deploy user-mode malware:
+
+**Stage 0 - Initial Execution:** The GRUB bootloader is patched to
+hijack boot execution. This initial patch hooks the firmware loading
+process, specifically where ""Booting...\n"" is output to the console,
+to call Stage 1 [1].
+
+**Stage 1 - Loader Patching:** Stage 1 searches the Cisco ASA
+loader in memory for code responsible for printing ""done.\nBooting
+the kernel"" to the console after the Linux kernel loads. It
+identifies this code by iterating through the hardcoded memory
+region 0x400000-0x600000, locating the string, and searching for
+specific assembly patterns. Once found, it patches the code to
+transfer control to Stage 2 [1].
+
+**Stage 2 - Kernel Preparation:** Stage 2 identifies Kernel Address
+Space Layout Randomization (KASLR) offsets and copies Stage 3 into
+Linux kernel memory. It locates the sched_getparam function within
+the system call table and patches it to call Stage 3. Since lina
+(the binary implementing most Cisco ASA functionality) calls
+sched_getparam during loading, this triggers Stage 3 installation
+[1].
+
+**Stage 3 - Malware Deployment:** Stage 3 is responsible for
+installing a small handler within the lina binary to execute LINE
+VIPER shellcode loader in user-mode [1].
+
+#### Operational Security
+
+The deployment of LINE VIPER via a persistent bootkit, combined with
+emphasis on defense evasion techniques, demonstrates a significant
+increase in actor sophistication and operational security compared
+to previous campaigns such as ArcaneDoor publicly documented in 2024
+[1].
+
+RayInitiator represents a significant advancement in firmware-level
+persistence techniques targeting network infrastructure. The
+multi-stage approach and ability to survive firmware upgrades makes
+detection and remediation particularly challenging.
+",1,2026-06-18,2026-06-18,7c0f2788-690e-4d34-b9eb-5f76e7363ccc,,{'sequence::preceeds': ['b6175f16-2b61-4116-bd97-de54b02b197e']},,"T1542.003, T1601.001, T1542.001"
 b6543cff-2e86-4fe6-afb7-6d3595188190,Azure - Steal Service Principal Certificate,Threat Vectors,clear,"The following threat vector involves adversaries targeting certificates used by 
 Azure service principals (especially in Automation Accounts using `RunAs` accounts) 
 to gain unauthorized access. 
@@ -10492,6 +10925,97 @@ or by replacing or creating a new file under unauthenticated uri path.
 - System log clearing: In some instances, logs have been cleared using the legitimate system 
 utility therefore generating event ID ADM20599.
 ",1,2024-01-15,2024-01-29,,,,Gelsemium,"T1011, T1041, T1070, T1190"
+fcc552fb-b4d1-4b47-b366-104ec4d806ef,WebVPN authentication abuse for C2 on Cisco ASA,Threat Vectors,clear,"LINE VIPER implements a sophisticated command and control mechanism
+that abuses legitimate WebVPN client authentication functionality on
+Cisco ASA devices [1]. This technique allows attackers to task the
+malware and exfiltrate data while blending with normal VPN
+authentication traffic.
+
+#### Deployment Mechanism
+
+LINE VIPER is initially loaded into memory through a specially
+crafted WebVPN client authentication request. The request contains
+a partial PKCS7 certificate followed by shellcode, which is
+processed by a handler installed in the lina binary by the
+RayInitiator bootkit [1].
+
+#### Communication Protocol
+
+The WebVPN-based C2 channel uses HTTPS to communicate with the
+compromised device. The protocol leverages standard WebVPN
+authentication endpoints, making malicious traffic difficult to
+distinguish from legitimate VPN authentication attempts [1].
+
+**Request Structure:** Tasking commands are delivered through HTTP
+POST requests to the WebVPN endpoint with carefully crafted XML
+payloads. The requests include standard WebVPN headers such as
+X-Transcend-Version, X-Aggregate-Auth, and Content-Type set to
+application/x-www-form-urlencoded [1].
+
+Example request format includes:
+- XML version declaration
+- config-auth element with client=""vpn"" and type=""init""
+- aggregate-auth-version=""2""
+- version, device-id, and platform information
+- mac-address-list elements
+- opaque section containing tunnel-group and authentication details
+
+The tasking data is embedded within device-type or similar fields
+in the XML structure [1].
+
+**Response Structure:** Actor tasking responses return HTTP 200 OK
+status with XML content. The response includes standard security
+headers (X-Frame-Options, Strict-Transport-Security,
+X-Content-Type-Options, X-XSS-Protection, Content-Security-Policy)
+and the tasking response data embedded in the message element of
+the XML [1].
+
+#### Encryption and Authentication
+
+LINE VIPER implements multiple layers of cryptographic protection
+for its C2 communications [1]:
+
+- **Per-Victim RSA Keys:** Each compromised device uses a unique
+  RSA public key for asymmetric cryptography. This key is used to
+  perform symmetric key exchange operations, ensuring that only the
+  actor with the corresponding private key can task the device.
+
+- **Per-Request AES Encryption:** Tasking commands are encrypted
+  using AES with a unique symmetric key for each request. This
+  provides an additional layer of encryption beyond HTTPS and
+  prevents replay attacks.
+
+- **Victim-Specific Tokens:** Tasking payloads sent to victim
+  devices are validated against multiple victim-specific tokens
+  before execution. This environmental keying ensures that captured
+  tasking commands cannot be replayed against different devices.
+
+#### Operational Security
+
+The abuse of WebVPN authentication for C2 provides several
+operational security benefits to the attacker [1]:
+
+- **Traffic Blending:** C2 traffic appears as legitimate WebVPN
+  authentication attempts, making it difficult to identify through
+  network monitoring.
+
+- **Encrypted Channel:** HTTPS encryption provides a legitimate
+  encrypted channel that network security devices typically allow.
+
+- **No Unusual Ports:** Communication uses standard HTTPS port 443,
+  avoiding the need for unusual firewall rules or exceptions.
+
+- **Expected Behaviour:** WebVPN authentication attempts are
+  expected traffic for ASA devices, reducing suspicion during
+  investigation.
+
+This technique demonstrates sophisticated understanding of Cisco ASA
+WebVPN implementation and represents a significant advancement in
+C2 channel design for network device implants. The use of
+legitimate functionality for malicious purposes makes detection
+challenging and requires deep packet inspection or behavioural
+analysis beyond standard network monitoring.
+",1,2026-06-18,2026-06-18,8546b0d8-c9e1-4a51-bf64-2b93c4159ebf,,{'support::enabled': ['b6175f16-2b61-4116-bd97-de54b02b197e']},,"T1071.001, T1573.001, T1573.002, T1090"
 41f57a57-1ed6-407e-bb70-a0f6ab52af10,Azure - Storage Blobs Reconnaissance,Threat Vectors,clear,"Reconnaissance targeting Azure Storage Blobs involves gathering intelligence to identify
 exposed storage accounts, containers, and blobs-often without authentication or detection.
 Azure’s predictable URL structure, common naming conventions, and potential for
@@ -11845,6 +12369,26 @@ route access patterns, and differential validation of unauthenticated requests. 
 useful for reverse proxies, WAFs, API gateways, and synthetic validation jobs that can observe
 response status, size, headers, and route sensitivity.
 ",3,2026-03-30,2026-05-04,"f798884c-46ea-424c-9958-45f2c4f8110a, 0770d2a4-9299-46d7-93f2-c3fff68aad26, 077ee487-7694-4ed5-9a83-5ed36b4f31c5",0663c192-cdeb-49a2-994c-4cc8e98f764e,,,T1190
+7c0f2788-690e-4d34-b9eb-5f76e7363ccc,Detect LINE VIPER Defence Evasion on Cisco ASA,Detection Objectives,clear,"This detection objective addresses the defence evasion and anti-
+forensic capabilities of the LINE VIPER implant on Cisco ASA devices,
+specifically the AAA authentication bypass, syslog message
+suppression, and system integrity check manipulation.
+
+LINE VIPER operates as a memory-resident implant within the lina
+binary and hooks multiple subsystems to suppress evidence of its
+presence and operations. These capabilities collectively reduce the
+security telemetry available from a compromised ASA device, making
+detection through conventional log analysis unreliable.
+
+Detection must therefore focus on identifying the ABSENCE of expected
+telemetry (authentication logs for established connections, expected
+syslog messages) as well as inconsistencies in Cisco ASA integrity
+check outputs compared to out-of-band verification.
+
+This is a high-investment objective requiring collection of Cisco
+ASA syslog at high fidelity, establishment of behavioural baselines,
+and integration of out-of-band integrity verification processes.
+",1,2026-06-18,2026-06-18,"0114324a-80a5-46cb-a75c-6f4a2301b7e5, 10482800-4d71-4246-93f4-6edfc4705b86, 9666e19f-f48d-4a0b-bb3e-0efbd69e8eac","53389577-fd8d-4ce6-9852-8365ed947c17, b6175f16-2b61-4116-bd97-de54b02b197e, a6f331e0-292d-4d83-87a9-46aa149555dd",,,"T1562.001, T1562, T1556, T1550, T1014, T1040"
 fb62e879-9e91-4c5b-aaa7-999b2b1b3897,Detect Shai-Hulud npm and PyPI Supply Chain Compromise Activity,Detection Objectives,clear,"This Detection Objective addresses the May 2026 Shai-Hulud / mini
 Shai-Hulud supply-chain campaign affecting npm and PyPI packages
 including the `@tanstack/*`, `@uipath/*`, and `@mistralai/*`
@@ -11906,6 +12450,45 @@ bfeb24bf-8a17-4ccc-8aec-91721743153d,Powershell encoded payload to start new pro
 
 This detection objective was migrated from a Cyber Detection Model (CDM).
 ",1,2026-03-24,2026-03-24,cf9c69a2-9317-4f0f-9506-fbeeb1c73ff0,bdc58fee-8da6-4fc9-8fbd-30f8fd156bc7,,,
+d8372ac1-2740-4cb2-b834-2e1622380b7b,Detect LINE VIPER ICMP Covert Channel on Network Devices,Detection Objectives,clear,"This detection objective targets the secondary LINE VIPER command
+and control channel that uses crafted ICMP Echo Requests to deliver
+encrypted tasking commands to the compromised Cisco ASA device, with
+results returned over raw TCP connections using high-ephemeral ports.
+
+The dual-protocol design — ICMP inbound, TCP outbound — is
+deliberately asymmetric to complicate correlation. The ICMP tasking
+channel is not sent to the WAN interface but is instead tunnelled
+through an established VPN session to a LAN interface, evading
+WAN-focused monitoring.
+
+Detection relies on identifying statistically anomalous ICMP traffic
+reaching LAN interfaces of network devices (particularly Cisco ASA)
+via VPN tunnels, combined with correlation of unexpected outbound
+raw TCP connections from the same device on high-ephemeral ports in
+temporal proximity to the ICMP events.
+",1,2026-06-18,2026-06-18,"baad1929-d23a-4a58-a269-e49244a22ea6, 4d828106-7e97-4830-8e49-2454a84a0621",2a5faf22-c526-4d49-81b9-6a7b895de58b,,,"T1095, T1571, T1573.001, T1573.002, T1480.001"
+8546b0d8-c9e1-4a51-bf64-2b93c4159ebf,Detect LINE VIPER WebVPN Command and Control on Cisco ASA,Detection Objectives,clear,"This detection objective targets the WebVPN-based command and control
+channel used by the LINE VIPER implant on compromised Cisco ASA
+devices. LINE VIPER abuses legitimate WebVPN client authentication
+endpoints to deliver tasking payloads and receive exfiltrated data,
+blending malicious traffic with expected VPN authentication flows.
+
+The initial LINE VIPER shellcode delivery also exploits this same
+WebVPN authentication mechanism: a crafted authentication request
+embedding a partial PKCS7 certificate followed by shellcode triggers
+the handler installed by the RayInitiator bootkit in the lina binary.
+
+Detection is particularly challenging because the C2 channel uses
+standard HTTPS on port 443 with valid WebVPN endpoint paths and
+plausible XML request structures. Detection requires deep inspection
+of WebVPN authentication traffic patterns, certificate artefact
+analysis, and behavioural anomaly detection on the ASA device.
+
+Detection investment is Major given the requirement for HTTPS
+inspection capabilities, Cisco ASA syslog telemetry at the required
+fidelity, and the need for network forensics tooling to analyse
+encrypted traffic patterns against baseline WebVPN behaviour.
+",1,2026-06-18,2026-06-18,"22e8fb52-d101-4d67-90b7-6e697c2dbb2d, cff09577-eb0b-4ac9-9393-789dbe439b56, cef505da-e628-469b-ad75-1a19091d31a6","fcc552fb-b4d1-4b47-b366-104ec4d806ef, b6175f16-2b61-4116-bd97-de54b02b197e",,,"T1071.001, T1573.001, T1573.002, T1090, T1542.003, T1601.001"
 3e8b5d7f-9c2a-4f6e-8b1d-7a4c9e3f6b2d,Detect Notepad++ Supply Chain Compromise Activity,Detection Objectives,clear,"This detection objective addresses the sophisticated supply chain compromise
 of Notepad++ update infrastructure that occurred between July and October 2025,
 affecting organizations across multiple sectors and geographic regions.

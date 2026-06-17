@@ -90,7 +90,7 @@
         {
             "techniqueID": "T1140",
             "color": "#fc6b6b",
-            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Abuse of Windows Utilities",
+            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Supply chain compromise via software update mechanism, [TVM] Abuse of Windows Utilities",
             "enabled": true
         },
         {
@@ -102,13 +102,13 @@
         {
             "techniqueID": "T1027",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] LNK files downloaded on a workstation, [TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] GoGra backdoor, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Unusual use of archiving tools",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] LNK files downloaded on a workstation, [TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] GoGra backdoor, [TVM] Supply chain compromise via software update mechanism, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Unusual use of archiving tools",
             "enabled": true
         },
         {
             "techniqueID": "T1070",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Unusual use of archiving tools, [TVM] authentication bypass on Ivanti Connect Secure appliances",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Supply chain compromise via software update mechanism, [TVM] Unusual use of archiving tools, [TVM] authentication bypass on Ivanti Connect Secure appliances",
             "enabled": true
         },
         {
@@ -120,19 +120,19 @@
         {
             "techniqueID": "T1070.004",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Supply chain compromise via software update mechanism, [TVM] Axios npm supply chain compromise",
             "enabled": true
         },
         {
             "techniqueID": "T1078",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Azure - Storage blobs data collection, [TVM] Azure - Unmanaged Scripting, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Azure - Virtual Machine Scripting, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Azure - Managed Device Scripting, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] MS 365 admin compromised account, [TVM] iOS Trojan harvesting facial recognition data, [TVM] IP Discovery in Azure, [TVM] Azure DevOps pipelines, [TVM] Windows credential creation attempt, [TVM] Admin SMB shares privilege escalation exploit, [TVM] Azure - Port Mapping, [TVM] Azure - Privileged Identity Management Role, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Azure - Storage blobs data collection, [TVM] Azure - Unmanaged Scripting, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Azure - Virtual Machine Scripting, [TVM] Supply chain compromise via software update mechanism, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Azure - Managed Device Scripting, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] MS 365 admin compromised account, [TVM] iOS Trojan harvesting facial recognition data, [TVM] IP Discovery in Azure, [TVM] Azure DevOps pipelines, [TVM] Windows credential creation attempt, [TVM] Admin SMB shares privilege escalation exploit, [TVM] Azure - Port Mapping, [TVM] Azure - Privileged Identity Management Role, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Axios npm supply chain compromise",
             "enabled": true
         },
         {
             "techniqueID": "T1202",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] LINE VIPER shellcode loader on Cisco ASA",
             "enabled": true
         },
         {
@@ -268,6 +268,36 @@
             "enabled": true
         },
         {
+            "techniqueID": "T1095",
+            "color": "#fc6b6b",
+            "comment": "[TVM] ICMP tasking with TCP response on network devices, [TVM] Supply chain compromise via software update mechanism",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1571",
+            "color": "#fc6b6b",
+            "comment": "[TVM] ICMP tasking with TCP response on network devices, [TVM] Supply chain compromise via software update mechanism, [TVM] Reverse shell or remote session from compromised host",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1573.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] ICMP tasking with TCP response on network devices, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] WebVPN authentication abuse for C2 on Cisco ASA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1573.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] ICMP tasking with TCP response on network devices, [TVM] WebVPN authentication abuse for C2 on Cisco ASA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1480.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] ICMP tasking with TCP response on network devices, [TVM] LINE VIPER shellcode loader on Cisco ASA",
+            "enabled": true
+        },
+        {
             "techniqueID": "T1546",
             "color": "#fc6b6b",
             "comment": "[TVM] Use Windows utilities to manipulate a local account or group",
@@ -276,7 +306,7 @@
         {
             "techniqueID": "T1562.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Use Windows utilities to manipulate a local account or group, [TVM] Disable swapping paging devices, [TVM] WhisperGate wiper",
+            "comment": "[TVM] Use Windows utilities to manipulate a local account or group, [TVM] Disable swapping paging devices, [TVM] Supply chain compromise via software update mechanism, [TVM] AAA bypass for unauthorized access on network devices, [TVM] LINE VIPER shellcode loader on Cisco ASA, [TVM] WhisperGate wiper",
             "enabled": true
         },
         {
@@ -372,7 +402,7 @@
         {
             "techniqueID": "T1195",
             "color": "#fc6b6b",
-            "comment": "[TVM] Possible Smart App Control Evasion Attempt, [TVM] Compromised software packages, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Malicious Software Dependencies Faking Known Packages, [TVM] Adversary publishing malicious NPM packages to compromise software",
+            "comment": "[TVM] Possible Smart App Control Evasion Attempt, [TVM] Compromised software packages, [TVM] Supply chain compromise via software update mechanism, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Malicious Software Dependencies Faking Known Packages, [TVM] Adversary publishing malicious NPM packages to compromise software",
             "enabled": true
         },
         {
@@ -468,7 +498,7 @@
         {
             "techniqueID": "T1036",
             "color": "#fc6b6b",
-            "comment": "[TVM] Spearphishing with an attachment extension .rdp, [TVM] Legitimate software dependency injected with malicious code, [TVM] Spearphishing Link, [TVM] MoonTag backdoor, [TVM] Unusual use of archiving tools, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] WhisperGate wiper, [TVM] Adversary publishing malicious NPM packages to compromise software",
+            "comment": "[TVM] Spearphishing with an attachment extension .rdp, [TVM] Supply chain compromise via software update mechanism, [TVM] Legitimate software dependency injected with malicious code, [TVM] Spearphishing Link, [TVM] MoonTag backdoor, [TVM] Unusual use of archiving tools, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] WhisperGate wiper, [TVM] Adversary publishing malicious NPM packages to compromise software",
             "enabled": true
         },
         {
@@ -504,7 +534,7 @@
         {
             "techniqueID": "T1071",
             "color": "#fc6b6b",
-            "comment": "[TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] Grager backdoor, [TVM] Notepad++ supply chain attack",
+            "comment": "[TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] Supply chain compromise via software update mechanism, [TVM] Grager backdoor, [TVM] Notepad++ supply chain attack",
             "enabled": true
         },
         {
@@ -570,7 +600,7 @@
         {
             "techniqueID": "T1556",
             "color": "#fc6b6b",
-            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Ghost logins attempts, [TVM] ADFS abuse",
+            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Ghost logins attempts, [TVM] AAA bypass for unauthorized access on network devices, [TVM] ADFS abuse",
             "enabled": true
         },
         {
@@ -606,7 +636,7 @@
         {
             "techniqueID": "T1550",
             "color": "#fc6b6b",
-            "comment": "[TVM] Lateral movement via a compromised Teams account",
+            "comment": "[TVM] Lateral movement via a compromised Teams account, [TVM] AAA bypass for unauthorized access on network devices",
             "enabled": true
         },
         {
@@ -618,7 +648,49 @@
         {
             "techniqueID": "T1195.002",
             "color": "#fc6b6b",
-            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Notepad++ supply chain attack, [TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] Supply chain compromise via software update mechanism, [TVM] Legitimate software dependency injected with malicious code, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Notepad++ supply chain attack, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1199",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Supply chain compromise via software update mechanism, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Social engineering attack using Microsoft Teams",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1218.011",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Supply chain compromise via software update mechanism, [TVM] DLL Execution over Rundll32, [TVM] Manipulation of credentials stored in LSASS",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1071.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Supply chain compromise via software update mechanism, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Reverse shell or remote session from compromised host, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] LOLC2 service abuse via temp.sh, [TVM] WebVPN authentication abuse for C2 on Cisco ASA, [TVM] Axios npm supply chain compromise, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1573",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Supply chain compromise via software update mechanism",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1070.006",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Supply chain compromise via software update mechanism",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1562",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Supply chain compromise via software update mechanism, [TVM] Switching off forced signed commits for GitHub repository, [TVM] AAA bypass for unauthorized access on network devices, [TVM] Windows system links used for file redirection attack, [TVM] LINE VIPER shellcode loader on Cisco ASA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1036.005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Supply chain compromise via software update mechanism, [TVM] Axios npm supply chain compromise",
             "enabled": true
         },
         {
@@ -664,12 +736,6 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1071.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Reverse shell or remote session from compromised host, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] LOLC2 service abuse via temp.sh, [TVM] Axios npm supply chain compromise, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
-            "enabled": true
-        },
-        {
             "techniqueID": "T1547",
             "color": "#fc6b6b",
             "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Use of legitimate still vulnerable drivers to elevate privileges",
@@ -679,12 +745,6 @@
             "techniqueID": "T1485",
             "color": "#fc6b6b",
             "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Azure - Soft-Delete Recovery, [TVM] WhisperGate wiper, [TVM] Azure - Backup Delete",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1562",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Switching off forced signed commits for GitHub repository, [TVM] Windows system links used for file redirection attack",
             "enabled": true
         },
         {
@@ -727,12 +787,6 @@
             "techniqueID": "T1133",
             "color": "#fc6b6b",
             "comment": "[TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Azure - External Entity Access, [TVM] Azure - Public Accessible Resource, [TVM] ADFS abuse",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1199",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Social engineering attack using Microsoft Teams",
             "enabled": true
         },
         {
@@ -832,12 +886,6 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1571",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Reverse shell or remote session from compromised host",
-            "enabled": true
-        },
-        {
             "techniqueID": "T1572",
             "color": "#fc6b6b",
             "comment": "[TVM] Reverse shell or remote session from compromised host, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server",
@@ -850,12 +898,6 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1573.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Cobalt Strike Beacon deployment via Metasploit downloader",
-            "enabled": true
-        },
-        {
             "techniqueID": "T1105",
             "color": "#fc6b6b",
             "comment": "[TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] Grager backdoor, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Download and Execute Payloads with Windows Utilities, [TVM] ProShow vulnerability exploitation for payload delivery",
@@ -865,6 +907,24 @@
             "techniqueID": "T1027.012",
             "color": "#fc6b6b",
             "comment": "[TVM] Windows system links used for file redirection attack",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.008",
+            "color": "#fc6b6b",
+            "comment": "[TVM] LINE VIPER shellcode loader on Cisco ASA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1014",
+            "color": "#fc6b6b",
+            "comment": "[TVM] LINE VIPER shellcode loader on Cisco ASA, [TVM] Malicious kernel module",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1040",
+            "color": "#fc6b6b",
+            "comment": "[TVM] LINE VIPER shellcode loader on Cisco ASA, [TVM] GSM interception",
             "enabled": true
         },
         {
@@ -1054,12 +1114,6 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1218.011",
-            "color": "#fc6b6b",
-            "comment": "[TVM] DLL Execution over Rundll32, [TVM] Manipulation of credentials stored in LSASS",
-            "enabled": true
-        },
-        {
             "techniqueID": "T0865",
             "color": "#fc6b6b",
             "comment": "[TVM] Suspicious Disk Image Files extracted via File Archiver from Email or Download directory",
@@ -1093,12 +1147,6 @@
             "techniqueID": "T1498.001",
             "color": "#fc6b6b",
             "comment": "[TVM] Protocol based DDoS attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1040",
-            "color": "#fc6b6b",
-            "comment": "[TVM] GSM interception",
             "enabled": true
         },
         {
@@ -1168,9 +1216,21 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1014",
+            "techniqueID": "T1542.003",
             "color": "#fc6b6b",
-            "comment": "[TVM] Malicious kernel module",
+            "comment": "[TVM] RayInitiator GRUB bootkit persistence on Cisco ASA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1601.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] RayInitiator GRUB bootkit persistence on Cisco ASA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1542.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] RayInitiator GRUB bootkit persistence on Cisco ASA",
             "enabled": true
         },
         {
@@ -1372,6 +1432,12 @@
             "enabled": true
         },
         {
+            "techniqueID": "T1090",
+            "color": "#fc6b6b",
+            "comment": "[TVM] WebVPN authentication abuse for C2 on Cisco ASA",
+            "enabled": true
+        },
+        {
             "techniqueID": "T1619",
             "color": "#fc6b6b",
             "comment": "[TVM] Azure - Storage Blobs Reconnaissance",
@@ -1397,12 +1463,6 @@
         },
         {
             "techniqueID": "T1036.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1036.005",
             "color": "#fc6b6b",
             "comment": "[TVM] Axios npm supply chain compromise",
             "enabled": true
