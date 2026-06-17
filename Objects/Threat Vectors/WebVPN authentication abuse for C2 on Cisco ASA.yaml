@@ -1,0 +1,153 @@
+name: WebVPN authentication abuse for C2 on Cisco ASA
+criticality: High
+references:
+  public:
+    1: https://www.ncsc.gov.uk/static-assets/documents/malware-analysis-reports/RayInitiator-LINE-VIPER/ncsc-mar-rayinitiator-line-viper.pdf
+
+metadata:
+  uuid: fcc552fb-b4d1-4b47-b366-104ec4d806ef
+  schema: tvm::2.1
+  version: 1
+  created: "2026-06-18"
+  modified: "2026-06-18"
+  tlp: clear
+
+threat:
+  killchain: Command & Control
+  att&ck:
+    - T1071.001  # Application Layer Protocol: Web Protocols
+    - T1573.001  # Encrypted Channel: Symmetric Cryptography
+    - T1573.002  # Encrypted Channel: Asymmetric Cryptography
+    - T1090      # Proxy
+  chaining:
+    - relation: support::enabled
+      vector: b6175f16-2b61-4116-bd97-de54b02b197e  # LINE VIPER shellcode loader on Cisco ASA
+      description: |
+        This WebVPN-based C2 channel is enabled by the LINE VIPER
+        implant, which hooks XML form element processing in lina to
+        intercept crafted authentication requests. The initial LINE VIPER
+        shellcode delivery itself also uses this WebVPN channel,
+        embedding a partial PKCS7 certificate followed by shellcode in
+        a crafted authentication request [1].
+  #cve:
+    #-
+  #misp:
+    #-
+  domains:
+    - Enterprise
+    - Networking
+  terrain: |
+    Cisco ASA devices with WebVPN functionality enabled and accessible
+    to attacker infrastructure [1]. The WebVPN client authentication
+    mechanism processes XML data containing device-id, version, and form
+    elements through a large codebase in lina. This XML processing does
+    not adequately validate or sanitise crafted authentication requests,
+    allowing arbitrary data to be embedded in standard authentication
+    fields like device-type within the XML structure.
+  targets:
+    - Network Equipment
+    - VPN Client
+  platforms:
+    - Network Router
+  severity: Substantial incident
+  leverage:
+    - Spoofing
+    - Information Disclosure
+    - Infrastructure Compromise
+  impact:
+    - Data Breach
+    - Lose Capabilities
+    - Reputational Damages
+    - National Security
+  viability: Likely
+  description: |
+    LINE VIPER implements a sophisticated command and control mechanism
+    that abuses legitimate WebVPN client authentication functionality on
+    Cisco ASA devices [1]. This technique allows attackers to task the
+    malware and exfiltrate data while blending with normal VPN
+    authentication traffic.
+
+    #### Deployment Mechanism
+
+    LINE VIPER is initially loaded into memory through a specially
+    crafted WebVPN client authentication request. The request contains
+    a partial PKCS7 certificate followed by shellcode, which is
+    processed by a handler installed in the lina binary by the
+    RayInitiator bootkit [1].
+
+    #### Communication Protocol
+
+    The WebVPN-based C2 channel uses HTTPS to communicate with the
+    compromised device. The protocol leverages standard WebVPN
+    authentication endpoints, making malicious traffic difficult to
+    distinguish from legitimate VPN authentication attempts [1].
+
+    **Request Structure:** Tasking commands are delivered through HTTP
+    POST requests to the WebVPN endpoint with carefully crafted XML
+    payloads. The requests include standard WebVPN headers such as
+    X-Transcend-Version, X-Aggregate-Auth, and Content-Type set to
+    application/x-www-form-urlencoded [1].
+
+    Example request format includes:
+    - XML version declaration
+    - config-auth element with client="vpn" and type="init"
+    - aggregate-auth-version="2"
+    - version, device-id, and platform information
+    - mac-address-list elements
+    - opaque section containing tunnel-group and authentication details
+
+    The tasking data is embedded within device-type or similar fields
+    in the XML structure [1].
+
+    **Response Structure:** Actor tasking responses return HTTP 200 OK
+    status with XML content. The response includes standard security
+    headers (X-Frame-Options, Strict-Transport-Security,
+    X-Content-Type-Options, X-XSS-Protection, Content-Security-Policy)
+    and the tasking response data embedded in the message element of
+    the XML [1].
+
+    #### Encryption and Authentication
+
+    LINE VIPER implements multiple layers of cryptographic protection
+    for its C2 communications [1]:
+
+    - **Per-Victim RSA Keys:** Each compromised device uses a unique
+      RSA public key for asymmetric cryptography. This key is used to
+      perform symmetric key exchange operations, ensuring that only the
+      actor with the corresponding private key can task the device.
+
+    - **Per-Request AES Encryption:** Tasking commands are encrypted
+      using AES with a unique symmetric key for each request. This
+      provides an additional layer of encryption beyond HTTPS and
+      prevents replay attacks.
+
+    - **Victim-Specific Tokens:** Tasking payloads sent to victim
+      devices are validated against multiple victim-specific tokens
+      before execution. This environmental keying ensures that captured
+      tasking commands cannot be replayed against different devices.
+
+    #### Operational Security
+
+    The abuse of WebVPN authentication for C2 provides several
+    operational security benefits to the attacker [1]:
+
+    - **Traffic Blending:** C2 traffic appears as legitimate WebVPN
+      authentication attempts, making it difficult to identify through
+      network monitoring.
+
+    - **Encrypted Channel:** HTTPS encryption provides a legitimate
+      encrypted channel that network security devices typically allow.
+
+    - **No Unusual Ports:** Communication uses standard HTTPS port 443,
+      avoiding the need for unusual firewall rules or exceptions.
+
+    - **Expected Behaviour:** WebVPN authentication attempts are
+      expected traffic for ASA devices, reducing suspicion during
+      investigation.
+
+    This technique demonstrates sophisticated understanding of Cisco ASA
+    WebVPN implementation and represents a significant advancement in
+    C2 channel design for network device implants. The use of
+    legitimate functionality for malicious purposes makes detection
+    challenging and requires deep packet inspection or behavioural
+    analysis beyond standard network monitoring.

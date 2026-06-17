@@ -1,0 +1,179 @@
+name: Detect LINE VIPER ICMP Covert Channel on Network Devices
+
+references:
+  public:
+    1: https://www.ncsc.gov.uk/static-assets/documents/malware-analysis-reports/RayInitiator-LINE-VIPER/ncsc-mar-rayinitiator-line-viper.pdf
+
+metadata:
+  uuid: d8372ac1-2740-4cb2-b834-2e1622380b7b
+  schema: dom::1.0
+  version: 1
+  created: 2026-06-18
+  modified: 2026-06-18
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+objective:
+  priority: High
+  att&ck:
+    - T1095
+    - T1571
+    - T1573.001
+    - T1573.002
+    - T1480.001
+  type: Threat
+  threats:
+    - 2a5faf22-c526-4d49-81b9-6a7b895de58b
+  investment: Significant
+  description: |
+    This detection objective targets the secondary LINE VIPER command
+    and control channel that uses crafted ICMP Echo Requests to deliver
+    encrypted tasking commands to the compromised Cisco ASA device, with
+    results returned over raw TCP connections using high-ephemeral ports.
+
+    The dual-protocol design — ICMP inbound, TCP outbound — is
+    deliberately asymmetric to complicate correlation. The ICMP tasking
+    channel is not sent to the WAN interface but is instead tunnelled
+    through an established VPN session to a LAN interface, evading
+    WAN-focused monitoring.
+
+    Detection relies on identifying statistically anomalous ICMP traffic
+    reaching LAN interfaces of network devices (particularly Cisco ASA)
+    via VPN tunnels, combined with correlation of unexpected outbound
+    raw TCP connections from the same device on high-ephemeral ports in
+    temporal proximity to the ICMP events.
+
+  composition:
+    strategy: Sequence
+    description: |
+      The two signals in this objective are most effective when
+      correlated as a temporal sequence: anomalous ICMP reaching the
+      ASA LAN interface should be followed shortly by an unexpected
+      outbound raw TCP connection from the ASA on a high-ephemeral port
+      to an attacker-controlled IP.
+
+      The sequence detection windows should be bounded (e.g., within
+      30-120 seconds) as LINE VIPER responds promptly to tasking. Each
+      signal independently provides value but both together provide
+      high-confidence detection of active ICMP C2 tasking:
+
+      1. **ICMP anomaly signal** fires on unusual ICMP traffic patterns
+         to ASA LAN interfaces via VPN.
+      2. **Outbound TCP signal** fires on unexpected raw TCP connections
+         from the ASA to non-standard ports on external IPs.
+
+      Correlating the same ASA device (Hostname/IP) across both signals
+      within the detection window confirms active C2 activity.
+
+  signals:
+    - name: Anomalous ICMP Traffic to Cisco ASA LAN Interface via VPN
+      uuid: baad1929-d23a-4a58-a269-e49244a22ea6
+      description: |
+        Detects unusual ICMP Echo Request traffic directed at the LAN
+        interface of a Cisco ASA device originating from VPN-connected
+        clients, consistent with LINE VIPER ICMP-based C2 tasking [1].
+
+        In observed LINE VIPER operations, ICMP tasking is not sent
+        to the WAN interface but tunnelled through an established VPN
+        session to reach the LAN interface. This is unusual as ICMP
+        traffic to network appliance interfaces from VPN clients is
+        uncommon in most environments.
+
+        Detection criteria:
+        - ICMP Echo Requests destined for the ASA's internal (LAN)
+          interface IP addresses originating from VPN tunnel sources
+        - ICMP payloads exceeding typical ping sizes (>64 bytes)
+          or containing high-entropy content inconsistent with standard
+          ping tools
+        - ICMP Echo Requests from VPN client IPs not associated with
+          legitimate network diagnostic activity (no prior session
+          pattern, unusual time of day, single host sending repeated
+          large ICMP packets)
+        - Absence of corresponding ICMP Echo Replies from the ASA
+          (LINE VIPER may not respond via ICMP, only via raw TCP)
+
+        Tuning note: Establish a baseline of legitimate ICMP traffic
+        to ASA LAN interfaces from VPN clients — this is typically
+        near zero in production environments and thresholds should
+        be set accordingly.
+      severity: High
+      effort: 5
+      methodology: Anomaly
+      data:
+        availability: Partial
+        requirements: |
+          - Network flow logs or packet capture covering traffic to
+            Cisco ASA LAN interface IPs
+          - VPN session logs to correlate source IPs with established
+            VPN tunnel clients
+          - ICMP traffic logging with payload size visibility
+          - Firewall or network monitoring logs capturing intra-VPN
+            traffic patterns
+
+          Preferred log sources:
+          - Cisco ASA syslog (ICMP inspection logs, VPN session logs)
+          - NetFlow/IPFIX from upstream router or switch
+          - Zeek conn.log and icmp.log
+          - NGFW with ICMP inspection and logging enabled
+      entities:
+        - network::IP Address
+        - network::Protocol
+        - network::Network Connection
+        - host::Hostname
+
+    - name: Unexpected Outbound Raw TCP from Cisco ASA on High Ephemeral Ports
+      uuid: 4d828106-7e97-4830-8e49-2454a84a0621
+      description: |
+        Detects unexpected outbound TCP connections initiated from a
+        Cisco ASA device to external IP addresses using high-ephemeral
+        source and/or destination ports, consistent with LINE VIPER
+        returning ICMP tasking results over raw TCP [1].
+
+        LINE VIPER responds to ICMP tasking by initiating raw TCP
+        connections to the attacker's infrastructure using high-
+        ephemeral ports (typically >32768). This is anomalous behaviour
+        for a Cisco ASA, which should not be initiating arbitrary
+        outbound TCP connections on high ephemeral ports to external
+        hosts that are not part of established VPN, management, or
+        update sessions.
+
+        Detection criteria:
+        - Outbound TCP SYN packets from Cisco ASA management or internal
+          interface IP to external IP addresses on ports >32768
+        - Connection attempts from the ASA itself (not from clients
+          behind the ASA) that do not correspond to known management
+          protocols (SSH, HTTPS/443, SNMP, NTP, etc.)
+        - Connections to external IPs not in an approved list of
+          management, NTP, syslog, or update server destinations
+        - Short-lived TCP connections with small data transfer volumes
+          (task results are likely compact) following anomalous inbound
+          ICMP events
+
+        Key distinction: this signal monitors traffic originating FROM
+        the ASA device's own IP address, not from clients NAT'd through
+        the ASA. This requires flow visibility on the upstream router
+        or switch, not just firewall logs.
+      severity: High
+      effort: 4
+      methodology: Behavioural
+      data:
+        availability: Partial
+        requirements: |
+          - Network flow logs from the upstream router or switch
+            showing connections originating from the ASA device IP
+          - Allowlist of legitimate outbound destinations and ports for
+            the ASA device (management, NTP, syslog, etc.)
+          - NetFlow/IPFIX or equivalent flow telemetry
+
+          Preferred log sources:
+          - Cisco ASA syslog with connection logging enabled
+          - NetFlow/IPFIX from upstream infrastructure
+          - Zeek conn.log scoped to ASA device IPs as source
+          - NGFW inspection rules targeting ASA management IPs
+      entities:
+        - network::IP Address
+        - network::Port
+        - network::Network Connection
+        - host::Hostname
