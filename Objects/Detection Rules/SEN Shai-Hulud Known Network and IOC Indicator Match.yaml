@@ -1,0 +1,129 @@
+name: SEN Shai-Hulud Known Network and IOC Indicator Match
+
+references:
+  public:
+    1: https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised
+    2: https://www.aikido.dev/blog/mini-shai-hulud-is-back-tanstack-compromised
+    3: https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
+    4: https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem
+
+metadata:
+  uuid: cf614690-69c4-4229-af59-072a9e18583b
+  schema: mdr::2.1
+  version: 1
+  created: 2026-06-16
+  modified: 2026-06-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
+
+description: |
+  #### MDR Technical Details
+  Microsoft Sentinel scheduled analytic rule implementing DOM signal
+  `678d0786-dfd7-40fb-ba90-3c368ed00342` (Known Shai-Hulud On-Disk and
+  Network Indicator Match). Correlates DNS queries and threat-intelligence
+  feed matches for campaign domains, exfiltration IP, and malicious package
+  version indicators across `DnsEvents`, `CommonSecurityLog`, and
+  `ThreatIntelIndicators`.
+
+  #### Detection Criteria
+  - DNS resolution of `git-tanstack.com` or `*.getsession.org`.
+  - OR proxy/firewall log connection to `83.142.209.194`.
+  - OR active `ThreatIntelIndicators` entry referencing Shai-Hulud campaign
+    packages or infrastructure.
+  - Frequency: 1 hour; severity Critical.
+
+  #### Exclusion Criteria
+  - Threat-intel feed matches require `Active == true` and unexpired indicators.
+  - DNS matches alone on security-research sandboxes should be scoped to
+    developer and CI network segments where possible.
+
+response:
+  alert_severity: High
+  responders: CSIRC
+  procedure:
+    analysis: |
+      1. Identify the source host or client IP for the IOC match.
+      2. Map the asset to developer workstation or CI runner inventory.
+      3. Trigger endpoint IOC sweep on the correlated host.
+      4. Check lockfiles and SBOM for compromised package versions.
+    containment: |
+      Block IOC domains and IP at DNS and proxy layers. Initiate endpoint
+      response on correlated developer and CI assets.
+
+configurations:
+  sentinel:
+    schema: sentinel::2.4
+    status: DEVELOPMENT
+    trigger:
+      operator: GreaterThan
+      threshold: 0
+    scheduling:
+      frequency: 1h
+      lookback: 1h
+    alert:
+      create_incident: true
+      suppression: false
+      title: Shai-Hulud network IOC match — {{IndicatorValue}}
+      description: |
+        DNS, proxy, or threat-intelligence telemetry matches a known
+        Shai-Hulud campaign indicator.
+      tactics:
+        - CommandAndControl
+        - Exfiltration
+      techniques:
+        - T1071.001
+        - T1567.002
+        - T1195.002
+    grouping:
+      event: AlertPerResult
+      alert:
+        enabled: false
+    entities:
+      - entity: IP
+        mappings:
+          - identifier: Address
+            column: ClientIP
+      - entity: DNS
+        mappings:
+          - identifier: DomainName
+            column: IndicatorValue
+    query: |
+      // Detection: Shai-Hulud known network and IOC indicator match
+      // DOM signal: 678d0786-dfd7-40fb-ba90-3c368ed00342
+      // MITRE ATT&CK: T1071.001, T1195.002
+      // Platform: SENTINEL
+      let IocDomains = dynamic([
+          "git-tanstack.com", "getsession.org", "filev2.getsession.org",
+          "seed1.getsession.org", "seed2.getsession.org", "seed3.getsession.org"
+      ]);
+      let ExfilIp = "83.142.209.194";
+      let DnsMatch =
+      DnsEvents
+      | where TimeGenerated > ago(1h)
+      | where Name has_any (IocDomains)
+      | project TimeGenerated, ClientIP = ClientIP, IndicatorValue = Name,
+          MatchSource = "DnsEvents", IndicatorType = "domain";
+      let ProxyMatch =
+      CommonSecurityLog
+      | where TimeGenerated > ago(1h)
+      | where DestinationIP == ExfilIp
+          or DestinationHostName has_any (IocDomains)
+      | project TimeGenerated, ClientIP = SourceIP,
+          IndicatorValue = coalesce(DestinationHostName, DestinationIP),
+          MatchSource = "CommonSecurityLog", IndicatorType = "network";
+      let TiMatch =
+      ThreatIntelIndicators
+      | where TimeGenerated > ago(7d)
+      | where ExpirationDateTime > now() and Active == true
+      | where Description has_any ("Shai-Hulud", "mini-shai-hulud", "git-tanstack")
+          or DomainName has_any (IocDomains)
+          or NetworkIP == ExfilIp
+      | extend IndicatorValue = coalesce(DomainName, NetworkIP, Description)
+      | project TimeGenerated, ClientIP = "", IndicatorValue,
+          MatchSource = "ThreatIntelIndicators", IndicatorType = ThreatType;
+      union DnsMatch, ProxyMatch, TiMatch
+      | order by TimeGenerated desc

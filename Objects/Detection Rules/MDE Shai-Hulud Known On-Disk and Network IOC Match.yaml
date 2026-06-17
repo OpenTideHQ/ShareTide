@@ -1,0 +1,130 @@
+name: MDE Shai-Hulud Known On-Disk and Network IOC Match
+
+references:
+  public:
+    1: https://www.wiz.io/blog/mini-shai-hulud-strikes-again-tanstack-more-npm-packages-compromised
+    2: https://www.aikido.dev/blog/mini-shai-hulud-is-back-tanstack-compromised
+    3: https://tanstack.com/blog/npm-supply-chain-compromise-postmortem
+    4: https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem
+
+metadata:
+  uuid: 2fe6575d-513c-4588-999f-19c13d0fa4f9
+  schema: mdr::2.1
+  version: 1
+  created: 2026-06-16
+  modified: 2026-06-16
+  tlp: clear
+  organisation:
+    uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
+    name: EC DIGIT CSOC
+
+detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
+
+description: |
+  #### MDR Technical Details
+  Microsoft Defender for Endpoint custom detection implementing DOM signal
+  `678d0786-dfd7-40fb-ba90-3c368ed00342` (Known Shai-Hulud On-Disk and
+  Network Indicator Match). High-specificity artefact matching across
+  `DeviceFileEvents` (campaign filenames, SHA-256 hashes, persistence
+  artefacts) and `DeviceNetworkEvents` (IOC domains and exfil IP from
+  package-runtime process trees).
+
+  #### Detection Criteria
+  - File create/modify of `router_init.js`, `setup.mjs`, `gh-token-monitor`,
+    or published sample SHA-256 hashes.
+  - OR network connection to `git-tanstack.com`, `*.getsession.org`, or
+    `83.142.209.194` from package-manager process trees.
+  - Frequency: 1 hour; severity Critical.
+
+  #### Exclusion Criteria
+  - None for hash and filename matches — treat as strong execution evidence.
+  - Network-only matches from non-package processes should be reviewed in
+    context of full device activity.
+
+response:
+  alert_severity: High
+  responders: CSIRC
+  procedure:
+    analysis: |
+      1. Treat any on-disk IOC match as confirmed execution, not mere dependency
+         declaration.
+      2. Search for `gh-token-monitor` persistence before revoking GitHub tokens.
+      3. Sweep lockfiles for compromised package versions.
+      4. Rotate all reachable credentials.
+    searches:
+      - purpose: Hunt persistence artefacts on the alerted device
+        system: defender_for_endpoint
+        query: |
+          DeviceFileEvents
+          | where DeviceId == "{{DeviceId}}"
+          | where FileName has_any ("gh-token-monitor", "com.user.gh-token-monitor")
+          | project Timestamp, FolderPath, FileName, SHA256
+    containment: |
+      Isolate the endpoint immediately. Remove persistence, malicious packages,
+      and IDE-resident copies under `.claude/` and `.vscode/` before token
+      revocation.
+
+configurations:
+  defender_for_endpoint:
+    schema: defender_for_endpoint::2.1
+    status: DEVELOPMENT
+    scheduling: "1H"
+    alert:
+      title: Shai-Hulud IOC match on {{DeviceName}} — {{DetectionType}}
+      category: Malware
+      techniques:
+        - T1195.002
+        - T1547
+        - T1071.001
+      recommendation: |
+        Known Shai-Hulud file or network indicator detected. Assume the host
+        is compromised and begin incident response immediately.
+    impacted_entities:
+      device: DeviceName
+    scope:
+      selection: All
+    query: |
+      // Detection: Shai-Hulud known on-disk and network IOC match
+      // DOM signal: 678d0786-dfd7-40fb-ba90-3c368ed00342
+      // MITRE ATT&CK: T1195.002, T1547
+      // Platform: DEFENDER
+      let PackageManagers = dynamic([
+          "node", "node.exe", "npm", "npm.cmd", "pnpm", "pnpm.cmd",
+          "yarn", "yarn.cmd", "npx", "corepack", "pip", "pip3",
+          "python", "python3", "bun", "bun.exe"
+      ]);
+      let IocDomains = dynamic([
+          "git-tanstack.com", "getsession.org", "filev2.getsession.org",
+          "seed1.getsession.org", "seed2.getsession.org", "seed3.getsession.org"
+      ]);
+      let IocFiles = dynamic([
+          "router_init.js", "setup.mjs", "router_runtime.js",
+          "tanstack_runner.js", "gh-token-monitor",
+          "com.user.gh-token-monitor.plist", "gh-token-monitor.service",
+          "transformers.pyz"
+      ]);
+      let IocHashes = dynamic([
+          "ab4fcadaec49c03278063dd269ea5eef82d24f2124a8e15d7b90f2fa8601266c",
+          "2ec78d556d696e208927cc503d48e4b5eb56b31abc2870c2ed2e98d6be27fc96",
+          "2258284d65f63829bd67eaba01ef6f1ada2f593f9bbe41678b2df360bd90d3df"
+      ]);
+      let FileMatch =
+      DeviceFileEvents
+      | where FileName in~ (IocFiles) or SHA256 in (IocHashes)
+      | project Timestamp, DeviceId, ReportId, DeviceName,
+          AccountName = InitiatingProcessAccountName, AccountSid = "",
+          InitiatingProcessFileName, InitiatingProcessCommandLine = FolderPath,
+          FileName, ProcessCommandLine = SHA256,
+          DetectionType = "file_ioc";
+      let NetworkMatch =
+      DeviceNetworkEvents
+      | where ActionType == "ConnectionSuccess"
+      | where RemoteUrl has_any (IocDomains) or RemoteIP == "83.142.209.194"
+      | where InitiatingProcessFileName in~ (PackageManagers)
+          or InitiatingProcessCommandLine has_any (IocFiles)
+      | project Timestamp, DeviceId, ReportId, DeviceName,
+          AccountName = InitiatingProcessAccountName, AccountSid = "",
+          InitiatingProcessFileName, InitiatingProcessCommandLine,
+          FileName = RemoteUrl, ProcessCommandLine = RemoteIP,
+          DetectionType = "network_ioc";
+      union FileMatch, NetworkMatch
