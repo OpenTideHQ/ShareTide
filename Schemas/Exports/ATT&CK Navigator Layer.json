@@ -4,159 +4,69 @@
     },
     "techniques": [
         {
-            "techniqueID": "T1190",
+            "techniqueID": "T1082",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Port Mapping, [TVM] Google Calendar service as C2, [TVM] Azure DevOps pipelines, [TVM] Client-controlled session state authentication bypass, [TVM] HTML smuggling technique, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] Obfuscate binaries through PowerShell commands, [TVM] Automation accounts JWT extraction, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Command injection on web components of Ivanti Connect Secure appliances, [TVM] NTLM credentials dumping via SMB connection, [TVM] Late access control enforcement via redirect body leakage, [TVM] authentication bypass on Ivanti Connect Secure appliances, [TVM] Authentication bypass vulnerability in Ivanti EPMM, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] Unauthorized account provisioning via exposed registration flow, [TVM] OneDrive API abuse to exfiltrate sensitive data, [TVM] Code execution via custom script extensions in Azure, [TVM] Azure - Storage Blobs Reconnaissance, [TVM] GSM interception",
+            "comment": "[TVM] System reconnaissance via shell commands in supply chain attack, [TVM] Host information gathering in Linux systems, [TVM] LOLC2 service abuse via temp.sh, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Azure - Key Vault reconnaissance, [TVM] VBS script creates a scheduled task, [TVM] Axios npm supply chain compromise, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
             "enabled": true
         },
         {
-            "techniqueID": "T1078",
+            "techniqueID": "T1016",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Port Mapping, [TVM] Azure DevOps pipelines, [TVM] Azure - Virtual Machine Scripting, [TVM] Windows credential creation attempt, [TVM] iOS Trojan harvesting facial recognition data, [TVM] IP Discovery in Azure, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Azure - Unmanaged Scripting, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Axios npm supply chain compromise, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Azure - Storage blobs data collection, [TVM] MS 365 admin compromised account, [TVM] Azure - Privileged Identity Management Role, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Admin SMB shares privilege escalation exploit, [TVM] Azure - Managed Device Scripting",
+            "comment": "[TVM] System reconnaissance via shell commands in supply chain attack, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Abusing Lolbins to Enumerate Network Configuration",
             "enabled": true
         },
         {
-            "techniqueID": "T1110",
+            "techniqueID": "T1033",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Port Mapping, [TVM] Azure - Gather Application Information, [TVM] SMB login brute force, [TVM] Azure - Valid Credentials, [TVM] Windows credential access attempt",
+            "comment": "[TVM] System reconnaissance via shell commands in supply chain attack, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access",
             "enabled": true
         },
         {
-            "techniqueID": "T1552",
+            "techniqueID": "T1057",
             "color": "#fc6b6b",
-            "comment": "[TVM] Resource Secret Reveal in Azure, [TVM] Manipulation of credentials stored in plain text files, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] Windows explorer used to search for files with credentials, [TVM] Azure - Storage Blobs Reconnaissance",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Resource Secret Reveal in Azure, [TVM] Usage of CrackMapExec module Masky on compromised endpoint, [TVM] Credential manipulation on local Windows endpoint, [TVM] Credential manipulation on remote Windows endpoint, [TVM] Windows credential creation attempt, [TVM] Manipulation of credentials stored in plain text files, [TVM] Manipulation of credentials stored in LSASS, [TVM] Script execution on Windows for credential manipulation, [TVM] Windows explorer used to search for files with credentials, [TVM] Windows credential dumping through Local Security Authority (LSA) Secrets",
+            "comment": "[TVM] System reconnaissance via shell commands in supply chain attack, [TVM] Process discovery",
             "enabled": true
         },
         {
             "techniqueID": "T1555",
             "color": "#fc6b6b",
-            "comment": "[TVM] Resource Secret Reveal in Azure, [TVM] Azure - Key Vault reconnaissance, [TVM] Azure - Gather Application Information, [TVM] Script execution on Windows for credential manipulation, [TVM] Azure - Valid Credentials, [TVM] Code execution via custom script extensions in Azure",
+            "comment": "[TVM] Code execution via custom script extensions in Azure, [TVM] Azure - Key Vault reconnaissance, [TVM] Azure - Gather Application Information, [TVM] Resource Secret Reveal in Azure, [TVM] Script execution on Windows for credential manipulation, [TVM] Azure - Valid Credentials",
             "enabled": true
         },
         {
-            "techniqueID": "T1053.005",
+            "techniqueID": "T1190",
             "color": "#fc6b6b",
-            "comment": "[TVM] Scheduled tasks created with PowerShell, [TVM] Scheduled task manipulation using Azure Portal, [TVM] Scheduled task created on remote endpoint, [TVM] Deletion of Tasks or Tree registry keys in scheduled task hives, [TVM] Scheduled tasks created with taskschlr.exe, [TVM] Scheduled tasks to connect to adversarial infrastructure, [TVM] Deletion of Windows Scheduled Task XML file, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Scheduled tasks to maintain persistence in registry, [TVM] Scheduled task creation using Azure CloudShell, [TVM] Direct modification of registry keys to tamper scheduled task, [TVM] Deletion of Security Descriptor (SD) value in registry for scheduled task, [TVM] Scheduled tasks created with command line, [TVM] Scheduled tasks to execute binaries, [TVM] VBS script creates a scheduled task",
+            "comment": "[TVM] Code execution via custom script extensions in Azure, [TVM] Automation accounts JWT extraction, [TVM] Authentication bypass vulnerability in Ivanti EPMM, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Unauthorized account provisioning via exposed registration flow, [TVM] OneDrive API abuse to exfiltrate sensitive data, [TVM] Google Calendar service as C2, [TVM] Late access control enforcement via redirect body leakage, [TVM] Client-controlled session state authentication bypass, [TVM] HTML smuggling technique, [TVM] NTLM credentials dumping via SMB connection, [TVM] Azure DevOps pipelines, [TVM] GSM interception, [TVM] Azure - Port Mapping, [TVM] Command injection on web components of Ivanti Connect Secure appliances, [TVM] Obfuscate binaries through PowerShell commands, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] authentication bypass on Ivanti Connect Secure appliances, [TVM] Azure - Storage Blobs Reconnaissance, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1204",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Code execution via custom script extensions in Azure, [TVM] Possible Smart App Control Evasion Attempt, [TVM] Azure - Unmanaged Scripting, [TVM] LNK files downloaded on a workstation, [TVM] Azure - Virtual Machine Scripting, [TVM] Legitimate software dependency injected with malicious code, [TVM] HTML smuggling technique, [TVM] Persistence through automation runbooks in Azure, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
             "enabled": true
         },
         {
             "techniqueID": "T1111",
             "color": "#fc6b6b",
-            "comment": "[TVM] MFA Bypass Techniques, [TVM] HackBrowserData browser data export, [TVM] Mimikatz browser cookie extraction, [TVM] Retrieve browser cookie with Python, [TVM] MFA fatigue, [TVM] ProcDump cookie exfiltration, [TVM] Pass-the-cookie Attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1621",
-            "color": "#fc6b6b",
-            "comment": "[TVM] MFA Bypass Techniques, [TVM] Self-Service Password Reset (SSPR) abuse in Azure AD, [TVM] MFA fatigue",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1566.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] MFA Bypass Techniques, [TVM] iOS Trojan harvesting facial recognition data, [TVM] Spearphishing with an attachment extension .rdp, [TVM] Spearphishing Attachment",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1566.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] MFA Bypass Techniques, [TVM] Google Calendar service as C2, [TVM] iOS Trojan harvesting facial recognition data, [TVM] Consent phishing attack, [TVM] Spearphishing Link, [TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Use of customervoice.microsoft.com to host Phishing domains, [TVM] LNK files downloaded on a workstation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1566.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] MFA Bypass Techniques, [TVM] Axios npm supply chain compromise, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1098",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Credential manipulation on local Windows endpoint, [TVM] Access token manipulation, [TVM] Manipulation of credentials stored in LSASS, [TVM] Azure app registration - privilege escalation, [TVM] Azure - Privileged Identity Management Role, [TVM] Azure - Policy with DeployIfNotExists definition, [TVM] Mimikatz execution on compromised endpoint, [TVM] Azure - App registration persistence, [TVM] Persistence through automation runbooks in Azure",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1098.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Credential manipulation on local Windows endpoint, [TVM] Credential manipulation on remote Windows endpoint, [TVM] PowerShell usage for credential manipulation, [TVM] Using a Windows command prompt for credential manipulation, [TVM] Azure - SAS URI Generation, [TVM] Azure - Service Principal Secret Reveal, [TVM] Azure - Local Resource Hijack, [TVM] Azure - Steal Service Principal Certificate, [TVM] Azure - KeyVault Dumping, [TVM] Addition of credentials to OAuth applications and service principals, [TVM] Azure - Hijack Entra ID Applications, [TVM] Script execution on Windows for credential manipulation, [TVM] Azure AD Connect abuse, [TVM] Azure - Key Vault persistence, [TVM] Azure - Principal Impersonation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1552.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Credential manipulation on local Windows endpoint, [TVM] Windows credential creation attempt, [TVM] Credential file download to compromised Windows endpoint, [TVM] Azure - Gather Resource Data, [TVM] Windows explorer used to search for files with credentials",
+            "comment": "[TVM] Pass-the-cookie Attack, [TVM] MFA fatigue, [TVM] MFA Bypass Techniques, [TVM] Mimikatz browser cookie extraction, [TVM] Retrieve browser cookie with Python, [TVM] ProcDump cookie exfiltration, [TVM] HackBrowserData browser data export",
             "enabled": true
         },
         {
             "techniqueID": "T1003.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Credential manipulation on local Windows endpoint, [TVM] Pass-the-hash on SMB network shares, [TVM] Manipulation of credentials stored in LSASS, [TVM] Mimikatz execution on compromised endpoint",
+            "comment": "[TVM] Pass-the-hash on SMB network shares, [TVM] Credential manipulation on local Windows endpoint, [TVM] Manipulation of credentials stored in LSASS, [TVM] Mimikatz execution on compromised endpoint",
             "enabled": true
         },
         {
-            "techniqueID": "T1562.008",
+            "techniqueID": "T1550.002",
             "color": "#fc6b6b",
-            "comment": "[TVM] AWS Stop Logging CloudTrail, [TVM] Modify Microsoft Sentinel Data Connector to impair Detections",
+            "comment": "[TVM] Pass-the-hash on SMB network shares, [TVM] Pass the hash using impersonation within an existing process, [TVM] Pass the hash attack to elevate privileges, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Windows credential access attempt, [TVM] Mimikatz execution on compromised endpoint",
             "enabled": true
         },
         {
-            "techniqueID": "T1204.002",
+            "techniqueID": "T1021.002",
             "color": "#fc6b6b",
-            "comment": "[TVM] Google Calendar service as C2, [TVM] Abuse of Microsoft Office Applications, [TVM] Spearphishing with an attachment extension .rdp, [TVM] GoGra backdoor, [TVM] Suspicious Disk Image Files extracted via File Archiver from Email or Download directory, [TVM] Malicious NSIS installer deployment",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1218",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Windows Utilities, [TVM] Download and Execute Payloads with Windows Utilities, [TVM] Abuse Windows Utilities to Enable Persistence, [TVM] Legitimate software dependency injected with malicious code, [TVM] AppLocker bypass using writable folders, [TVM] Leverage Windows Utilities for Proxy Execution of Malicious Code, [TVM] AppLocker bypass, [TVM] AppLocker bypass using DLLs, [TVM] AppLocker enumerating policy bypass",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1197",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Windows Utilities",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1218.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Windows Utilities",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1563",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Windows Utilities, [TVM] Lateral movement via a compromised Teams account",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1140",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Windows Utilities, [TVM] Powershell with encoded payload passed to cmdline, [TVM] access to management plane of security, network, or endpoint management appliances",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1218.010",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Windows Utilities, [TVM] Malicious Code Execution with Windows Utilities",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1218.005",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Windows Utilities, [TVM] Abuse of mshta, [TVM] Malicious Code Execution with Windows Utilities",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1105",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Download and Execute Payloads with Windows Utilities, [TVM] Grager backdoor, [TVM] ProShow vulnerability exploitation for payload delivery, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader",
+            "comment": "[TVM] Pass-the-hash on SMB network shares, [TVM] Files retrieved via SMB connection, [TVM] Admin SMB shares privilege escalation exploit",
             "enabled": true
         },
         {
@@ -168,751 +78,37 @@
         {
             "techniqueID": "T1059",
             "color": "#fc6b6b",
-            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] Azure - Virtual Machine Scripting, [TVM] Azure - Unmanaged Scripting, [TVM] Collecting sensitive information via custom script extensions, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Grager backdoor, [TVM] Notepad++ supply chain attack, [TVM] Changes to Azure infrastructure deployed through Azure CLI, [TVM] Reverse shell or remote session from compromised host, [TVM] Suspicious Disk Image Files extracted via File Archiver from Email or Download directory, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] Azure - Managed Device Scripting, [TVM] Malicious NSIS installer deployment",
+            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Azure - Unmanaged Scripting, [TVM] Azure - Virtual Machine Scripting, [TVM] Collecting sensitive information via custom script extensions, [TVM] Azure - Managed Device Scripting, [TVM] Reverse shell or remote session from compromised host, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] Malicious NSIS installer deployment, [TVM] Suspicious Disk Image Files extracted via File Archiver from Email or Download directory, [TVM] Grager backdoor, [TVM] Notepad++ supply chain attack, [TVM] Changes to Azure infrastructure deployed through Azure CLI",
             "enabled": true
         },
         {
             "techniqueID": "T1059.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] PowerShell usage for credential manipulation, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Obfuscate binaries through PowerShell commands, [TVM] Axios npm supply chain compromise, [TVM] Lateral movement using Impacket framework",
+            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] PowerShell usage for credential manipulation, [TVM] Obfuscate binaries through PowerShell commands, [TVM] Lateral movement using Impacket framework, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1140",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Abuse of Windows Utilities",
             "enabled": true
         },
         {
             "techniqueID": "T1068",
             "color": "#fc6b6b",
-            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] Use of legitimate still vulnerable drivers to elevate privileges, [TVM] Paragon Spyware, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] NTLM credentials dumping via SMB connection, [TVM] Azure app registration - privilege escalation, [TVM] Authentication bypass vulnerability in Ivanti EPMM, [TVM] Container privilege escalation via kernel or container runtime exploit",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1651",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Scheduled task manipulation using Azure Portal, [TVM] Collecting sensitive information via custom script extensions",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1485",
-            "color": "#fc6b6b",
-            "comment": "[TVM] WhisperGate wiper, [TVM] Azure - Backup Delete, [TVM] Azure - Soft-Delete Recovery",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1561.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] WhisperGate wiper",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1561.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] WhisperGate wiper",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1562.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] WhisperGate wiper, [TVM] Disable swapping paging devices, [TVM] Use Windows utilities to manipulate a local account or group",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1036",
-            "color": "#fc6b6b",
-            "comment": "[TVM] WhisperGate wiper, [TVM] Legitimate software dependency injected with malicious code, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] Spearphishing with an attachment extension .rdp, [TVM] Spearphishing Link, [TVM] MoonTag backdoor, [TVM] Unusual use of archiving tools",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1134.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] WhisperGate wiper, [TVM] Create a process with a token, [TVM] Duplicate an access token in a new process to elevate privileges, [TVM] Abuse of Getsystem command for privilege escalation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1053",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Scheduled task created on remote endpoint, [TVM] Scheduled task manipulation using Azure CLI, [TVM] VBS script creates a scheduled task",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1525",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Malicious container image deployed, [TVM] Non-Approved container image deployed to run cryptominer",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1204.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Malicious container image deployed",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1547.006",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Use of legitimate still vulnerable drivers to elevate privileges, [TVM] Linux kernel module injection from container, [TVM] Malicious kernel module",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1547",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Use of legitimate still vulnerable drivers to elevate privileges",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1626",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Android attack using app running on emulator",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1633",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Android attack using app running on emulator, [TVM] Paragon Spyware",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1417",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Android attack using app running on emulator, [TVM] Mobile malware attacks targeting iOS, [TVM] Malicious profile installed on mobile device",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1635",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Android attack using app running on emulator",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1426",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Android attack using app running on emulator",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T0869",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Android attack using app running on emulator",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1641",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Android attack using app running on emulator",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1528",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure DevOps pipelines, [TVM] IP Discovery in Azure, [TVM] Automation accounts JWT extraction",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1195.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure DevOps pipelines, [TVM] Legitimate software dependency injected with malicious code, [TVM] Axios npm supply chain compromise, [TVM] Use of a malicious lambda layer in AWS account lambda function",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1557",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Perform Microsoft Entra ID connectors MITM attack, [TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Windows credential access attempt",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1059.005",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Microsoft Office Applications, [TVM] Axios npm supply chain compromise",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1137",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Microsoft Office Applications",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1203",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of Microsoft Office Applications, [TVM] ProShow vulnerability exploitation for payload delivery",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1546.016",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Compromised software packages, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] Axios npm supply chain compromise",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1195",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Compromised software packages, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Possible Smart App Control Evasion Attempt, [TVM] Malicious Software Dependencies Faking Known Packages",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1547.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse Windows Utilities to Enable Persistence, [TVM] Registry autorun persistence from temporary folders, [TVM] Windows Explorer Manipulation via Registry Modification, [TVM] Windows startup folder abused by malware",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1195.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] Axios npm supply chain compromise, [TVM] Notepad++ supply chain attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1204",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] Azure - Virtual Machine Scripting, [TVM] HTML smuggling technique, [TVM] Azure - Unmanaged Scripting, [TVM] Possible Smart App Control Evasion Attempt, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] Code execution via custom script extensions in Azure, [TVM] LNK files downloaded on a workstation, [TVM] Persistence through automation runbooks in Azure",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1499",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Legitimate software dependency injected with malicious code",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1559.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Legitimate software dependency injected with malicious code",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1562",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Windows system links used for file redirection attack, [TVM] Switching off forced signed commits for GitHub repository",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1027.012",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Windows system links used for file redirection attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1021.007",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Lateral movement abusing Cross-Tenant Synchronization, [TVM] Files retrieved via SMB connection, [TVM] Azure - File Share Mounting",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1087",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound, [TVM] Azure - Gather User Information, [TVM] Azure - Gather Resource Data",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1069",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1482",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound, [TVM] Azure - Gather Role Information",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1018",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound, [TVM] CrackMapExec (CME) on endpoints or being downloaded",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1201",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound, [TVM] CrackMapExec (CME) on endpoints or being downloaded",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1574.006",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of environment variable to hijack library functions",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1057",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Process discovery, [TVM] System reconnaissance via shell commands in supply chain attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1087.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Windows User and Group Enumeration with specific tools, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Azure - Gather Role Information, [TVM] Abusing Lolbins to Enumerate Local and Domain Accounts and Groups",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1564",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Deletion of Tasks or Tree registry keys in scheduled task hives, [TVM] Deletion of Windows Scheduled Task XML file",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1498.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Protocol based DDoS attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1078.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Windows credential creation attempt, [TVM] Ghost logins attempts, [TVM] Use Windows utilities to manipulate a local account or group",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1136",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Windows credential creation attempt, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Unauthorized account provisioning via exposed registration flow",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1550.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Windows credential creation attempt, [TVM] Pass the Primary Refresh Token (PRT)",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1610",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Non-Approved container image deployed to run cryptominer",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1496",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Non-Approved container image deployed to run cryptominer, [TVM] Azure - Local Resource Hijack, [TVM] AWS Compute instance deployed in unusual region",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1082",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Host information gathering in Linux systems, [TVM] Adversary publishing malicious NPM packages to compromise software, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Azure - Key Vault reconnaissance, [TVM] LOLC2 service abuse via temp.sh, [TVM] Axios npm supply chain compromise, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] System reconnaissance via shell commands in supply chain attack, [TVM] VBS script creates a scheduled task",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1583.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Typosquatting domain attack for disinformation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1059.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Using a Windows command prompt for credential manipulation, [TVM] GoGra backdoor, [TVM] Script execution on Windows for credential manipulation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1567.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Cloning private repositories",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1078.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Elevated Access Toggle, [TVM] Azure - Storage account reconnaissance, [TVM] Azure - Gather Victim Data, [TVM] Azure - SAS URI Generation, [TVM] Azure - External Entity Access, [TVM] Azure - Gather User Information, [TVM] Azure - Service Principal Secret Reveal, [TVM] Illicit VPC peering requests, [TVM] Azure - Local Resource Hijack, [TVM] Azure - Steal Service Principal Certificate, [TVM] Azure - Gather Application Information, [TVM] Azure - KeyVault Dumping, [TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Azure - Valid Credentials, [TVM] Azure AD Connect abuse, [TVM] Azure - Policy with DeployIfNotExists definition, [TVM] Azure - Storage Account Replication, [TVM] Azure - Principal Impersonation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1098.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Elevated Access Toggle, [TVM] Externally controlled Azure credentials added to an Enterprise app or its SPN, [TVM] Cloud IAM role assumption",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1548.005",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Elevated Access Toggle",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1210",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Lateral movement via a compromised Teams account, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Admin SMB shares privilege escalation exploit",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1534",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Lateral movement via a compromised Teams account, [TVM] OneDrive API abuse to exfiltrate sensitive data",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1570",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Lateral movement via a compromised Teams account, [TVM] Files retrieved via SMB connection, [TVM] Move laterally with SMB by abusing WMI, [TVM] Admin SMB shares privilege escalation exploit",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1550",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Lateral movement via a compromised Teams account",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1218.011",
-            "color": "#fc6b6b",
-            "comment": "[TVM] DLL Execution over Rundll32, [TVM] Manipulation of credentials stored in LSASS",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1189",
-            "color": "#fc6b6b",
-            "comment": "[TVM] HTML smuggling technique, [TVM] Paragon Spyware",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1027.006",
-            "color": "#fc6b6b",
-            "comment": "[TVM] HTML smuggling technique",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1572",
-            "color": "#fc6b6b",
-            "comment": "[TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] Reverse shell or remote session from compromised host",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1041",
-            "color": "#fc6b6b",
-            "comment": "[TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] authentication bypass on Ivanti Connect Secure appliances",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1566",
-            "color": "#fc6b6b",
-            "comment": "[TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] MS 365 admin compromised account, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Phishing with Azure AD B2B Collaboration",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1530",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Storage account reconnaissance, [TVM] Azure - Gather Resource Data, [TVM] Azure - Storage blobs data collection, [TVM] Azure - Soft-Delete Recovery, [TVM] Azure - Storage Account Replication, [TVM] Azure - File Share Mounting, [TVM] Azure - Storage Blobs Reconnaissance, [TVM] Azure - Storage container reconnaissance",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1589",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Gather Victim Data, [TVM] User information gathering in Linux systems, [TVM] Azure - Gather User Information, [TVM] GSM interception",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1590",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Gather Victim Data",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1021.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Files retrieved via SMB connection, [TVM] Pass-the-hash on SMB network shares, [TVM] Admin SMB shares privilege escalation exploit",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1003.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Mimikatz execution on compromised endpoint, [TVM] Windows credential access attempt",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1003.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1003.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Mimikatz execution on compromised endpoint, [TVM] Windows credential dumping through Local Security Authority (LSA) Secrets",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1016",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Abusing Lolbins to Enumerate Network Configuration, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] System reconnaissance via shell commands in supply chain attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1049",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1047",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Move laterally with SMB by abusing WMI",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1053.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1069.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Abusing Lolbins to Enumerate Local and Domain Accounts and Groups",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1083",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Web Path Traversal Attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1110.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] SMB login brute force",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1110.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Password spraying attack, [TVM] Windows credential access attempt",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1112",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Possible Smart App Control Evasion Attempt, [TVM] Scheduled tasks to maintain persistence in registry, [TVM] Direct modification of registry keys to tamper scheduled task, [TVM] Windows Explorer Manipulation via Registry Modification, [TVM] Abnormal Windows service creation or modification attempt, [TVM] VBS script creates a scheduled task",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1135",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1550.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Pass-the-hash on SMB network shares, [TVM] Pass the hash using impersonation within an existing process, [TVM] Pass the hash attack to elevate privileges, [TVM] Mimikatz execution on compromised endpoint, [TVM] Windows credential access attempt",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1537",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - SAS URI Generation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1404",
-            "color": "#fc6b6b",
-            "comment": "[TVM] iOS Trojan harvesting facial recognition data, [TVM] Mobile malware attacks targeting iOS",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1555.006",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Key Vault reconnaissance, [TVM] Azure - Key Vault persistence",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1133",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - External Entity Access, [TVM] ADFS abuse, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Azure - Public Accessible Resource",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1484.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - External Entity Access, [TVM] Azure - Modify federation trust to accept externally signed tokens",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1027.013",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Obfuscate binaries through PowerShell commands",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1027.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Obfuscate binaries through PowerShell commands",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1555.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Credential file download to compromised Windows endpoint, [TVM] Mimikatz execution on compromised endpoint",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1526",
-            "color": "#fc6b6b",
-            "comment": "[TVM] IP Discovery in Azure, [TVM] Azure - Service Principal Secret Reveal, [TVM] Azure - Gather Resource Data",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1562.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Disable Windows event logging through PowerShell, [TVM] Disabling of Windows event logging through registry entries, [TVM] Change the audit policy to disable Windows event logging",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1546.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Unauthorized changes on shell configuration files",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1591.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Gather Role Information",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1589.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Gather Role Information, [TVM] Social engineering without attachment or URL",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1562.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Tampering system firewall on endpoint",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1430",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Paragon Spyware",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1636.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Paragon Spyware",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1513",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Paragon Spyware, [TVM] Mobile device compromised by spyware app",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1134",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Automation accounts JWT extraction, [TVM] GoGra backdoor, [TVM] Pass the Primary Refresh Token (PRT)",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1550.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Automation accounts JWT extraction",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1556",
-            "color": "#fc6b6b",
-            "comment": "[TVM] ADFS abuse, [TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Ghost logins attempts",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1606.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] ADFS abuse",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1550.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Pass the ticket using Kerberos ticket, [TVM] Mimikatz execution on compromised endpoint",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1599",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Illicit VPC peering requests",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1565",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Manipulation of credentials stored in plain text files",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1555.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Manipulation of credentials stored in plain text files, [TVM] FileFix technique abuses Windows Explorer to execute commands, [TVM] Mimikatz execution on compromised endpoint",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1110.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Manipulation of credentials stored in plain text files, [TVM] Password hash cracking on Windows",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1003.007",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Manipulation of credentials stored in plain text files",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1212",
-            "color": "#fc6b6b",
-            "comment": "[TVM] SharePoint ToolShell vulnerabilities, [TVM] Mobile malware attacks targeting iOS, [TVM] NTLM credentials dumping via SMB connection",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1649",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Steal Service Principal Certificate",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1505.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Web Shell Attacks",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1638",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Mobile malware attacks targeting iOS, [TVM] GSM interception, [TVM] Rogue access point",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1663",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Mobile malware attacks targeting iOS",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1655",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Mobile malware attacks targeting iOS",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1456",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Mobile malware attacks targeting iOS, [TVM] Malicious profile installed on mobile device",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1199",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Social engineering attack using Microsoft Teams",
+            "comment": "[TVM] Powershell with encoded payload passed to cmdline, [TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Paragon Spyware, [TVM] Authentication bypass vulnerability in Ivanti EPMM, [TVM] Azure app registration - privilege escalation, [TVM] Use of legitimate still vulnerable drivers to elevate privileges, [TVM] NTLM credentials dumping via SMB connection, [TVM] Container privilege escalation via kernel or container runtime exploit",
             "enabled": true
         },
         {
             "techniqueID": "T1027",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] GoGra backdoor, [TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] Unusual use of archiving tools, [TVM] LNK files downloaded on a workstation",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] LNK files downloaded on a workstation, [TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] GoGra backdoor, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Unusual use of archiving tools",
             "enabled": true
         },
         {
             "techniqueID": "T1070",
             "color": "#fc6b6b",
-            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] authentication bypass on Ivanti Connect Secure appliances, [TVM] Unusual use of archiving tools",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Unusual use of archiving tools, [TVM] authentication bypass on Ivanti Connect Secure appliances",
             "enabled": true
         },
         {
@@ -925,6 +121,12 @@
             "techniqueID": "T1070.004",
             "color": "#fc6b6b",
             "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1078",
+            "color": "#fc6b6b",
+            "comment": "[TVM] access to management plane of security, network, or endpoint management appliances, [TVM] Scheduled task manipulation using Azure CLI, [TVM] Azure - Storage blobs data collection, [TVM] Azure - Unmanaged Scripting, [TVM] SharePoint ToolShell vulnerabilities, [TVM] Azure - Virtual Machine Scripting, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Azure - Managed Device Scripting, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] MS 365 admin compromised account, [TVM] iOS Trojan harvesting facial recognition data, [TVM] IP Discovery in Azure, [TVM] Azure DevOps pipelines, [TVM] Windows credential creation attempt, [TVM] Admin SMB shares privilege escalation exploit, [TVM] Azure - Port Mapping, [TVM] Azure - Privileged Identity Management Role, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Axios npm supply chain compromise",
             "enabled": true
         },
         {
@@ -952,129 +154,105 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1574.001",
+            "techniqueID": "T1526",
             "color": "#fc6b6b",
-            "comment": "[TVM] Abuse Windows Utilities to Side-Load Malicious DLLs, [TVM] MoonTag backdoor",
+            "comment": "[TVM] Azure - Gather Resource Data, [TVM] IP Discovery in Azure, [TVM] Azure - Service Principal Secret Reveal",
             "enabled": true
         },
         {
-            "techniqueID": "T1119",
+            "techniqueID": "T1087",
             "color": "#fc6b6b",
-            "comment": "[TVM] Collecting sensitive information via custom script extensions, [TVM] Azure - Storage blobs data collection, [TVM] Enumerate EC2 instance data using AWS metadata service",
+            "comment": "[TVM] Azure - Gather Resource Data, [TVM] Azure - Gather User Information, [TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound",
             "enabled": true
         },
         {
-            "techniqueID": "T1555.005",
+            "techniqueID": "T1552.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - KeyVault Dumping",
+            "comment": "[TVM] Azure - Gather Resource Data, [TVM] Windows explorer used to search for files with credentials, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Credential manipulation on local Windows endpoint, [TVM] Windows credential creation attempt, [TVM] Credential file download to compromised Windows endpoint",
             "enabled": true
         },
         {
-            "techniqueID": "T1204.004",
+            "techniqueID": "T1530",
             "color": "#fc6b6b",
-            "comment": "[TVM] FileFix technique abuses Windows Explorer to execute commands",
+            "comment": "[TVM] Azure - Gather Resource Data, [TVM] Azure - Storage blobs data collection, [TVM] Azure - Storage account reconnaissance, [TVM] Azure - Storage container reconnaissance, [TVM] Azure - File Share Mounting, [TVM] Azure - Soft-Delete Recovery, [TVM] Azure - Storage Account Replication, [TVM] Azure - Storage Blobs Reconnaissance",
             "enabled": true
         },
         {
-            "techniqueID": "T1656",
+            "techniqueID": "T1134",
             "color": "#fc6b6b",
-            "comment": "[TVM] Spearphishing Link",
+            "comment": "[TVM] Automation accounts JWT extraction, [TVM] Pass the Primary Refresh Token (PRT), [TVM] GoGra backdoor",
             "enabled": true
         },
         {
-            "techniqueID": "T1548.002",
+            "techniqueID": "T1528",
             "color": "#fc6b6b",
-            "comment": "[TVM] Windows User Account Control (UAC) bypass",
+            "comment": "[TVM] Automation accounts JWT extraction, [TVM] IP Discovery in Azure, [TVM] Azure DevOps pipelines",
             "enabled": true
         },
         {
-            "techniqueID": "T1539",
+            "techniqueID": "T1550.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Pass the Primary Refresh Token (PRT)",
+            "comment": "[TVM] Automation accounts JWT extraction, [TVM] Shai-Hulud npm and PyPI supply chain compromise",
             "enabled": true
         },
         {
-            "techniqueID": "T1071.001",
+            "techniqueID": "T1430",
             "color": "#fc6b6b",
-            "comment": "[TVM] LOLC2 service abuse via temp.sh, [TVM] Axios npm supply chain compromise, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI, [TVM] Reverse shell or remote session from compromised host, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader",
+            "comment": "[TVM] Paragon Spyware",
             "enabled": true
         },
         {
-            "techniqueID": "T1567.002",
+            "techniqueID": "T1636.003",
             "color": "#fc6b6b",
-            "comment": "[TVM] LOLC2 service abuse via temp.sh, [TVM] Azure - Storage Account Replication",
+            "comment": "[TVM] Paragon Spyware",
             "enabled": true
         },
         {
-            "techniqueID": "T1588.006",
+            "techniqueID": "T1189",
             "color": "#fc6b6b",
-            "comment": "[TVM] Apple WebKit exploited for arbitrary code execution",
+            "comment": "[TVM] Paragon Spyware, [TVM] HTML smuggling technique",
             "enabled": true
         },
         {
-            "techniqueID": "T1588.005",
+            "techniqueID": "T1513",
             "color": "#fc6b6b",
-            "comment": "[TVM] Apple WebKit exploited for arbitrary code execution",
+            "comment": "[TVM] Paragon Spyware, [TVM] Mobile device compromised by spyware app",
             "enabled": true
         },
         {
-            "techniqueID": "T1027.014",
+            "techniqueID": "T1633",
             "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] Paragon Spyware, [TVM] Android attack using app running on emulator",
             "enabled": true
         },
         {
-            "techniqueID": "T1059.006",
+            "techniqueID": "T1112",
             "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] Windows Explorer Manipulation via Registry Modification, [TVM] Possible Smart App Control Evasion Attempt, [TVM] Scheduled tasks to maintain persistence in registry, [TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Abnormal Windows service creation or modification attempt, [TVM] Direct modification of registry keys to tamper scheduled task, [TVM] VBS script creates a scheduled task",
             "enabled": true
         },
         {
-            "techniqueID": "T1059.004",
+            "techniqueID": "T1547.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] Windows Explorer Manipulation via Registry Modification, [TVM] Abuse Windows Utilities to Enable Persistence, [TVM] Registry autorun persistence from temporary folders, [TVM] Windows startup folder abused by malware",
             "enabled": true
         },
         {
-            "techniqueID": "T1036.003",
+            "techniqueID": "T1134.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] Passing SeDebugPrivilege to AdjustTokenPrivilege API elevating privileges of a running process",
             "enabled": true
         },
         {
-            "techniqueID": "T1036.005",
+            "techniqueID": "T1053",
             "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise",
+            "comment": "[TVM] Scheduled task manipulation using Azure CLI, [TVM] Scheduled task created on remote endpoint, [TVM] VBS script creates a scheduled task",
             "enabled": true
         },
         {
-            "techniqueID": "T1102.002",
+            "techniqueID": "T1053.005",
             "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1219",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Axios npm supply chain compromise, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] MoonTag backdoor",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1187",
-            "color": "#fc6b6b",
-            "comment": "[TVM] NTLM credentials dumping via SMB connection",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1498",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Volumetric Distributed denial of service (DDoS) attack",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1566.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Use of customervoice.microsoft.com to host Phishing domains, [TVM] Azure - App registration persistence",
+            "comment": "[TVM] Scheduled task manipulation using Azure CLI, [TVM] Scheduled tasks created with command line, [TVM] Scheduled task manipulation using Azure Portal, [TVM] Deletion of Windows Scheduled Task XML file, [TVM] Scheduled tasks to maintain persistence in registry, [TVM] Scheduled tasks to connect to adversarial infrastructure, [TVM] Scheduled tasks created with taskschlr.exe, [TVM] Scheduled task created on remote endpoint, [TVM] Scheduled tasks created with PowerShell, [TVM] Scheduled task creation using Azure CloudShell, [TVM] Scheduled tasks to execute binaries, [TVM] Deletion of Security Descriptor (SD) value in registry for scheduled task, [TVM] Direct modification of registry keys to tamper scheduled task, [TVM] VBS script creates a scheduled task, [TVM] Deletion of Tasks or Tree registry keys in scheduled task hives",
             "enabled": true
         },
         {
@@ -1084,69 +262,531 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1568",
+            "techniqueID": "T1136",
             "color": "#fc6b6b",
-            "comment": "[TVM] C2 domains point to non-routable IP addresses",
+            "comment": "[TVM] Scheduled task manipulation using Azure CLI, [TVM] Unauthorized account provisioning via exposed registration flow, [TVM] Windows credential creation attempt",
             "enabled": true
         },
         {
-            "techniqueID": "T1011",
+            "techniqueID": "T1546",
             "color": "#fc6b6b",
-            "comment": "[TVM] authentication bypass on Ivanti Connect Secure appliances",
+            "comment": "[TVM] Use Windows utilities to manipulate a local account or group",
             "enabled": true
         },
         {
-            "techniqueID": "T1114",
+            "techniqueID": "T1562.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Hijack Entra ID Applications",
+            "comment": "[TVM] Use Windows utilities to manipulate a local account or group, [TVM] Disable swapping paging devices, [TVM] WhisperGate wiper",
             "enabled": true
         },
         {
-            "techniqueID": "T1114.002",
+            "techniqueID": "T1078.003",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Hijack Entra ID Applications",
+            "comment": "[TVM] Use Windows utilities to manipulate a local account or group, [TVM] Ghost logins attempts, [TVM] Windows credential creation attempt",
             "enabled": true
         },
         {
-            "techniqueID": "T1071",
+            "techniqueID": "T1136.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Grager backdoor, [TVM] Notepad++ supply chain attack, [TVM] Chrysalis backdoor deployment via DLL sideloading",
+            "comment": "[TVM] Use Windows utilities to manipulate a local account or group, [TVM] Local user account added",
             "enabled": true
         },
         {
-            "techniqueID": "T1485.001",
+            "techniqueID": "T1087.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Backup Delete",
+            "comment": "[TVM] Use Windows utilities to manipulate a local account or group, [TVM] Abusing Lolbins to Enumerate Local and Domain Accounts and Groups",
             "enabled": true
         },
         {
-            "techniqueID": "T1561",
+            "techniqueID": "T1098.007",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Backup Delete",
+            "comment": "[TVM] Use Windows utilities to manipulate a local account or group",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1589",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather User Information, [TVM] User information gathering in Linux systems, [TVM] GSM interception, [TVM] Azure - Gather Victim Data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1078.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather User Information, [TVM] Illicit VPC peering requests, [TVM] Azure - Policy with DeployIfNotExists definition, [TVM] Azure - Elevated Access Toggle, [TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Azure - Storage account reconnaissance, [TVM] Azure - External Entity Access, [TVM] Azure - Local Resource Hijack, [TVM] Azure - KeyVault Dumping, [TVM] Azure - Gather Application Information, [TVM] Azure - Service Principal Secret Reveal, [TVM] Azure - Storage Account Replication, [TVM] Azure - Steal Service Principal Certificate, [TVM] Azure AD Connect abuse, [TVM] Azure - Gather Victim Data, [TVM] Azure - Principal Impersonation, [TVM] Azure - Valid Credentials, [TVM] Azure - SAS URI Generation",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1548.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Windows User Account Control (UAC) bypass",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1119",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Storage blobs data collection, [TVM] Collecting sensitive information via custom script extensions, [TVM] Enumerate EC2 instance data using AWS metadata service",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1599",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Illicit VPC peering requests",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1484.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Modify federation trust to accept externally signed tokens, [TVM] Azure - External Entity Access",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1098",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure app registration - privilege escalation, [TVM] Azure - Policy with DeployIfNotExists definition, [TVM] Access token manipulation, [TVM] Azure - App registration persistence, [TVM] Credential manipulation on local Windows endpoint, [TVM] Manipulation of credentials stored in LSASS, [TVM] Persistence through automation runbooks in Azure, [TVM] Azure - Privileged Identity Management Role, [TVM] Mimikatz execution on compromised endpoint",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Using a Windows command prompt for credential manipulation, [TVM] GoGra backdoor, [TVM] Script execution on Windows for credential manipulation",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1098.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Using a Windows command prompt for credential manipulation, [TVM] Credential manipulation on remote Windows endpoint, [TVM] Azure - Local Resource Hijack, [TVM] Azure - KeyVault Dumping, [TVM] Credential manipulation on local Windows endpoint, [TVM] PowerShell usage for credential manipulation, [TVM] Azure - Key Vault persistence, [TVM] Azure - Service Principal Secret Reveal, [TVM] Script execution on Windows for credential manipulation, [TVM] Addition of credentials to OAuth applications and service principals, [TVM] Azure - Steal Service Principal Certificate, [TVM] Azure AD Connect abuse, [TVM] Azure - Principal Impersonation, [TVM] Azure - Hijack Entra ID Applications, [TVM] Azure - SAS URI Generation",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1046",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Network service discovery, [TVM] Azure - Storage container reconnaissance, [TVM] Azure - Public Accessible Resource",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1574.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse Windows Utilities to Side-Load Malicious DLLs, [TVM] MoonTag backdoor",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1195",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Possible Smart App Control Evasion Attempt, [TVM] Compromised software packages, [TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Malicious Software Dependencies Faking Known Packages, [TVM] Adversary publishing malicious NPM packages to compromise software",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Consent phishing attack, [TVM] LNK files downloaded on a workstation, [TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] MFA Bypass Techniques, [TVM] Google Calendar service as C2, [TVM] iOS Trojan harvesting facial recognition data, [TVM] Spearphishing Link, [TVM] Use of customervoice.microsoft.com to host Phishing domains",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1621",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MFA fatigue, [TVM] Self-Service Password Reset (SSPR) abuse in Azure AD, [TVM] MFA Bypass Techniques",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1570",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Move laterally with SMB by abusing WMI, [TVM] Files retrieved via SMB connection, [TVM] Lateral movement via a compromised Teams account, [TVM] Admin SMB shares privilege escalation exploit",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1047",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Move laterally with SMB by abusing WMI, [TVM] CrackMapExec (CME) on endpoints or being downloaded",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Windows explorer used to search for files with credentials, [TVM] Credential manipulation on remote Windows endpoint, [TVM] Usage of CrackMapExec module Masky on compromised endpoint, [TVM] Credential manipulation on local Windows endpoint, [TVM] Manipulation of credentials stored in LSASS, [TVM] Windows credential dumping through Local Security Authority (LSA) Secrets, [TVM] Windows credential creation attempt, [TVM] Resource Secret Reveal in Azure, [TVM] Script execution on Windows for credential manipulation, [TVM] Manipulation of credentials stored in plain text files",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Windows explorer used to search for files with credentials, [TVM] VBS script creates a scheduled task",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1552",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Windows explorer used to search for files with credentials, [TVM] Resource Secret Reveal in Azure, [TVM] Azure - Storage Blobs Reconnaissance, [TVM] Manipulation of credentials stored in plain text files, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1548",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Adversary abuses sudo elevation control mechanism, [TVM] Azure - Key Vault persistence, [TVM] Azure - Principal Impersonation, [TVM] Azure - Privileged Identity Management Role",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1212",
+            "color": "#fc6b6b",
+            "comment": "[TVM] SharePoint ToolShell vulnerabilities, [TVM] Mobile malware attacks targeting iOS, [TVM] NTLM credentials dumping via SMB connection",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1589.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Social engineering without attachment or URL, [TVM] Azure - Gather Role Information",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1591.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Role Information",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1087.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Role Information, [TVM] Abusing Lolbins to Enumerate Local and Domain Accounts and Groups, [TVM] Windows User and Group Enumeration with specific tools, [TVM] CrackMapExec (CME) on endpoints or being downloaded",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1482",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Role Information, [TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Spearphishing with an attachment extension .rdp, [TVM] Spearphishing Attachment, [TVM] MFA Bypass Techniques, [TVM] iOS Trojan harvesting facial recognition data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1204.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Spearphishing with an attachment extension .rdp, [TVM] GoGra backdoor, [TVM] Abuse of Microsoft Office Applications, [TVM] Google Calendar service as C2, [TVM] Malicious NSIS installer deployment, [TVM] Suspicious Disk Image Files extracted via File Archiver from Email or Download directory",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1036",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Spearphishing with an attachment extension .rdp, [TVM] Legitimate software dependency injected with malicious code, [TVM] Spearphishing Link, [TVM] MoonTag backdoor, [TVM] Unusual use of archiving tools, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] WhisperGate wiper, [TVM] Adversary publishing malicious NPM packages to compromise software",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1578",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Policy with DeployIfNotExists definition",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1021.007",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Files retrieved via SMB connection, [TVM] Azure - Lateral movement abusing Cross-Tenant Synchronization, [TVM] Azure - File Share Mounting",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1539",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Pass the Primary Refresh Token (PRT), [TVM] Adversary in the Middle phishing sites to bypass MFA",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1550.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Pass the Primary Refresh Token (PRT), [TVM] Windows credential creation attempt",
             "enabled": true
         },
         {
             "techniqueID": "T1574",
             "color": "#fc6b6b",
-            "comment": "[TVM] Notepad++ supply chain attack, [TVM] Chrysalis backdoor deployment via DLL sideloading",
+            "comment": "[TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] Notepad++ supply chain attack",
             "enabled": true
         },
         {
-            "techniqueID": "T1648",
+            "techniqueID": "T1071",
             "color": "#fc6b6b",
-            "comment": "[TVM] Use of a malicious lambda layer in AWS account lambda function",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1564.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Hide Artifacts using NTFS File Attributes",
+            "comment": "[TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] Grager backdoor, [TVM] Notepad++ supply chain attack",
             "enabled": true
         },
         {
             "techniqueID": "T1055",
             "color": "#fc6b6b",
-            "comment": "[TVM] ProShow vulnerability exploitation for payload delivery, [TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] GodFather Banking Trojan, [TVM] Abnormal Windows service creation or modification attempt",
+            "comment": "[TVM] Chrysalis backdoor deployment via DLL sideloading, [TVM] Abnormal Windows service creation or modification attempt, [TVM] GodFather Banking Trojan, [TVM] ProShow vulnerability exploitation for payload delivery",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1498",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Volumetric Distributed denial of service (DDoS) attack",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1651",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Collecting sensitive information via custom script extensions, [TVM] Scheduled task manipulation using Azure Portal",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1550.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Pass the ticket using Kerberos ticket, [TVM] Mimikatz execution on compromised endpoint",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1218.005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of mshta, [TVM] Malicious Code Execution with Windows Utilities, [TVM] Abuse of Windows Utilities",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1630.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Jailbreak Tools for iOS",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1398",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Jailbreak Tools for iOS",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1098.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Externally controlled Azure credentials added to an Enterprise app or its SPN, [TVM] Azure - Elevated Access Toggle, [TVM] Cloud IAM role assumption",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1548.005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Elevated Access Toggle",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1557",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Windows credential access attempt, [TVM] Perform Microsoft Entra ID connectors MITM attack",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1556",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Adversary in the Middle phishing sites to bypass MFA, [TVM] Ghost logins attempts, [TVM] ADFS abuse",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1546.016",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Compromised software packages, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Axios npm supply chain compromise, [TVM] Adversary publishing malicious NPM packages to compromise software",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1134.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Create a process with a token, [TVM] Abuse of Getsystem command for privilege escalation, [TVM] Duplicate an access token in a new process to elevate privileges, [TVM] WhisperGate wiper",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1210",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Lateral movement via a compromised Teams account, [TVM] Admin SMB shares privilege escalation exploit, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1534",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Lateral movement via a compromised Teams account, [TVM] OneDrive API abuse to exfiltrate sensitive data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1563",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Lateral movement via a compromised Teams account, [TVM] Abuse of Windows Utilities",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1550",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Lateral movement via a compromised Teams account",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1574.006",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of environment variable to hijack library functions",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1195.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Notepad++ supply chain attack, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1195.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Azure DevOps pipelines, [TVM] Use of a malicious lambda layer in AWS account lambda function, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1218",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Legitimate software dependency injected with malicious code, [TVM] AppLocker bypass using DLLs, [TVM] Abuse Windows Utilities to Enable Persistence, [TVM] AppLocker bypass, [TVM] AppLocker bypass using writable folders, [TVM] Leverage Windows Utilities for Proxy Execution of Malicious Code, [TVM] AppLocker enumerating policy bypass, [TVM] Download and Execute Payloads with Windows Utilities, [TVM] Abuse of Windows Utilities",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1499",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Legitimate software dependency injected with malicious code",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1559.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Legitimate software dependency injected with malicious code",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.007",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.006",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1567.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] LOLC2 service abuse via temp.sh, [TVM] Azure - Storage Account Replication",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1071.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Reverse shell or remote session from compromised host, [TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] LOLC2 service abuse via temp.sh, [TVM] Axios npm supply chain compromise, [TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1547",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Use of legitimate still vulnerable drivers to elevate privileges",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1485",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Shai-Hulud npm and PyPI supply chain compromise, [TVM] Azure - Soft-Delete Recovery, [TVM] WhisperGate wiper, [TVM] Azure - Backup Delete",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1562",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Switching off forced signed commits for GitHub repository, [TVM] Windows system links used for file redirection attack",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1505.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Web Shell Attacks",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1021",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Managed Device Scripting, [TVM] Lateral movement using Impacket framework",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of Microsoft Office Applications, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1137",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of Microsoft Office Applications",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1203",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of Microsoft Office Applications, [TVM] ProShow vulnerability exploitation for payload delivery",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1056.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Named pipe creation using a predictable naming convention, [TVM] GodFather Banking Trojan",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1133",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Azure - External Entity Access, [TVM] Azure - Public Accessible Resource, [TVM] ADFS abuse",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1199",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of 'Always-on VPN' feature on mobile device, [TVM] Social engineering attack using Microsoft Teams",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1218.010",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Malicious Code Execution with Windows Utilities, [TVM] Abuse of Windows Utilities",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MS 365 admin compromised account, [TVM] Phishing with Azure AD B2B Collaboration, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1098.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Alteration of sshd_config file",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1564",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Deletion of Windows Scheduled Task XML file, [TVM] Deletion of Tasks or Tree registry keys in scheduled task hives",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1087.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Storage container reconnaissance",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1484.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Persistence with Azure Automanage Machine Configuration",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1566.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MFA Bypass Techniques, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1562.008",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Modify Microsoft Sentinel Data Connector to impair Detections, [TVM] AWS Stop Logging CloudTrail",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1562.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Disabling of Windows event logging through registry entries, [TVM] Disable Windows event logging through PowerShell, [TVM] Change the audit policy to disable Windows event logging",
             "enabled": true
         },
         {
@@ -1162,57 +802,15 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1056.001",
+            "techniqueID": "T1588.006",
             "color": "#fc6b6b",
-            "comment": "[TVM] Named pipe creation using a predictable naming convention, [TVM] GodFather Banking Trojan",
+            "comment": "[TVM] Apple WebKit exploited for arbitrary code execution",
             "enabled": true
         },
         {
-            "techniqueID": "T1548",
+            "techniqueID": "T1588.005",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Privileged Identity Management Role, [TVM] Azure - Key Vault persistence, [TVM] Adversary abuses sudo elevation control mechanism, [TVM] Azure - Principal Impersonation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1543",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Privileged Identity Management Role, [TVM] Direct modification of registry keys to tamper scheduled task",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1134.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] New Windows access token creation",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1552.005",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Enumerate EC2 instance data using AWS metadata service",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1059.010",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Lua interpreter shellcode execution",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1055.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Lua interpreter shellcode execution",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1106",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Lua interpreter shellcode execution",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1087.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Abusing Lolbins to Enumerate Local and Domain Accounts and Groups, [TVM] Use Windows utilities to manipulate a local account or group",
+            "comment": "[TVM] Apple WebKit exploited for arbitrary code execution",
             "enabled": true
         },
         {
@@ -1222,57 +820,177 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1588",
+            "techniqueID": "T1069.002",
             "color": "#fc6b6b",
-            "comment": "[TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
+            "comment": "[TVM] Abusing Lolbins to Enumerate Local and Domain Accounts and Groups, [TVM] CrackMapExec (CME) on endpoints or being downloaded",
             "enabled": true
         },
         {
-            "techniqueID": "T1624",
+            "techniqueID": "T1547.006",
             "color": "#fc6b6b",
-            "comment": "[TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Malicious profile installed on mobile device",
+            "comment": "[TVM] Use of legitimate still vulnerable drivers to elevate privileges, [TVM] Linux kernel module injection from container, [TVM] Malicious kernel module",
             "enabled": true
         },
         {
-            "techniqueID": "T1033",
+            "techniqueID": "T1571",
             "color": "#fc6b6b",
-            "comment": "[TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] System reconnaissance via shell commands in supply chain attack",
+            "comment": "[TVM] Reverse shell or remote session from compromised host",
             "enabled": true
         },
         {
-            "techniqueID": "T1548.001",
+            "techniqueID": "T1572",
             "color": "#fc6b6b",
-            "comment": "[TVM] Abuse of special permission via chmod on files",
+            "comment": "[TVM] Reverse shell or remote session from compromised host, [TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server",
             "enabled": true
         },
         {
-            "techniqueID": "T1021",
+            "techniqueID": "T1568",
             "color": "#fc6b6b",
-            "comment": "[TVM] Lateral movement using Impacket framework, [TVM] Azure - Managed Device Scripting",
+            "comment": "[TVM] C2 domains point to non-routable IP addresses",
             "enabled": true
         },
         {
-            "techniqueID": "T1552.002",
+            "techniqueID": "T1573.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Lateral movement using Impacket framework, [TVM] Listing passwords stored in registry",
+            "comment": "[TVM] Cobalt Strike Beacon deployment via Metasploit downloader",
             "enabled": true
         },
         {
-            "techniqueID": "T1490",
+            "techniqueID": "T1105",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Soft-Delete Recovery",
+            "comment": "[TVM] Cobalt Strike Beacon deployment via Metasploit downloader, [TVM] Grager backdoor, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Download and Execute Payloads with Windows Utilities, [TVM] ProShow vulnerability exploitation for payload delivery",
             "enabled": true
         },
         {
-            "techniqueID": "T1556.007",
+            "techniqueID": "T1027.012",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure AD Connect abuse",
+            "comment": "[TVM] Windows system links used for file redirection attack",
             "enabled": true
         },
         {
-            "techniqueID": "T1611",
+            "techniqueID": "T1404",
             "color": "#fc6b6b",
-            "comment": "[TVM] Container privilege escalation via kernel or container runtime exploit",
+            "comment": "[TVM] Mobile malware attacks targeting iOS, [TVM] iOS Trojan harvesting facial recognition data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1638",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Mobile malware attacks targeting iOS, [TVM] GSM interception, [TVM] Rogue access point",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1663",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Mobile malware attacks targeting iOS",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1655",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Mobile malware attacks targeting iOS",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1456",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Mobile malware attacks targeting iOS, [TVM] Malicious profile installed on mobile device",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1417",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Mobile malware attacks targeting iOS, [TVM] Android attack using app running on emulator, [TVM] Malicious profile installed on mobile device",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1546.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Unauthorized changes on shell configuration files",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1110",
+            "color": "#fc6b6b",
+            "comment": "[TVM] SMB login brute force, [TVM] Windows credential access attempt, [TVM] Azure - Gather Application Information, [TVM] Azure - Port Mapping, [TVM] Azure - Valid Credentials",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1110.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] SMB login brute force, [TVM] CrackMapExec (CME) on endpoints or being downloaded",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1027.006",
+            "color": "#fc6b6b",
+            "comment": "[TVM] HTML smuggling technique",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1003.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Windows credential access attempt, [TVM] Mimikatz execution on compromised endpoint",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1003.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1003.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Windows credential dumping through Local Security Authority (LSA) Secrets, [TVM] Mimikatz execution on compromised endpoint",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1018",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1049",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1053.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1083",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Web Path Traversal Attack",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1110.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Windows credential access attempt, [TVM] Password spraying attack",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1135",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1201",
+            "color": "#fc6b6b",
+            "comment": "[TVM] CrackMapExec (CME) on endpoints or being downloaded, [TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1496",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Local Resource Hijack, [TVM] AWS Compute instance deployed in unusual region, [TVM] Non-Approved container image deployed to run cryptominer",
             "enabled": true
         },
         {
@@ -1306,21 +1024,93 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1046",
+            "techniqueID": "T1555.005",
             "color": "#fc6b6b",
-            "comment": "[TVM] Network service discovery, [TVM] Azure - Public Accessible Resource, [TVM] Azure - Storage container reconnaissance",
+            "comment": "[TVM] Azure - KeyVault Dumping",
             "enabled": true
         },
         {
-            "techniqueID": "T1578",
+            "techniqueID": "T1566.003",
             "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Policy with DeployIfNotExists definition",
+            "comment": "[TVM] Azure - App registration persistence, [TVM] Use of customervoice.microsoft.com to host Phishing domains",
             "enabled": true
         },
         {
-            "techniqueID": "T1571",
+            "techniqueID": "T1187",
             "color": "#fc6b6b",
-            "comment": "[TVM] Reverse shell or remote session from compromised host",
+            "comment": "[TVM] NTLM credentials dumping via SMB connection",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1213.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Secrets stored in repository",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1555.006",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Key Vault reconnaissance, [TVM] Azure - Key Vault persistence",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1218.011",
+            "color": "#fc6b6b",
+            "comment": "[TVM] DLL Execution over Rundll32, [TVM] Manipulation of credentials stored in LSASS",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T0865",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Suspicious Disk Image Files extracted via File Archiver from Email or Download directory",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1541",
+            "color": "#fc6b6b",
+            "comment": "[TVM] SIM-card swapping",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1039",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - File Share Mounting",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1564.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Hide Artifacts using NTFS File Attributes",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1656",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Spearphishing Link",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1498.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Protocol based DDoS attack",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1040",
+            "color": "#fc6b6b",
+            "comment": "[TVM] GSM interception",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1490",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Soft-Delete Recovery",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1648",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Use of a malicious lambda layer in AWS account lambda function",
             "enabled": true
         },
         {
@@ -1330,9 +1120,219 @@
             "enabled": true
         },
         {
+            "techniqueID": "T1552.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Listing passwords stored in registry, [TVM] Lateral movement using Impacket framework",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1219",
+            "color": "#fc6b6b",
+            "comment": "[TVM] MoonTag backdoor, [TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1110.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Password hash cracking on Windows, [TVM] Manipulation of credentials stored in plain text files",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.010",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Lua interpreter shellcode execution",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1055.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Lua interpreter shellcode execution",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1106",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Lua interpreter shellcode execution",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1611",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Container privilege escalation via kernel or container runtime exploit",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1552.005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Enumerate EC2 instance data using AWS metadata service",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1014",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Malicious kernel module",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1649",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Steal Service Principal Certificate",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1556.007",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure AD Connect abuse",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1590",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Gather Victim Data",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1134.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] New Windows access token creation",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1525",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Malicious container image deployed, [TVM] Non-Approved container image deployed to run cryptominer",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1204.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Malicious container image deployed",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1555.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] FileFix technique abuses Windows Explorer to execute commands, [TVM] Manipulation of credentials stored in plain text files, [TVM] Mimikatz execution on compromised endpoint",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1204.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] FileFix technique abuses Windows Explorer to execute commands",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T0860",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Rogue access point",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1422.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Rogue access point",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1557.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Rogue access point",
+            "enabled": true
+        },
+        {
             "techniqueID": "T1543.003",
             "color": "#fc6b6b",
-            "comment": "[TVM] Direct modification of registry keys to tamper scheduled task, [TVM] Abnormal Windows service creation or modification attempt",
+            "comment": "[TVM] Abnormal Windows service creation or modification attempt, [TVM] Direct modification of registry keys to tamper scheduled task",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1610",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Non-Approved container image deployed to run cryptominer",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1069",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Data collection using SharpHound, SoapHound, Bloodhound and Azurehound",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1027.013",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Obfuscate binaries through PowerShell commands",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1027.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Obfuscate binaries through PowerShell commands",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1562.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Tampering system firewall on endpoint",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1041",
+            "color": "#fc6b6b",
+            "comment": "[TVM] DNS over HTTPS tunneling exfiltrates data or communicates to C&C server, [TVM] authentication bypass on Ivanti Connect Secure appliances",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1114",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Hijack Entra ID Applications",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1114.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Hijack Entra ID Applications",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1543",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Direct modification of registry keys to tamper scheduled task, [TVM] Azure - Privileged Identity Management Role",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1626",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Android attack using app running on emulator",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1635",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Android attack using app running on emulator",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1426",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Android attack using app running on emulator",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T0869",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Android attack using app running on emulator",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1641",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Android attack using app running on emulator",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1624",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Impersonate IT support via a spoofed phone call to deceive a victim and gain a remote access, [TVM] Malicious profile installed on mobile device",
             "enabled": true
         },
         {
@@ -1348,21 +1348,147 @@
             "enabled": true
         },
         {
-            "techniqueID": "T1213.003",
+            "techniqueID": "T1569.002",
             "color": "#fc6b6b",
-            "comment": "[TVM] Secrets stored in repository",
+            "comment": "[TVM] VBS script creates a scheduled task",
             "enabled": true
         },
         {
-            "techniqueID": "T1005",
+            "techniqueID": "T1561.001",
             "color": "#fc6b6b",
-            "comment": "[TVM] Windows explorer used to search for files with credentials, [TVM] VBS script creates a scheduled task",
+            "comment": "[TVM] WhisperGate wiper",
             "enabled": true
         },
         {
-            "techniqueID": "T1541",
+            "techniqueID": "T1561.002",
             "color": "#fc6b6b",
-            "comment": "[TVM] SIM-card swapping",
+            "comment": "[TVM] WhisperGate wiper",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1011",
+            "color": "#fc6b6b",
+            "comment": "[TVM] authentication bypass on Ivanti Connect Secure appliances",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1619",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Storage Blobs Reconnaissance",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1567",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Storage Blobs Reconnaissance",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1027.014",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1059.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1036.003",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1036.005",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1102.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Axios npm supply chain compromise",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1565",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Manipulation of credentials stored in plain text files",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1003.007",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Manipulation of credentials stored in plain text files",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1583.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Typosquatting domain attack for disinformation",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1606.002",
+            "color": "#fc6b6b",
+            "comment": "[TVM] ADFS abuse",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1555.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Credential file download to compromised Windows endpoint, [TVM] Mimikatz execution on compromised endpoint",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1197",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of Windows Utilities",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1218.004",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of Windows Utilities",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1567.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Cloning private repositories",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1485.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Backup Delete",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1561",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - Backup Delete",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1537",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Azure - SAS URI Generation",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1548.001",
+            "color": "#fc6b6b",
+            "comment": "[TVM] Abuse of special permission via chmod on files",
+            "enabled": true
+        },
+        {
+            "techniqueID": "T1588",
+            "color": "#fc6b6b",
+            "comment": "[TVM] BRICKSTORM file manager exposes end-user's HTTP APIs and UI",
             "enabled": true
         },
         {
@@ -1405,126 +1531,6 @@
             "techniqueID": "T1552.004",
             "color": "#fc6b6b",
             "comment": "[TVM] Mimikatz execution on compromised endpoint",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1098.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Alteration of sshd_config file",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1039",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - File Share Mounting",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1619",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Storage Blobs Reconnaissance",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1567",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Storage Blobs Reconnaissance",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1484.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Persistence with Azure Automanage Machine Configuration",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T0865",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Suspicious Disk Image Files extracted via File Archiver from Email or Download directory",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1573.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Cobalt Strike Beacon deployment via Metasploit downloader",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1040",
-            "color": "#fc6b6b",
-            "comment": "[TVM] GSM interception",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1014",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Malicious kernel module",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T0860",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Rogue access point",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1422.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Rogue access point",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1557.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Rogue access point",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1134.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Passing SeDebugPrivilege to AdjustTokenPrivilege API elevating privileges of a running process",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1630.003",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Jailbreak Tools for iOS",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1398",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Jailbreak Tools for iOS",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1087.004",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Azure - Storage container reconnaissance",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1136.001",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Local user account added, [TVM] Use Windows utilities to manipulate a local account or group",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1546",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Use Windows utilities to manipulate a local account or group",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1098.007",
-            "color": "#fc6b6b",
-            "comment": "[TVM] Use Windows utilities to manipulate a local account or group",
-            "enabled": true
-        },
-        {
-            "techniqueID": "T1569.002",
-            "color": "#fc6b6b",
-            "comment": "[TVM] VBS script creates a scheduled task",
             "enabled": true
         }
     ],
