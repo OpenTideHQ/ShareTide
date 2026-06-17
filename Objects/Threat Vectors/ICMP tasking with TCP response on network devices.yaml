@@ -5,11 +5,11 @@ references:
     1: https://www.ncsc.gov.uk/static-assets/documents/malware-analysis-reports/RayInitiator-LINE-VIPER/ncsc-mar-rayinitiator-line-viper.pdf
 
 metadata:
-  uuid: 
+  uuid: 2a5faf22-c526-4d49-81b9-6a7b895de58b
   schema: tvm::2.1
   version: 1
-  created: "2025-10-15"
-  modified: "2025-10-15"
+  created: "2026-06-18"
+  modified: "2026-06-18"
   tlp: clear
 
 threat:
@@ -20,11 +20,15 @@ threat:
     - T1573.001  # Encrypted Channel: Symmetric Cryptography
     - T1573.002  # Encrypted Channel: Asymmetric Cryptography
     - T1480.001  # Execution Guardrails: Environmental Keying
-  #chaining:
-    #- relation: 
-      #vector: 
-      #description: |
-        #
+  chaining:
+    - relation: support::enabled
+      vector: b6175f16-2b61-4116-bd97-de54b02b197e  # LINE VIPER shellcode loader on Cisco ASA
+      description: |
+        This ICMP-based C2 channel is enabled by the LINE VIPER implant
+        resident in lina. LINE VIPER monitors for specially crafted ICMP
+        Echo Requests containing encrypted tasking and responds over raw
+        TCP connections on high-ephemeral ports, providing a secondary
+        C2 channel independent of WebVPN access [1].
   #cve:
     #-
   #misp:
@@ -36,7 +40,7 @@ threat:
     Network configurations where ICMP traffic is permitted to reach
     Cisco ASA LAN interfaces, particularly through established VPN
     tunnels [1]. In observed operations, ICMP tasking is not sent to the
-    WAN interface but instead tunneled through an established VPN
+    WAN interface but instead tunnelled through an established VPN
     session to a LAN interface. The VPN connection allows actor-
     controlled systems within the local network to send ICMP Echo
     Requests that bypass traditional WAN-focused network monitoring.
@@ -44,7 +48,7 @@ threat:
     - Network Equipment
   platforms:
     - Network Router
-  severity: Moderate incident
+  severity: Substantial incident
   leverage:
     - Infrastructure Compromise
     - Information Disclosure
@@ -53,20 +57,21 @@ threat:
     - Data Breach
     - Lose Capabilities
     - Reputational Damages
+    - National Security
   viability: Likely
   description: |
     LINE VIPER implements a sophisticated alternative command and
     control mechanism that uses ICMP (Internet Control Message Protocol)
     for receiving tasking commands and raw TCP connections for
     responding with results [1]. This dual-protocol approach provides
-    operational flexibility and defense evasion capabilities.
-    
+    operational flexibility and defence evasion capabilities.
+
     #### Protocol Design
-    
+
     The ICMP-based C2 channel operates through a split-protocol design
     where incoming tasking and outgoing responses use different network
     protocols [1]:
-    
+
     **Incoming Tasking (ICMP):** The malware monitors for specially
     crafted ICMP packets that contain encrypted tasking commands. ICMP
     is commonly used for network diagnostics (ping, traceroute) and is
@@ -74,90 +79,90 @@ threat:
     channel. The use of ICMP for tasking allows the attacker to send
     commands without establishing TCP connections, reducing the network
     footprint.
-    
+
     **Outgoing Responses (Raw TCP):** Rather than responding via ICMP,
     LINE VIPER sends results back over raw TCP connections. This
     asymmetric approach provides several advantages:
     - TCP provides reliable delivery for potentially large result sets
     - Raw TCP sockets allow arbitrary port selection
     - Separation of inbound and outbound protocols complicates analysis
-    
-    #### Port Usage and Network Behavior
-    
+
+    #### Port Usage and Network Behaviour
+
     LINE VIPER responds to ICMP tasking via raw TCP using
     high-ephemeral ports [1]. Ephemeral ports are typically in the
     range 32768-65535 on Linux systems. The use of high-ephemeral ports
     provides several operational security benefits:
-    
+
     - **Dynamic Selection:** Different ephemeral ports can be used for
       each response, avoiding patterns that could be detected through
       long-term network monitoring.
-    
+
     - **Legitimate Appearance:** High-ephemeral ports are commonly used
       for outbound connections from network devices, making the traffic
       appear normal.
-    
+
     - **Firewall Traversal:** Most firewall configurations allow
       outbound connections on ephemeral ports, as blocking them would
       break legitimate functionality.
-    
+
     #### Encryption and Authentication
-    
+
     Like the WebVPN-based C2 channel, the ICMP/TCP method implements
     strong cryptographic protections [1]:
-    
+
     - **Per-Request AES Encryption:** Tasking commands received via
       ICMP are encrypted using AES with unique symmetric keys for each
       request. This prevents replay attacks and ensures confidentiality.
-    
+
     - **RSA Key Exchange:** LINE VIPER uses per-victim RSA public keys
       to perform symmetric key exchange. This ensures that only the
       actor with the corresponding private key can decrypt and verify
       tasking commands.
-    
+
     - **Victim-Specific Tokens:** Environmental keying through
       victim-specific tokens ensures that captured ICMP tasking packets
       cannot be replayed against different devices or at different
       times.
-    
+
     #### Operational Advantages
-    
+
     The ICMP-based tasking mechanism provides several advantages for
     the attacker [1]:
-    
+
     - **Stealth:** ICMP traffic is common in networks and often not
       logged or inspected as thoroughly as application-layer protocols.
-    
+
     - **Resilience:** Provides an alternative C2 channel if WebVPN-
       based communication is detected or blocked.
-    
+
     - **Flexibility:** ICMP packets can often reach devices even when
       normal network access is restricted, as ICMP is essential for
       network diagnostics.
-    
+
     - **Protocol Confusion:** The split-protocol design (ICMP in, TCP
       out) makes it difficult to correlate incoming commands with
       outgoing responses, complicating network forensics.
-    
+
     #### Detection Challenges
-    
+
     The ICMP/TCP C2 mechanism presents significant detection challenges:
-    
+
     - **Volume Analysis Limitations:** ICMP is frequently used for
       legitimate purposes, making volume-based detection unreliable
       without baseline understanding of normal ICMP patterns.
-    
+
     - **Payload Encryption:** The encrypted nature of tasking commands
       prevents signature-based detection of malicious ICMP packets.
-    
+
     - **Dynamic Ports:** The use of varying high-ephemeral ports for
       TCP responses makes connection tracking difficult without
       comprehensive network visibility.
-    
+
     - **Protocol Legitimacy:** Both ICMP and high-port TCP connections
-      are legitimate network behaviors, requiring behavioral analysis to
-      identify anomalies.
-    
+      are legitimate network behaviours, requiring behavioural analysis
+      to identify anomalies.
+
     This dual-protocol C2 mechanism demonstrates sophisticated
     understanding of network protocols and operational security. The
     technique represents an evolution in network device implant
