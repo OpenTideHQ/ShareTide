@@ -12,13 +12,13 @@ metadata:
   schema: mdr::2.1
   version: 1
   created: 2026-06-16
-  modified: 2026-06-16
+  modified: 2026-06-22
   tlp: clear
   organisation:
     uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
     name: EC DIGIT CSOC
 
-detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
+detection_model: 678d0786-dfd7-40fb-ba90-3c368ed00342
 
 description: |
   #### MDR Technical Details
@@ -43,7 +43,6 @@ description: |
 
 response:
   alert_severity: High
-  responders: CSIRC
   procedure:
     analysis: |
       1. Treat any on-disk IOC match as confirmed execution, not mere dependency

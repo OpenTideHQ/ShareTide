@@ -8,8 +8,8 @@ enabled = true
 #operations centers (SOCs) and incident response (IR) teams."""
 
 [setup]
-#proxy = false
-#url = "$CBC_URL"
+proxy = false
+url = ""
 #watchlist = "" #Can be overriden by MDR schema
 ##Default organizations the MDR can deploy to. Can be overriden by MDR schema
 organizations = ["Placeholder"] 

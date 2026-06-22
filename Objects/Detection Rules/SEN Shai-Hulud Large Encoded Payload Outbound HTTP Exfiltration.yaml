@@ -12,13 +12,13 @@ metadata:
   schema: mdr::2.1
   version: 1
   created: 2026-06-16
-  modified: 2026-06-16
+  modified: 2026-06-22
   tlp: clear
   organisation:
     uuid: 56b0a0f0-b0bc-47d9-bb46-02f80ae2065a
     name: EC DIGIT CSOC
 
-detection_model: fb62e879-9e91-4c5b-aaa7-999b2b1b3897
+detection_model: 21a527de-8635-4187-87d4-c9e5f5c1badc
 
 description: |
   #### MDR Technical Details
@@ -40,7 +40,6 @@ description: |
 
 response:
   alert_severity: Medium
-  responders: CSIRC
   procedure:
     analysis: |
       1. Review proxy log fields for source host and destination URL.

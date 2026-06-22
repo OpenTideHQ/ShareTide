@@ -19,15 +19,15 @@ alert.severity = "Informational"
 alert.title = "prefix::Staging "
 
 [[tenants]]
-name = "Name"
-description = "Tenant Description"
-deployment = "ALWAYS" #STAGING, PRODUCTION, MANUAL (only when defined in MDR) or ALWAYS
+name = "Placeholder"
+description = "Used to generate schema in ShareTide, not used for actual deployments"
+deployment = "MANUAL" #STAGING, PRODUCTION, MANUAL (only when defined in MDR) or ALWAYS
 [tenants.setup]
 proxy = false
 ssl = true
-tenant_id = "$MDE_TENANT_ID"
-client_id = "$MDE_CLIENT_ID"
-client_secret = "$MDE_CLIENT_SECRET"
+tenant_id = ""
+client_id = ""
+client_secret = ""
 [tenants.parameters]
 device_groups = [""]
 
