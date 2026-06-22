@@ -1,5 +1,5 @@
 [tide]
-enabled = true
+enabled = false
 #identifier = "splunk"
 #name = "Splunk Enterprise"
 #subschema = "Splunk Sub Schema"

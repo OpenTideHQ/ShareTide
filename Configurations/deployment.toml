@@ -7,10 +7,11 @@
 #promotion_target = "PRODUCTION"
 
 [proxy]
-#proxy_user = "$PROXY_USER"
-#proxy_password = "$PROXY_PASSWORD"
-#proxy_host = "$PROXY_HOST"
-#proxy_port = "$PROXY_PORT"
+# Empty values override CoreTide deployment defaults; ShareTide does not wire proxy secrets in CI.
+proxy_user = ""
+proxy_password = ""
+proxy_host = ""
+proxy_port = ""
 
 # If enabled, updates a lookup continuously with MDR Data. Often useful to
 # have access to MDR Data directly on external systems, e.g. for alert enriching
