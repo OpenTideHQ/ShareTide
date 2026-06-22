@@ -37,7 +37,7 @@ jobs:
   # which are stored in the OpenTideHQ/CoreTide repository, on the development branch.
   # If you want to use a different branch, change the branch name after the @ symbol.
   Validation:
-    uses: OpenTideHQ/CoreTide/.github/workflows/validation.yml@development
+    uses: ./.github/workflows/validation.yml
     needs: Secrets
     with:
       coretide_ref: development
