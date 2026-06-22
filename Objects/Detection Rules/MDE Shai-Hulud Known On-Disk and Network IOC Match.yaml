@@ -43,7 +43,6 @@ description: |
 
 response:
   alert_severity: High
-  responders: CSIRC
   procedure:
     analysis: |
       1. Treat any on-disk IOC match as confirmed execution, not mere dependency

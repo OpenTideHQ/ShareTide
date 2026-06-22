@@ -40,7 +40,6 @@ description: |
 
 response:
   alert_severity: Medium
-  responders: CSIRC
   procedure:
     analysis: |
       1. Review proxy log fields for source host and destination URL.

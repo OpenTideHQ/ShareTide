@@ -43,7 +43,6 @@ description: |
 
 response:
   alert_severity: High
-  responders: CSIRC
   procedure:
     analysis: |
       1. Identify the source host or client IP for the IOC match.

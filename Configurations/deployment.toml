@@ -1,5 +1,3 @@
-#default_responders = ""
-
 [status]
 #production = [ "PRODUCTION", "DISABLED", "REMOVED" ]
 #safe = [ "DESIGN" ]

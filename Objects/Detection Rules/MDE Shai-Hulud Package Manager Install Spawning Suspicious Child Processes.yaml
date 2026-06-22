@@ -45,7 +45,6 @@ description: |
 
 response:
   alert_severity: High
-  responders: CSIRC
   procedure:
     analysis: |
       1. Confirm package manager parent command line references install, ci,

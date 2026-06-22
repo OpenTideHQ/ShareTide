@@ -45,7 +45,6 @@ description: |
 
 response:
   alert_severity: Medium
-  responders: CSIRC
   procedure:
     analysis: |
       1. List packages published in the burst window.

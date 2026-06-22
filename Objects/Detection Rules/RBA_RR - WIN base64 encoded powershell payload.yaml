@@ -17,7 +17,7 @@ metadata:
   tlp: clear
   version: 6
   created: 2024-05-16
-  modified: 2025-01-09
+  modified: 2026-06-22
   author: ec-digit-catch@ec.europa.eu
 
 description: |
@@ -55,7 +55,6 @@ description: |
 response:
   alert_severity: High
   #playbook: 
-  responders: CSIRC
 
 configurations:
 
