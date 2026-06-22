@@ -12414,7 +12414,7 @@ Detection coverage spans three time horizons:
 Critical priority reflects worm-like propagation, broad ecosystem
 reach (TanStack Router alone ~12M weekly downloads), and destructive
 token-revocation behaviour on compromised developer laptops.
-",1,2026-06-16,2026-06-16,"a3f7d796-146c-44b0-8d22-7a08daa0d963, 365e23e8-0367-4adf-b18a-f1440cc66005, b49d0a94-ae13-49b3-8ad8-6c035fa3d681, 287114bd-7d58-422d-9711-f5516900b9ce, 9f3abdc4-7c6e-480e-b722-6d31ddd9b2d2, 21a527de-8635-4187-87d4-c9e5f5c1badc, 678d0786-dfd7-40fb-ba90-3c368ed00342, fae8ef2d-99e9-42f4-81ed-d40c515e8d3d, bd5c57f3-bbb1-441f-8934-7a9b13c73f67, cf614690-69c4-4229-af59-072a9e18583b, c82cfa6b-066f-4ba3-ba07-d7eb642c8099, 7eb85d22-2e60-449f-b92c-8cecc28d34c6, 0924c742-8fdb-4ee2-95fe-91d2e5725a90, ecd096d2-7fc5-45e3-803f-82d13f940210, 2fe6575d-513c-4588-999f-19c13d0fa4f9, bfae62bb-7ce1-46cd-a131-39803832fa9d",59548b96-9b01-414c-badd-c0bf2ab40d9a,,,"T1195.001, T1195.002, T1546.016, T1059.007, T1059.006, T1552.001, T1550.001, T1567.002, T1071.001, T1078, T1027, T1547, T1485"
+",1,2026-06-16,2026-06-16,"a3f7d796-146c-44b0-8d22-7a08daa0d963, 365e23e8-0367-4adf-b18a-f1440cc66005, b49d0a94-ae13-49b3-8ad8-6c035fa3d681, 287114bd-7d58-422d-9711-f5516900b9ce, 9f3abdc4-7c6e-480e-b722-6d31ddd9b2d2, 21a527de-8635-4187-87d4-c9e5f5c1badc, 678d0786-dfd7-40fb-ba90-3c368ed00342",59548b96-9b01-414c-badd-c0bf2ab40d9a,,,"T1195.001, T1195.002, T1546.016, T1059.007, T1059.006, T1552.001, T1550.001, T1567.002, T1071.001, T1078, T1027, T1547, T1485"
 3a73c153-abd7-40cd-86a5-4d57a42b9a44,Detect premature account activation and restricted onboarding bypass,Detection Objectives,clear,"Detect account lifecycle control failures where an identity becomes usable before the intended
 approval, invitation, or eligibility gate is complete. The capability is broader than a single
 registration endpoint: it correlates account creation, approval state, password reset, token
@@ -12529,7 +12529,7 @@ compromised versions via `ThreatIntelIndicators`.
   release calendar and require manifest markers for auto-escalation.
 - Maintain per-organisation critical-package publish baseline via watchlist
   when registry-watcher pipelines are available.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,9f3abdc4-7c6e-480e-b722-6d31ddd9b2d2,,,
 bd5c57f3-bbb1-441f-8934-7a9b13c73f67,SEN Shai-Hulud Large Encoded Payload Outbound HTTP Exfiltration,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Sentinel scheduled analytic rule implementing DOM signal
 `21a527de-8635-4187-87d4-c9e5f5c1badc` (Large Encoded Payload in Outbound
@@ -12546,7 +12546,7 @@ destinations, complementing the MDE endpoint-network variant.
 - Internal artefact registry uploads — exclude known internal registry
   hostnames via deployment-specific `let` block.
 - Requires web-proxy connector with body-size or byte-count fields.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,21a527de-8635-4187-87d4-c9e5f5c1badc,,,
 cf614690-69c4-4229-af59-072a9e18583b,SEN Shai-Hulud Known Network and IOC Indicator Match,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Sentinel scheduled analytic rule implementing DOM signal
 `678d0786-dfd7-40fb-ba90-3c368ed00342` (Known Shai-Hulud On-Disk and
@@ -12566,7 +12566,7 @@ version indicators across `DnsEvents`, `CommonSecurityLog`, and
 - Threat-intel feed matches require `Active == true` and unexpired indicators.
 - DNS matches alone on security-research sandboxes should be scoped to
   developer and CI network segments where possible.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,678d0786-dfd7-40fb-ba90-3c368ed00342,,,
 c82cfa6b-066f-4ba3-ba07-d7eb642c8099,MDE Shai-Hulud Bulk Credential-Candidate File Access on Developer Hosts,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Defender for Endpoint custom detection implementing DOM signal
 `b49d0a94-ae13-49b3-8ad8-6c035fa3d681` (Bulk Credential-Candidate File
@@ -12585,7 +12585,7 @@ a ten-minute window, filtered to non-interactive package-runtime parents.
   excluded via `InitiatingProcessFileName` allowlists per deployment.
 - IDE indexing may touch multiple config files — tune threshold upward on
   developer workstations if noise persists.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,b49d0a94-ae13-49b3-8ad8-6c035fa3d681,,,
 7eb85d22-2e60-449f-b92c-8cecc28d34c6,SEN Shai-Hulud Unexpected GitHub Repository or Workflow Creation,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Sentinel scheduled analytic rule implementing DOM signal
 `287114bd-7d58-422d-9711-f5516900b9ce` (Unexpected GitHub Repository or
@@ -12607,7 +12607,7 @@ commits, and package-related audit actions.
   endpoint install anomalies on linked CI runners before escalation.
 - Dune-themed repository names alone are insufficient; require marker
   strings or malicious workflow file references.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,287114bd-7d58-422d-9711-f5516900b9ce,,,
 0924c742-8fdb-4ee2-95fe-91d2e5725a90,MDE Shai-Hulud Large Encoded Payload Outbound HTTP Exfiltration,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Defender for Endpoint custom detection implementing DOM signal
 `21a527de-8635-4187-87d4-c9e5f5c1badc` (Large Encoded Payload in Outbound
@@ -12626,7 +12626,7 @@ blob uploads where HTTP body inspection is unavailable.
 - Legitimate artefact uploads to internal registries — exclude corporate
   registry hostnames per deployment.
 - Crash-dump and telemetry uploads — require IOC destination match.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,21a527de-8635-4187-87d4-c9e5f5c1badc,,,
 ecd096d2-7fc5-45e3-803f-82d13f940210,MDE Shai-Hulud Developer Secret-File Access Followed by Outbound Egress,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Defender for Endpoint custom detection implementing DOM signal
 `365e23e8-0367-4adf-b18a-f1440cc66005` (Developer Secret-File Access
@@ -12647,7 +12647,7 @@ destinations within a five-minute correlation window.
   require IOC destination match (not secret access alone).
 - CI secret-injection agents should be excluded per deployment via
   `InitiatingProcessFileName` allowlists.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,365e23e8-0367-4adf-b18a-f1440cc66005,,,
 2fe6575d-513c-4588-999f-19c13d0fa4f9,MDE Shai-Hulud Known On-Disk and Network IOC Match,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Defender for Endpoint custom detection implementing DOM signal
 `678d0786-dfd7-40fb-ba90-3c368ed00342` (Known Shai-Hulud On-Disk and
@@ -12667,7 +12667,7 @@ package-runtime process trees).
 - None for hash and filename matches — treat as strong execution evidence.
 - Network-only matches from non-package processes should be reviewed in
   context of full device activity.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,678d0786-dfd7-40fb-ba90-3c368ed00342,,,
 bfae62bb-7ce1-46cd-a131-39803832fa9d,MDE Shai-Hulud Package Manager Install Spawning Suspicious Child Processes,Detection Rules,clear,"#### MDR Technical Details
 Microsoft Defender for Endpoint custom detection implementing DOM signal
 `a3f7d796-146c-44b0-8d22-7a08daa0d963` (Package Manager Install Spawning
@@ -12689,7 +12689,7 @@ for campaign artefact drops (`router_init.js`, `setup.mjs`, etc.).
 - Files under npm cache / temp paths excluded for artefact drops.
 - Legitimate postinstall (husky, esbuild fetch) may fire — correlate with
   secret-file access or IOC signals before escalation.
-",1,2026-06-16,2026-06-16,,fb62e879-9e91-4c5b-aaa7-999b2b1b3897,,,
+",1,2026-06-16,2026-06-22,,a3f7d796-146c-44b0-8d22-7a08daa0d963,,,
 0be66eea-4ae4-4544-811b-52651e20d744,RBA_RR - WIN base64 encoded powershell payload,Detection Rules,clear,"Detect base64 encoded PowerShell payload that could be used to launch 
 a process or a script.
 The detection applies up to 2 levels of encoded payload (a first payload 
@@ -12719,4 +12719,4 @@ on EC Windows devices running on our Azure IaaS & PaaS tenant.
 CATCH uses SOC_LT_289_WIN_reviewed_base64_encoded_payload-exclude.csv
 to filter legitimate or benign base64 encoded payloads used by PowerShell 
 on EC Windows devices.
-",6,2024-05-16,2025-01-09,,,,,
+",6,2024-05-16,2026-06-22,,,,,

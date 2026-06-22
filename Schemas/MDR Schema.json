@@ -739,11 +739,11 @@
                             "type": "array",
                             "items": {
                                 "enum": [
-                                    "Default"
+                                    "Placeholder"
                                 ],
                                 "uniqueItems": true,
                                 "markdownEnumDescriptions": [
-                                    "Tenant Description"
+                                    "Used to generate schema in ShareTide, not used for actual deployments"
                                 ]
                             }
                         },
@@ -2535,10 +2535,10 @@
                                         "type": "string",
                                         "description": "The tenant to which the exclusion applied. Remove if the exclusion should\nbe applied to all tenants. \n",
                                         "enum": [
-                                            "Default"
+                                            "Placeholder"
                                         ],
                                         "markdownEnumDescriptions": [
-                                            "Tenant Description"
+                                            "Used to generate schema in ShareTide, not used for actual deployments"
                                         ]
                                     },
                                     "reason": {
@@ -2565,410 +2565,6 @@
                                     }
                                 },
                                 "additionalProperties": false
-                            }
-                        }
-                    },
-                    "additionalProperties": false
-                },
-                "splunk": {
-                    "title": "Splunk Enterprise",
-                    "description": "Splunk Enterprise enables you to search, analyze and\nvisualize your data to quickly act on insights from across your technology landscape.",
-                    "type": "object",
-                    "required": [
-                        "status",
-                        "query",
-                        "scheduling"
-                    ],
-                    "properties": {
-                        "schema": {
-                            "title": "Schema identifier and version",
-                            "type": "string",
-                            "description": "Identifier of the schema at its current version",
-                            "pattern": "^splunk::[1-9].[0-9]$",
-                            "default": "splunk::2.1"
-                        },
-                        "status": {
-                            "title": "Status of the use-case",
-                            "type": "string",
-                            "description": "Define the status according to use case development life cycle process",
-                            "enum": [
-                                "DESIGN",
-                                "DEVELOPMENT",
-                                "IMPROVING",
-                                "STAGING",
-                                "ACCEPTANCE",
-                                "PRODUCTION",
-                                "DISABLED",
-                                "REMOVED"
-                            ],
-                            "markdownEnumDescriptions": [
-                                "**Strategy** : `INERT` - _Does not interact with deployment_\n\nUnder active functional design, without technical translation yet",
-                                "**Strategy** : `PREVIEW` - _Deployment from Pull/Merge Requests_\n\nUnder active technical implementation, going in exploratory rounds",
-                                "**Strategy** : `PREVIEW` - _Deployment from Pull/Merge Requests_\n\nRule is qualified functionally, but is undergoing refinement rounds",
-                                "**Strategy** : `PREVIEW` - _Deployment from Pull/Merge Requests_\n\nDeployed in staging environment for operational testing",
-                                "**Strategy** : `PREVIEW` - _Deployment from Pull/Merge Requests_\n\nA MDR is ready to go for PRODUCTION for responding team. During ACCEPTANCE an\nanalyst will handle the alert and will ensure the alert ticket and playbook are correct.",
-                                "**Strategy** : `RELEASE` - _Deployment from the default branch (also called trunk, or main branch)_\n\nDeployed in active production environment, potentially raising alerts",
-                                "**Strategy** : `DISABLEMENT` - _Deployment from the default branch, but only to disable an existing rule. If the target system does not have a concept of disabling rules, then defaults to deleting them._\n\nRule is still accessible, but not active in any environment",
-                                "**Strategy** : `DELETION` - _Deployment from the default branch, but removes the rule from the target system._\n\nRule is fully deprecated, and only flagged under this status for archival purposes"
-                            ]
-                        },
-                        "contributors": {
-                            "title": "\ud83d\udc65 Development Contributors",
-                            "type": "array",
-                            "description": "Individuals who supported creating, enriching or tuning the detection.",
-                            "items": {
-                                "type": "string",
-                                "format": "email"
-                            }
-                        },
-                        "threshold": {
-                            "title": "\u2696\ufe0f Event threshold",
-                            "type": "integer",
-                            "description": "If amount of events is higher than threshold (during the timeframe) the alert is triggered. Default = 0.",
-                            "example": 10,
-                            "default": 0
-                        },
-                        "throttling": {
-                            "title": "\ud83d\udddc\ufe0f Throttling parameters",
-                            "type": "object",
-                            "description": "Configuration for throttling incoming alerts",
-                            "required": [
-                                "duration"
-                            ],
-                            "properties": {
-                                "fields": {
-                                    "title": "\ud83d\udd16 Throttling Fields",
-                                    "type": "array",
-                                    "description": "Fields to check for matching values in events. Events with the same value for these fields are suppressed.",
-                                    "example": "dst",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "duration": {
-                                    "title": "\u231b Throttling Period",
-                                    "type": "string",
-                                    "description": "How long do discard new alerts that have the same characteristics (duplicate alerts), based on the fields defined below in hours/days. Default same as scheduling (value = 1h).",
-                                    "example": "5m",
-                                    "default": "1h",
-                                    "pattern": ".*(h|d|m)$"
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "scheduling": {
-                            "title": "\u23f2 Throttling parameters",
-                            "type": "object",
-                            "description": "Configuration for throttling incoming alerts",
-                            "required": [
-                                "lookback"
-                            ],
-                            "anyOf": [
-                                {
-                                    "required": [
-                                        "frequency"
-                                    ]
-                                },
-                                {
-                                    "required": [
-                                        "cron"
-                                    ]
-                                }
-                            ],
-                            "properties": {
-                                "cron": {
-                                    "title": "\u23f2 Scheduled search cron scheduling",
-                                    "type": "string",
-                                    "icon": "\u23f2",
-                                    "description": "Cron Expression describing the scheduling for running the search.",
-                                    "example": "0 4 8-14 * *",
-                                    "pattern": "(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|\u00b5s|ms|s|m|h))+)|((((\\d+,)+\\d+|([\\d\\*]+(\\/|-)\\d+)|\\d+|\\*) ?){5,7})"
-                                },
-                                "frequency": {
-                                    "title": "\u23f1 Recurring Search Interval",
-                                    "type": "string",
-                                    "description": "Time intervals at which the scheduled search should be ran at. Warning: due to implementation details, only the following intervals are allowed for Splunk : 1-59m , 1-23h , 1-30d . For more complex scheduling, use the cron option instead. \n",
-                                    "markdownDescription": "Time intervals at which the scheduled search should be ran at. \u26a0\ufe0f **Warning :** due to implementation details, only the following intervals are allowed for Splunk : 1-59m , 1-23h , 1-30d .\n\nFrequency is translated into cron expressions.\n\n**Examples**\n- 15m is translated into `*/15 * * * *`, or _At every 15th minute_\n- 4h is translated into `MM */4 * * *`, or _At minute MM past every 4th hour_\n- 2d is translated into `MM HH */2 * *`, or _At HH:MM on every 2nd day-of-month_\n\n\ud83d\udc49 HH:MM is a timestamp we take to allow a correct cron setup. This timestamp has 2 default modes setup in Splunk's config.yaml entry: `random`, which takes random hours and minutes at each deployment,  which can be preferable for performances, and `current` which take the current time of the **latest** deployment.\n\nYou can override this behaviour with `custom_time`, hidden from the template but accessible with `Control+Space`. There you can setup a custom timestamp (note that hours only matter in the case for frequency with days, and that when the frequency is minutes it won't have an effect)\nFor more complex scheduling, use the cron option instead. ",
-                                    "example": "5m",
-                                    "pattern": "^((([1-5]?[0-9]|60)m)|((?:[1-9]|1[0-9]|2[0-3])h)|((?:[1-9]|1[0-9]|2[0-9]|30)d))$"
-                                },
-                                "custom_time": {
-                                    "title": "Custom Frequency Setup",
-                                    "type": "string",
-                                    "description": "Customize the base time that the frequency takes as an anchor. Expects HHhmm format.\nSee frequency description for more explanation in how they interact.\n",
-                                    "example": "12:30",
-                                    "pattern": "^(0[0-9]|1[0-9]|2[0-3])h[0-5][0-9]$"
-                                },
-                                "lookback": {
-                                    "title": "\u231b Lookback Configuration",
-                                    "type": "string",
-                                    "description": "Duration of logs to search in",
-                                    "example": "5m",
-                                    "pattern": "^[1-9][0-9]*(m{1}|h{1}|d{1})$"
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "notable": {
-                            "title": "\ud83c\udf96\ufe0f Notable Event Settings",
-                            "icon": "\ud83c\udf96\ufe0f",
-                            "type": "object",
-                            "description": "Configuration for notable events generated by the alert",
-                            "properties": {
-                                "event": {
-                                    "title": "\ud83d\udce3 Notable Event Configuration",
-                                    "icon": "\ud83d\udce3",
-                                    "type": "object",
-                                    "description": "Describes attributes related to the notable event",
-                                    "anyOf": [
-                                        {
-                                            "required": [
-                                                "title"
-                                            ]
-                                        },
-                                        {
-                                            "required": [
-                                                "description"
-                                            ]
-                                        }
-                                    ],
-                                    "properties": {
-                                        "title": {
-                                            "title": "\ud83e\udeaa Notable Event Name",
-                                            "icon": "\ud83e\udeaa",
-                                            "type": "string",
-                                            "description": "Supporting $token usage",
-                                            "example": "New Abnormal Credentials added to Azure AD from user $logonuser"
-                                        },
-                                        "description": {
-                                            "title": "\ud83d\udd2c Notable Event Description",
-                                            "type": "string",
-                                            "description": "Supporting $token usage",
-                                            "example": "<insert example>"
-                                        }
-                                    },
-                                    "additionalProperties": false
-                                },
-                                "drilldown": {
-                                    "title": "\ud83d\udd75 Drilldown search configuration",
-                                    "icon": "\ud83d\udd75",
-                                    "type": "object",
-                                    "description": "Describes attributes related to drilldown search accompanying the notable event.",
-                                    "required": [
-                                        "name",
-                                        "search"
-                                    ],
-                                    "properties": {
-                                        "name": {
-                                            "title": "\ud83c\udfab Drilldown Search Name",
-                                            "type": "string",
-                                            "description": "Name of the secondary search"
-                                        },
-                                        "search": {
-                                            "title": "\u2753 Drilldown Search",
-                                            "type": "string",
-                                            "icon": "\u2753",
-                                            "description": "A custom secondary search."
-                                        }
-                                    },
-                                    "additionalProperties": false
-                                },
-                                "security_domain": {
-                                    "title": "\ud83d\udee1\ufe0f Security Domain",
-                                    "icon": "\ud83d\udee1\ufe0f",
-                                    "type": "string",
-                                    "description": "Categorization of the notable event",
-                                    "example": "Threat",
-                                    "enum": [
-                                        "Access",
-                                        "Endpoint",
-                                        "Network",
-                                        "Threat",
-                                        "Identity",
-                                        "Audit"
-                                    ]
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "security_domain": {
-                            "title": "\u26a0\ufe0f DEPRECATION WARNING",
-                            "icon": "\ud83d\udee1\ufe0f",
-                            "type": "string",
-                            "description": "\u26a0\ufe0f DEPRECATED : security_domain is now nested under the notable block",
-                            "example": "Threat",
-                            "enum": [
-                                "Access",
-                                "Endpoint",
-                                "Network",
-                                "Threat",
-                                "Identity",
-                                "Audit"
-                            ]
-                        },
-                        "risk": {
-                            "title": "Splunk Risk Analysis",
-                            "description": "Risk notables are automatically generated when you run a risk incident rule,\nwhich associates risk scores with a system, user, or other risk objects.\n",
-                            "type": "object",
-                            "link": "https://docs.splunk.com/Documentation/ES/7.1.0/User/RiskScoring",
-                            "required": [
-                                "message"
-                            ],
-                            "anyOf": [
-                                {
-                                    "required": [
-                                        "risk_objects"
-                                    ]
-                                },
-                                {
-                                    "required": [
-                                        "threat_objects"
-                                    ]
-                                }
-                            ],
-                            "properties": {
-                                "message": {
-                                    "title": "\ud83d\udcac Risk Message",
-                                    "icon": "\ud83d\udcac",
-                                    "description": "A unique message to describe the risk activity, which can use fields\nfrom the risk event surrounded by \"$\". \n",
-                                    "type": "string",
-                                    "example": "Suspicious Activity to $domain$"
-                                },
-                                "risk_objects": {
-                                    "title": "\ud83d\udca3 Risk Objects",
-                                    "icon": "\ud83d\udca3",
-                                    "description": "A unique message to describe the risk activity, which can use\nfields from the risk event surrounded by \"$\". For example:\nSuspicious Activity to $domain$\n",
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "required": [
-                                            "field",
-                                            "type",
-                                            "score"
-                                        ],
-                                        "properties": {
-                                            "field": {
-                                                "type": "string",
-                                                "icon": "\ud83c\udff7\ufe0f",
-                                                "description": "Splunk field containing the risk object\n"
-                                            },
-                                            "type": {
-                                                "type": "string",
-                                                "description": "The risk object identifier",
-                                                "icon": "\u2753",
-                                                "enum": [
-                                                    "user",
-                                                    "system",
-                                                    "other"
-                                                ]
-                                            },
-                                            "score": {
-                                                "type": "integer",
-                                                "icon": "\ud83e\uddee",
-                                                "maximum": 100000,
-                                                "description": "A number that represents the risk level of a\nspecific risk object. Risk events have a default score\nthat you can modify using risk factors.\t\n"
-                                            }
-                                        },
-                                        "additionalProperties": false
-                                    }
-                                },
-                                "threat_objects": {
-                                    "title": "\ud83d\udd2a Risk Objects",
-                                    "description": "Deviant behavior patterns of a risk object or entity,\nwhich indicate a security breach. For example: The Domain\nthreat object tracks the behavior of the domain across all risk objects.\n",
-                                    "icon": "\ud83d\udd2a",
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "required": [
-                                            "field",
-                                            "type"
-                                        ],
-                                        "properties": {
-                                            "field": {
-                                                "type": "string",
-                                                "icon": "\ud83c\udff7\ufe0f",
-                                                "description": "Splunk field containing the threat object\n"
-                                            },
-                                            "type": {
-                                                "type": "string",
-                                                "description": "Identification of the threat object, inspired by https://splunk.github.io/rba/searches/threat_object_types/#other-types",
-                                                "icon": "\u2753",
-                                                "enum": [
-                                                    "app",
-                                                    "ssid",
-                                                    "url_domain",
-                                                    "url",
-                                                    "http_user_agent",
-                                                    "ip",
-                                                    "asn",
-                                                    "command",
-                                                    "user",
-                                                    "subject",
-                                                    "file_name",
-                                                    "file_hash",
-                                                    "parent_process",
-                                                    "parent_process_name",
-                                                    "parent_process_path",
-                                                    "parent_process_hash",
-                                                    "process_name",
-                                                    "process_hash",
-                                                    "process_path",
-                                                    "registry_path",
-                                                    "registry_hive",
-                                                    "registry_key_name",
-                                                    "registry_value_name",
-                                                    "registry_value_text",
-                                                    "registry_value_data",
-                                                    "registry_value_type",
-                                                    "service",
-                                                    "service_dll",
-                                                    "service_dll_hash",
-                                                    "service_dll_path",
-                                                    "service_hash",
-                                                    "service_name",
-                                                    "service_path",
-                                                    "ssl_certificate",
-                                                    "ssl_issuer_common_name",
-                                                    "ssl_subject_common_name",
-                                                    "ssl_issuer_organization",
-                                                    "ssl_subject_organization",
-                                                    "ssl_serial",
-                                                    "ssl_issuer_unit",
-                                                    "ssl_subject_unit",
-                                                    "http_referrer",
-                                                    "ja3_hash",
-                                                    "ja4_hash",
-                                                    "jarm_hash",
-                                                    "cyu_hash",
-                                                    "location",
-                                                    "other"
-                                                ]
-                                            }
-                                        },
-                                        "additionalProperties": false
-                                    }
-                                }
-                            },
-                            "additionalProperties": false
-                        },
-                        "query": {
-                            "title": "\ud83d\udd0d Splunk SPL Detection Query",
-                            "icon": "\ud83d\udd0d",
-                            "type": "string",
-                            "description": "Correlation search in spl language",
-                            "example": "| search (code=10 OR code=29 OR code=43) host!=\"localhost\" xqp>5"
-                        },
-                        "advanced": {
-                            "title": "\ud83e\uddbe Advanced Edit custom parameters",
-                            "icon": "\ud83e\uddbe",
-                            "description": "Support for any parameter able to edited through Advanced Edit. Ensure that the naming and data inputed is as expected from Splunk.",
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": [
-                                    "string",
-                                    "integer"
-                                ],
-                                "example": "parameter_to_set"
                             }
                         }
                     },
@@ -3182,11 +2778,11 @@
                             "type": "array",
                             "items": {
                                 "enum": [
-                                    "Name"
+                                    "Placeholder"
                                 ],
                                 "uniqueItems": true,
                                 "markdownEnumDescriptions": [
-                                    "Tenant Description"
+                                    "Used to generate schema in ShareTide, not used for actual deployments"
                                 ]
                             }
                         },
@@ -3499,11 +3095,11 @@
                             "type": "array",
                             "items": {
                                 "enum": [
-                                    "Name"
+                                    "Placeholder"
                                 ],
                                 "uniqueItems": true,
                                 "markdownEnumDescriptions": [
-                                    "Tenant Description"
+                                    "Used to generate schema in ShareTide, not used for actual deployments"
                                 ]
                             }
                         },
@@ -3800,7 +3396,7 @@
                                                             "type": "array",
                                                             "items": {
                                                                 "enum": [
-                                                                    "Name::"
+                                                                    "Placeholder::"
                                                                 ],
                                                                 "uniqueItems": true
                                                             }
@@ -3906,7 +3502,7 @@
                                     "type": "array",
                                     "items": {
                                         "enum": [
-                                            "Name::"
+                                            "Placeholder::"
                                         ],
                                         "uniqueItems": true
                                     }
@@ -3936,10 +3532,10 @@
                                         "type": "string",
                                         "description": "The tenant to which the exclusion applied. Remove if the exclusion should\nbe applied to all tenants. \n",
                                         "enum": [
-                                            "Name"
+                                            "Placeholder"
                                         ],
                                         "markdownEnumDescriptions": [
-                                            "Tenant Description"
+                                            "Used to generate schema in ShareTide, not used for actual deployments"
                                         ]
                                     },
                                     "reason": {

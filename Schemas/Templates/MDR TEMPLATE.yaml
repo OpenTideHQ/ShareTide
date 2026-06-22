@@ -41,7 +41,6 @@ response:
 
 configurations:
   #sentinel: 
-  #splunk: 
   #carbon_black_cloud: 
   #sentinel_one: 
   #defender_for_endpoint: 
